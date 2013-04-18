@@ -1,0 +1,285 @@
+html, body {
+  margin:0;
+  padding:0;
+  background: #333333;
+}
+
+body, caption, th, td, input, textarea, select, option, legend, fieldset,
+h1,h2,h3,input,
+#navigation a {
+  font-family: 'Open Sans', Tahoma, Verdana, sans-serif;
+}
+
+h2 {
+  font-weight:600;
+  padding-left:10px;
+}
+h1 {
+  font-weight:700;  
+}
+
+p {
+  font-family: 'Droid Sans', sans-serif;
+}
+
+body, caption, th, td, input, textarea, select, option, legend, fieldset {
+  font-weight:400;  
+}
+
+a {
+  text-decoration:none;
+  color:black;
+  font-size:.8em;
+}
+
+
+/* Configbar */
+
+#configbar {
+  background-color:#181818;
+  margin:0;
+  padding:4px;
+  color:white;
+  /*display:none;*/
+}
+
+.conf{
+  float:left;
+  margin: 4px;
+}
+
+input {
+}
+
+#simple-slider {
+  width:50%;
+}
+#mode-slider {
+  width:200px;
+}
+#searchfield {
+  /*float:right;*/
+  position:relative;
+  height:30px;
+  line-height: 30px;
+}
+
+
+img {
+  margin-right:15px;
+}
+
+ul, li {
+  list-style-type:none;
+  margin:0;
+  padding:0;
+  
+}
+ul {
+  padding-left:10px;
+}
+
+
+
+.clear {
+  clear:both;
+}
+
+
+#history_div  {
+  margin:0;
+  width:100%;
+}
+
+#bookmark_div img, #bookmark_div span{
+  height:16px;
+
+}
+
+#bookmark_div  {
+  float:right;
+  margin:0;
+  width:30%;
+}
+
+#tab_div {
+  width:100%;
+}
+
+#tab_div li {
+  float:left;
+  width:200px;
+  background: #E2E3D9;
+  height:30px;
+  line-height:30px;
+  padding: 0 2px;
+  margin:2px 2px;
+  
+}
+
+#history_div .grouping ul a  {
+  width:20%;
+  background: white;
+  margin:2px 2px;
+  height:30px;
+  line-height:30px;
+  padding: 0 2px;
+  float:left;
+}
+
+#history_div .grouping img {
+margin-right:80%;
+margin-left:5px;
+margin-top:10px;
+margin-bottom:5px;
+width:25px;
+}
+
+
+
+
+
+
+
+
+
+
+#putithere {
+	margin-left:4px;
+}
+
+
+
+div.panel  {
+  background: white;
+  margin:4px 0 0 0;
+  padding: 0px;
+  font-size:16px;
+  height:100px;
+  width:100px;
+  float:left;
+  border-right: 4px solid #333;
+}
+div.panel.rel_big {
+	width:400px;
+}
+div.panel.rel_some {
+	width:250px;
+}
+div.panel.rel_twice {
+	width:150px;
+}
+div.panel.google {
+	background:#333333 !important;
+	width:120px;
+	margin:4px 0 0 0;
+	border:0;
+}
+div.panel.google a {
+	color:white;
+}
+
+
+
+div.typed  {
+  background: rgb(198, 255, 137) url("img/blockquote.png") no-repeat top right !important;
+  /*margin-right:208px;*/
+}
+div.link  {
+  background: #fff url("img/.png") no-repeat top right !important;
+  border-right: 4px solid #fff;
+}
+div.reload  {
+  background: rgb(0, 255, 255) url("img/.png") no-repeat top right !important;
+}
+div.keyword  {
+  background: rgb(255, 0, 214) url("img/.png") no-repeat top right !important;
+  color: #fff;
+}
+div.form_submit  {
+  background: yellow url("img/.png") no-repeat top right !important;
+  margin:4px 0px 0 0;
+}
+div.generated  {
+  background: orange url("img/.png") no-repeat top right !important;
+}
+div.auto_toplevel  {
+  background: purple url("img/.png") no-repeat top right !important;
+}
+div.link.refzero  {
+  background: rgb(187, 255, 181) url("img/.png") no-repeat top right !important;
+  /*margin:4px 4px 0 0;*/
+  border-right: 4px dashed #333;
+}
+div.link.empty  {
+  background: #000 url("img/.png") no-repeat top right !important;
+  display:none;
+}
+div.auto_bookmark  {
+  background: rgb(103, 140, 255) url("img/.png") no-repeat top right !important;
+}
+div.lessimportant  {
+  background: #5E5E5E url("img/.png") no-repeat top right !important;
+  width:90px;
+  opacity: .8;
+  font-size: 0.8em;
+}
+div.unimportant  {
+  background: #5E5E5E url("img/.png") no-repeat top right !important;
+  width:80px;
+  opacity: .6;
+  font-size: 0.6em;
+}
+
+
+div.empty {
+  background: rgb(105, 35, 35);
+  font-size: 8px;
+  color:white;
+}
+div.empty p{
+  color:rgb(226, 159, 159);
+}
+div.first {
+  background: rgb(227, 250, 169);
+}
+div.second {
+  background: rgb(155, 219, 255);
+}
+div.third {
+  background: rgb(255, 184, 246);
+}
+
+p {
+  margin:0;
+  padding:2px;
+  line-height: 16px;
+}
+
+
+
+button {
+  height: 15px;
+  padding: 0 4px;
+  font-size: 10px;
+  float: left;
+}
+
+.imgpreview {
+  height:80px;
+}
+
+.favicon {
+	float:left;
+}
+
+.youtubevideo {
+	height:60px;
+	width:100px;
+	border: 0;
+}
+
+p.referrer {
+	font-size:.6em;
+	color:#FFA500;
+}

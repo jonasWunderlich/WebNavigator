@@ -1,0 +1,23 @@
+{
+  "name": "WebNavigator",
+  "version": "0.3",
+  "manifest_version": 2,
+  "description": "Shows history, bookmarks and tabs",
+  "background" : {
+  	"page": "background.html"
+  },
+  "chrome_url_overrides" : {
+    "newtab": "front.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["bib/jquery-1.9.1.min.js", "src/contentScript.js"]
+    }
+  ],
+  "permissions": ["history", "bookmarks", "tabs", "storage", "webNavigation", "chrome://favicon/", "http://*/*", "https://*/*" ],
+  "browser_action": {
+    "default_icon": "style/img/icon.png"
+  },
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
+}
