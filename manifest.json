@@ -1,6 +1,6 @@
 {
   "name": "WebNavigator",
-  "version": "0.3",
+  "version": "0.4",
   "manifest_version": 2,
   "description": "Shows history, bookmarks and tabs",
   "background" : {

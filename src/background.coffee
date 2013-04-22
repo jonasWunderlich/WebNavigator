@@ -36,12 +36,11 @@ syncConnectedTabs = ->
   
 # Track Forward/Backward-Interaction
 chrome.webNavigation.onCommitted.addListener (details) ->
-  console.log details
+  #console.log details
   #if details.transitionType then console.log details.transitionType
   if details.transitionQualifiers
     if details.transitionQualifiers is "forward_back"
        connections.push url:details.url, refurl:lastPage, nav:"forward_back"
-       console.log "fb"
        lastPage = details.url
 
 

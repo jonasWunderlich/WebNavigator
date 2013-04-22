@@ -55,13 +55,13 @@ $(document).ready ->
     if result.connections? then tabconnections = result.connections
     else tabconnections = []
     loadBookmarks()
+    #loadHistory()
   null
 
 reload = () ->
   $('#historycontent').empty()
   siteHistory = []
   bookMarks = {}
-  loadBookmarks()
   visitIdArray = []
   siteContext = []
   v_max = 0
@@ -73,6 +73,7 @@ reload = () ->
   urltoSid = {}
   findOutlater = []
   shortUrls = []
+  loadBookmarks()
 
 # 1: Load all Bookmarks and save them in bookmarks[]
 loadBookmarks = () ->
@@ -83,7 +84,6 @@ loadBookmarks = () ->
     morebms = bookmarkTreeNodes[0].children[1].children;
     for n in morebms
       if n.title is "conmarks"
-        console.log "found"
         bfolder = n.title;
         for m in n.children
           todo++
@@ -112,9 +112,12 @@ loadHistory = () ->
   microsecondsPerDay = 1000 * 60 * 60 * 24
   endtime   = daydate - (microsecondsPerDay * (time-1))
   starttime = daydate - (microsecondsPerDay * (30+time))
-  chrome.history.search({text:filter.query, maxResults:filter.results, startTime:starttime, endTime:endtime}
+  
+  
+  chrome.history.search({text:filter.query, startTime:starttime, endTime:endtime, maxResults:filter.results}
     (historyItems) ->
       historyItems.forEach (site) ->
+        console.log site.url
         processed++
         chrome.history.getVisits {url:site.url}, (visitItems) -> processVisitItems(site, visitItems)
       null)
@@ -333,17 +336,21 @@ bookmartise = () ->
 
     for key,item of siteHistory.reverse()
       
+      ###
       doit = true
       shortUrl = item.url.split("#")[0]
       #console.log shortUrl
       testArray = $.inArray shortUrl, shortUrls 
       if (testArray is -1)
         shortUrls.push shortUrl
-        specialise(item)
+        
       else #if referrer.length is 0 #&& site.url.split("#")[1]?
         #null
         #doit = false
+     
+      ###
       
+      specialise(item)      
       
       
 
@@ -383,6 +390,7 @@ specialise = (site) ->
       special = "mail"
   
   title = title.split(" - ")[0]
+  title = title.split(" – ")[0]
   shorten = 40
   title = if (title.length > shorten) then (title.substr(0,shorten) + "...") else title
   site.url = url

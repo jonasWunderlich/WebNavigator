@@ -99,7 +99,6 @@
     $('#historycontent').empty();
     siteHistory = [];
     bookMarks = {};
-    loadBookmarks();
     visitIdArray = [];
     siteContext = [];
     v_max = 0;
@@ -110,7 +109,8 @@
     refMissing = [];
     urltoSid = {};
     findOutlater = [];
-    return shortUrls = [];
+    shortUrls = [];
+    return loadBookmarks();
   };
 
   loadBookmarks = function() {
@@ -123,7 +123,6 @@
       for (_i = 0, _len = morebms.length; _i < _len; _i++) {
         n = morebms[_i];
         if (n.title === "conmarks") {
-          console.log("found");
           bfolder = n.title;
           _ref = n.children;
           for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
@@ -178,11 +177,12 @@
     starttime = daydate - (microsecondsPerDay * (30 + time));
     chrome.history.search({
       text: filter.query,
-      maxResults: filter.results,
       startTime: starttime,
-      endTime: endtime
+      endTime: endtime,
+      maxResults: filter.results
     }, function(historyItems) {
       historyItems.forEach(function(site) {
+        console.log(site.url);
         processed++;
         return chrome.history.getVisits({
           url: site.url
@@ -367,7 +367,7 @@
   };
 
   bookmartise = function() {
-    var bookmark, bprocessed, doit, item, key, shortUrl, testArray, val, _ref, _results;
+    var bookmark, bprocessed, item, key, val, _ref, _results;
     bprocessed = 0;
     for (key in siteHistory) {
       val = siteHistory[key];
@@ -386,15 +386,20 @@
       _results = [];
       for (key in _ref) {
         item = _ref[key];
-        doit = true;
-        shortUrl = item.url.split("#")[0];
-        testArray = $.inArray(shortUrl, shortUrls);
-        if (testArray === -1) {
-          shortUrls.push(shortUrl);
-          _results.push(specialise(item));
-        } else {
+        /*
+        doit = true
+        shortUrl = item.url.split("#")[0]
+        #console.log shortUrl
+        testArray = $.inArray shortUrl, shortUrls 
+        if (testArray is -1)
+          shortUrls.push shortUrl
+          
+        else #if referrer.length is 0 #&& site.url.split("#")[1]?
+          #null
+          #doit = false
+        */
 
-        }
+        _results.push(specialise(item));
       }
       return _results;
     }
@@ -427,6 +432,7 @@
       }
     }
     title = title.split(" - ")[0];
+    title = title.split(" – ")[0];
     shorten = 40;
     title = title.length > shorten ? title.substr(0, shorten) + "..." : title;
     site.url = url;
