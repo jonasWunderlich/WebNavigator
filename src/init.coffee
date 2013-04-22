@@ -25,11 +25,10 @@ blocks = {}
 refToBlock = []
 blockStyle = []
 
-
 refMissing = []
 urltoSid = {}
-lastIndex = 10000000000000
-forwardbackward = []
+findOutlater = []
+shortUrls = []
 
 $(document).ready ->   
   chrome.storage.local.get "query", (result) ->
@@ -112,22 +111,6 @@ loadHistory = () ->
         chrome.history.getVisits {url:site.url}, (visitItems) -> processVisitItems(site, visitItems)
       null)
   null
-
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
 processVisitItems = (site, visitItems) ->
   
@@ -153,6 +136,9 @@ processVisitItems = (site, visitItems) ->
     visitIdArray[i.visitId] = sid:id, ref:i.referringVisitId, vid:i.visitId   
 
     # die ReferrerId auf die Aktuelle SeitenId verlinken
+    # PROBLEM nur eine ReferrerId möglich
+    if refToBlock[i.referringVisitId]? and i.referringVisitId isnt "0"
+      findOutlater[refToBlock[i.referringVisitId]] = i.referringVisitId
     refToBlock[i.referringVisitId] = id
     # ist diese visitId schon als Referrer vorgemerkt ?
     # wenn ja die Seite (aktuelle VisitId) zum schon bestehenden Block hinzufügen
@@ -163,24 +149,43 @@ processVisitItems = (site, visitItems) ->
   siteNetwork[id] = visits:visits, referrer:referrer
   ###----------------------------------------------------------------------------------------###
   
+  doit = true
+  shortUrl = site.url.split("#")[0]
+  console.log shortUrl
+  testArray = $.inArray shortUrl, shortUrls 
+  if (testArray is -1)
+    shortUrls.push shortUrl
+  else if referrer.length is 0 && site.url.split("#")[1]?
+    null
+    #doit = false
+
+  
+  ###
+  if referrer.length is 0 && site.url.split("#")[1]?
+    #shortUrl = site.url.split("#")[0]
+    shortUrl = site.url.split("#")[0]
+    testArray = $.inArray shortUrl, shortUrls
+    if (testArray is -1)
+      shortUrls.push shortUrl
+      console.log site.url
+    else
+      doit = false
+      #console.log site.url
+  ###
+    
   if referrer.length is 0
     refMissing[id] = site.url
   
-  if noblockreferred# && lastIndex > id
-    if refToBlock[ref] = id
-      null
-    console.log visitItems[visitItems.length-1]
+  if noblockreferred
     blocks[id] = blockId
     blockId++
   else blocks[id] = blocks[blockofreferredsid]
-  lastIndex = id
-  
-  #console.log ref
 
-  SiteItem = sid:site.id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:relevance
-  
   urltoSid[site.url] = id
-  siteHistory[id] = SiteItem
+  
+  if doit
+    SiteItem = sid:site.id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:relevance
+    siteHistory[id] = SiteItem
   
   processed--;
   if processed is 0 then processTabConnections()
@@ -204,13 +209,12 @@ processTabConnections = () ->
   #console.log siteHistory
   #console.log refMissing
   
-  processIt = 0;
   
+  ## Interpolate Missing Tablinks
+  processIt = 0;
   for tc in tabconnections
     processIt++;
 
-    
-    
     for sid,v_url of refMissing
       if v_url is tc.url
         
@@ -220,40 +224,33 @@ processTabConnections = () ->
         if ref_id isnt undefined
           oldblockindex = blocks[sid]
           newblockindex = blocks[ref_id]
-          
-          #console.log oldblockindex + " " + newblockindex
           blocks[sid] = newblockindex
           
           for kk,val of blocks 
             if val is oldblockindex
-              #console.log val
-              blocks[kk] = newblockindex
-     
-    ###          
-    console.log tc
-    if tc.nav is "forward_back"
-      console.log tc.nav
-      for sid,item of siteHistory
-        
-        refsid = visitIdArray[item.ref].sid
-        oldblockindex = blocks[sid]
-        newblockindex = blocks[refsid]
-        blocks[sid] = newblockindex
-        
-        for kk,val of blocks 
-          if val is oldblockindex
-            console.log val
-            blocks[kk] = newblockindex
-    ###         
-    processIt--;          
+              blocks[kk] = newblockindex  
+              
+    processIt--;  
+    
+    
+  
+  ## Refresh Blocks of double Reference-links
+  for key,val of findOutlater
+    if val isnt "0"
+      oldblockindex = blocks[key]
+      newblockindex = blocks[refToBlock[val]]         
+      #console.log oldblockindex + " " + newblockindex
+      blocks[key] = newblockindex
+      
+      for kk,val of blocks 
+        if val is oldblockindex
+          blocks[kk] = newblockindex
+    
+            
 
   
   
-  
-  
-  
-  
-  
+
   
   # keine Ahnung was das hier eigentlich nochmal macht
   referrer = []
@@ -289,8 +286,8 @@ processTabConnections = () ->
     processIt--;
     
   
-  if processIt is 0
-    bookmartise()
+  #if processIt is 0
+  bookmartise()
   
 
 
@@ -356,11 +353,21 @@ specialise = (site) ->
       special = "mail"
   
   title = title.split(" - ")[0]
-  title = if (title.length > 20) then (title.substr(0,8) + "...") else title
+  title = if (title.length > 20) then (title.substr(0,12) + "...") else title
   site.url = url
   site.title = title
   site.special = special
   renderItem(site)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -378,44 +385,31 @@ renderItem = (item) ->
   relevance = item.relevance
 
 
-  if blockStyle[blocks[item.sid]]?
-    item.context = blockStyle[blocks[item.sid]]
-  if item.bookmark isnt undefined
-    item.context += " bookmark" 
-  
-  context = item.context
-
+  # Panel
   # falls refid auf url des vorgängerszeigt ->verlinken
-  t_panel = $ "<div>"
-  t_panel.addClass "panel"
-  t_panel.addClass type
+  panel_div = $ "<div>"
+  panel_div.addClass "panel"
+  panel_div.addClass type
   if item.nav?
-    t_panel.addClass item.nav
-  if ref is "0" then t_panel.addClass "refzero"
-  t_panel.addClass special  
-  c_panel = $ "<div>"
-  if context isnt undefined
-    c_panel.addClass context
-    c_panel.addClass vid
-  
+    panel_div.addClass item.nav
+  if ref is "0" then panel_div.addClass "refzero"
+
+
+  if relevance>20  then panel_div.addClass "rel_big"
+  else if relevance>5  then panel_div.addClass "rel_some"
+  else if relevance>=2  then panel_div.addClass "rel_twice"
     
-  if relevance>20  then t_panel.addClass "rel_big"
-  else if relevance>5  then t_panel.addClass "rel_some"
-  else if relevance>=2  then t_panel.addClass "rel_twice"
-    
-  link = $ "<a>"
-  link.attr href:url
-  link.addClass "urladress"
-  inhalt = $ "<p>" 
+
   
+  
+  
+  ## PANELHEADER
+  head_div = $ "<div>"
+  head_div.addClass "head"  
   favicon = $ "<img>"
   favicon.attr src:"chrome://favicon/"+url
   favicon.addClass "favicon"
-  c_panel.append $ favicon
-  
-
-  
-  #console.log special
+  head_div.append $ favicon
   if special isnt "google" and special isnt "empty"
     button = $ "<button>"
     button.text "1"
@@ -426,56 +420,95 @@ renderItem = (item) ->
     button3 = $ "<button>"
     button3.text "3"
     button3.click () -> bookmarkIt(item, "third")
-    c_panel.append $ button
-    c_panel.append $ button2
-    c_panel.append $ button3
-  
+    head_div.append $ button3
+    head_div.append $ button2
+    head_div.append $ button
   clear = $ "<div>"
   clear.addClass "clear"
-  c_panel.append $ clear
+  head_div.append $ clear  
+
+  content_div = $ "<div>"
+  ## Bookmarks und zugehörige Kontexte auszeichnen
+  if blockStyle[blocks[item.sid]]?
+    context = blockStyle[blocks[item.sid]]
+    console.log "sdf"
+    head_div.addClass context
+  if item.bookmark isnt undefined
+    item.context += " bookmark"
+    content_div.addClass context
+
+
+
+
+
+
+  ##content
   
+  
+  link = $ "<a>"
+  link.attr href:url
+  link.addClass "urladress"
+  inhalt = $ "<p>"  
+  
+  # check Importance of queryresults
   if filter.query isnt ""
     qtl = filter.query.toLowerCase(); ttl = title.toLowerCase(); utl = url.toLowerCase()
     if ttl.indexOf(qtl) < 0 && utl.indexOf(qtl) > 0
-      t_panel.addClass "lessimportant"
+      panel_div.addClass "lessimportant"
     else if ttl.indexOf(qtl) < 0 && utl.indexOf(qtl) < 0
-      t_panel.addClass "unimportant"
-            
+      panel_div.addClass "unimportant"
+          
   if special is "image" then pic = $ "<img>"; pic.attr src:url.substr(url.search /http/); pic.addClass "imgpreview"; inhalt.append pic; link.append $ inhalt
   if special is "google" then title = title.split(" - Google-Suche")[0]; inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
   if special is "video"
     videoframe = $ "<iframe>"; videoframe.addClass "youtubevideo";
-    videoframe.attr src:url;  c_panel.append videoframe
+    videoframe.attr src:url;  content_div.append videoframe
   #else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
   else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
 
-  t_panel.addClass special
-  c_panel.append $ link
-  t_panel.append $ c_panel
   
-  
+  # Entwicklungsinformationen
   info = $ "<p>"
   info.addClass "referrer"
   info.text "Block: " + item.block
-  
   info1 = $ "<p>"
   info1.addClass "referrer"
   info1.text sid + " > " + item.sidref
-  
   info2 = $ "<p>"
   info2.addClass "referrer"
-  info2.text vid + " > " + ref
+  info2.text vid + " > " + ref  
   
-  info3 = $ "<p>"
-  info3.addClass "referrer"
-  info3.text ""
   
-  c_panel.append $ info
-  c_panel.append $ info1
-  c_panel.append $ info2
+  
+  content_div.addClass "content"
+  
+  content_div.append $ link
+  content_div.append $ info
+  content_div.append $ info1
+  content_div.append $ info2
 
   
-  $("#historycontent").append $ t_panel
+  panel_div.addClass special
+  
+  panel_div.append head_div
+  panel_div.append $ content_div  
+  
+  $("#historycontent").append $ panel_div
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
