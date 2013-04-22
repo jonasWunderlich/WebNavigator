@@ -552,16 +552,23 @@ createBookmark = (site, context) ->
   chrome.bookmarks.getTree (bookmarkTreeNodes) ->
     folder = bookmarkTreeNodes[0].children[1].children;
     newtitle = "#{site.vid}___#{site.title}"
+    bookmarkfolder = undefined
+    contextfolder = undefined
+    
     for sub in folder
       if sub.title is "conmarks"
-        if context is undefined 
-          chrome.bookmarks.create {parentId:file.id, title:newtitle, url:site.url}, ->
-            reload()
-        else
-          for m in sub.children
-            if context is m.title
-              chrome.bookmarks.create {parentId:m.id, title:newtitle, url:site.url}, ->
-                reload()
-                
-                
-             
+        bookmarkfolder = sub
+    
+    for m in sub.children
+      if context is m.title
+        contextfolder = m
+        chrome.bookmarks.create {parentId:m.id, title:newtitle, url:site.url}, ->
+        reload()
+    
+    if contextfolder is undefined
+      chrome.bookmarks.create {parentId:sub.id, title:context}, (bookmarkTreeNodes) ->
+        console.log bookmarkTreeNodes
+        contextfolder = bookmarkTreeNodes
+        chrome.bookmarks.create {parentId:contextfolder.id, title:newtitle, url:site.url}, ->
+        reload()
+
