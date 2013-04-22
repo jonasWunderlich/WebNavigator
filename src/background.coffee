@@ -19,9 +19,11 @@ chrome.tabs.onCreated.addListener (tab) ->
 setTabConnection = (orgTabUrl,referrerTabId) ->
   if typeof(referrerTabId) isnt "undefined"
     chrome.tabs.get referrerTabId, (tab) ->
-      connections.push url:orgTabUrl, refurl:tab.url
-      #console.log connections
-      syncConnectedTabs()
+      if tab.url isnt "chrome://newtab/"
+        connections.push url:orgTabUrl, refurl:tab.url, nav:"tab"
+        #console.log connections
+        syncConnectedTabs()
+      lastPage = tab.url
 
 
 # synchronise Storage of Tabinfo
@@ -34,12 +36,13 @@ syncConnectedTabs = ->
   
 # Track Forward/Backward-Interaction
 chrome.webNavigation.onCommitted.addListener (details) ->
-    #console.log details
-    #if details.transitionType then console.log details.transitionType
-    if details.transitionQualifiers
-      if details.transitionQualifiers is "forward_back"
-         connections.push url:details.url, refurl:lastPage
-    lastPage = details.url
+  console.log details
+  #if details.transitionType then console.log details.transitionType
+  if details.transitionQualifiers
+    if details.transitionQualifiers is "forward_back"
+       connections.push url:details.url, refurl:lastPage, nav:"forward_back"
+       console.log "fb"
+       lastPage = details.url
 
 
 ### Query for getting all Tabs at once

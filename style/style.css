@@ -155,7 +155,7 @@ div.panel  {
   margin:4px 0 0 0;
   padding: 0px;
   font-size:16px;
-  height:180px;
+  height:100px;
   width:100px;
   float:left;
   border-right: 4px solid #333;
@@ -182,54 +182,62 @@ div.panel.google a {
 
 
 div.typed  {
-  background: rgb(198, 255, 137) url("img/blockquote.png") no-repeat top right !important;
+  background: rgb(198, 255, 137) url("img/blockquote.png") no-repeat bottom right !important;
   /*margin-right:208px;*/
 }
 div.link  {
-  background: #fff url("img/blockquote.png") no-repeat top right !important;
+  
   border-right: 4px solid #fff;
 }
 div.reload  {
-  background: rgb(0, 255, 255) url("img/blockquote.png") no-repeat top right !important;
+  background: rgb(0, 255, 255) url("img/blockquote.png") no-repeat bottom right !important;
 }
 div.keyword  {
-  background: rgb(255, 0, 214) url("img/blockquote.png") no-repeat top right !important;
+  background: rgb(255, 0, 214) url("img/blockquote.png") no-repeat bottom right !important;
   color: #fff;
 }
 div.form_submit  {
-  background: yellow url("img/blockquote.png") no-repeat top right !important;
+  background: yellow !important;
   margin:4px 0px 0 0;
 }
 div.generated  {
-  background: orange url("img/blockquote.png") no-repeat top right !important;
+  background: orange url("img/blockquote.png") no-repeat bottom right !important;
 }
 div.auto_toplevel  {
-  background: purple url("img/blockquote.png") no-repeat top right !important;
+  background: purple !important;
 }
 div.link.refzero  {
-  background: rgb(187, 255, 181) url("img/blockquote.png") no-repeat top right !important;
+  background: rgb(187, 255, 181) url("img/blockquote.png") no-repeat bottom right !important;
   /*margin:4px 4px 0 0;*/
   border-right: 4px dashed #333;
 }
 div.link.empty  {
-  background: #000 url("img/blockquote.png") no-repeat top right !important;
+  background: #000 url("img/blockquote.png") no-repeat bottom right !important;
   display:none;
 }
 div.auto_bookmark  {
-  background: rgb(103, 140, 255) url("img/blockquote.png") no-repeat top right !important;
+  background: rgb(103, 140, 255) url("img/blockquote.png") no-repeat bottom right !important;
 }
 div.lessimportant  {
-  background: #5E5E5E url("img/blockquote.png") no-repeat top right !important;
+  background: #5E5E5E url("img/blockquote.png") no-repeat bottom right !important;
   width:90px;
   opacity: .8;
   font-size: 0.8em;
+  border:0;
 }
 div.unimportant  {
-  background: #5E5E5E url("img/.png") no-repeat top right !important;
+  background: #5E5E5E url("img/blockquote.png") no-repeat bottom right !important;
   width:80px;
   opacity: .6;
   font-size: 0.6em;
+  border:0;
 }
+div.tab {
+  background:#F00;
+}
+div.forward_back {
+  background:#001FFF !important;
+}  
 
 
 div.empty {
@@ -243,23 +251,14 @@ div.empty p{
 div.first {
   background: #E3FAA9;
 }
-div.firstnext {
-  background: #EDFFBE;
-}
 div.second {
   background: #35B6FF;
 }
-div.secondnext {
-  background: #79CFFF;
-
-}
 div.third {
   background: #FF41E7;
-
 }
-div.thirdnext {
-  background: #FAA4EF;
-
+div.bookmark {
+  border-top:5px solid #800080;
 }
 
 

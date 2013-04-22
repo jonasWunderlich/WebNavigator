@@ -1,5 +1,5 @@
 # Maximum of Videos to show
-v_max = 5
+v_max = 0
 # Default Settings of filtering the View
 filter = results:50, time:0, query:"", mode:"none"
 context = "empty"
@@ -15,9 +15,21 @@ tabconnections = []
 
 siteNetwork = []
 siteContext = []
-vidArray = []
+visitIdArray = {}
 refArray = []
 
+
+
+blockId = 0
+blocks = {}
+refToBlock = []
+blockStyle = []
+
+
+refMissing = []
+urltoSid = {}
+lastIndex = 10000000000000
+forwardbackward = []
 
 $(document).ready ->   
   chrome.storage.local.get "query", (result) ->
@@ -38,7 +50,7 @@ $(document).ready ->
     filter.query = $('#search').val()
     $("#historycontent").empty()
     chrome.storage.local.set "query":filter.query
-    loadHistory()
+    reload()
  
   chrome.storage.local.get "connections", (result) ->
     if result.connections? then tabconnections = result.connections
@@ -51,9 +63,13 @@ reload = () ->
   siteHistory = []
   bookMarks = {}
   loadBookmarks()
-  vidArray = []
+  visitIdArray = []
   siteContext = []
-  
+  v_max = 0
+  blocks = {}
+  refToBlock = []
+  blockStyle = []
+  blockId = 0
 
 # 1: Load all Bookmarks and save them in bookmarks[]
 loadBookmarks = () ->
@@ -100,6 +116,19 @@ loadHistory = () ->
 
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 processVisitItems = (site, visitItems) ->
   
   id = site.id
@@ -108,24 +137,49 @@ processVisitItems = (site, visitItems) ->
   ref = visitItems[visitItems.length-1].referringVisitId
   relevance = visitItems.length
   
-  #console.log vid
+  #console.log vid + " - " + ref
   ###----------------------------------------------------------------------------------------###
   #console.log visitItems
   visits = []
   referrer = []
+  noblockreferred = true
+  blockofreferredsid = 0
+  
   for i in visitItems
-    #console.log i.visitId
+
     visits.push i.visitId
-    referrer.push i.referringVisitId
-    vidArray[i.visitId] = sid:site.id
-    refArray[i.referringVisitId] = i.visitId   ## nur eine Verbindung vorerst##
+    if i.referringVisitId isnt "0" then referrer.push i.referringVisitId
+    
+    visitIdArray[i.visitId] = sid:id, ref:i.referringVisitId, vid:i.visitId   
+
+    # die ReferrerId auf die Aktuelle SeitenId verlinken
+    refToBlock[i.referringVisitId] = id
+    # ist diese visitId schon als Referrer vorgemerkt ?
+    # wenn ja die Seite (aktuelle VisitId) zum schon bestehenden Block hinzufügen
+    if refToBlock[i.visitId]?
+      noblockreferred = false;
+      blockofreferredsid = refToBlock[i.visitId]
+    
   siteNetwork[id] = visits:visits, referrer:referrer
   ###----------------------------------------------------------------------------------------###
   
+  if referrer.length is 0
+    refMissing[id] = site.url
   
+  if noblockreferred# && lastIndex > id
+    if refToBlock[ref] = id
+      null
+    console.log visitItems[visitItems.length-1]
+    blocks[id] = blockId
+    blockId++
+  else blocks[id] = blocks[blockofreferredsid]
+  lastIndex = id
+  
+  #console.log ref
 
   SiteItem = sid:site.id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:relevance
-
+  
+  urltoSid[site.url] = id
   siteHistory[id] = SiteItem
   
   processed--;
@@ -133,24 +187,116 @@ processVisitItems = (site, visitItems) ->
      
 
 
+
+
+
+
+
+
+
+
 processTabConnections = () ->
   
+  #console.log tabconnections
+  #console.log siteNetwork
+  #console.log visitIdArray
+  #console.log refArray
+  #console.log siteHistory
+  #console.log refMissing
+  
+  processIt = 0;
+  
+  for tc in tabconnections
+    processIt++;
+
+    
+    
+    for sid,v_url of refMissing
+      if v_url is tc.url
+        
+        ref_id = urltoSid[tc.refurl]
+        siteHistory[sid].nav = tc.nav
+        
+        if ref_id isnt undefined
+          oldblockindex = blocks[sid]
+          newblockindex = blocks[ref_id]
+          
+          #console.log oldblockindex + " " + newblockindex
+          blocks[sid] = newblockindex
+          
+          for kk,val of blocks 
+            if val is oldblockindex
+              #console.log val
+              blocks[kk] = newblockindex
+     
+    ###          
+    console.log tc
+    if tc.nav is "forward_back"
+      console.log tc.nav
+      for sid,item of siteHistory
+        
+        refsid = visitIdArray[item.ref].sid
+        oldblockindex = blocks[sid]
+        newblockindex = blocks[refsid]
+        blocks[sid] = newblockindex
+        
+        for kk,val of blocks 
+          if val is oldblockindex
+            console.log val
+            blocks[kk] = newblockindex
+    ###         
+    processIt--;          
+
+  
+  
+  
+  
+  
+  
+  
+  
+  # keine Ahnung was das hier eigentlich nochmal macht
   referrer = []
   referrer[666] = "chrome://newtab/"
-    
   for tc in tabconnections.reverse()
-    id = 0; rid = tc.refurl
+    id = 0; rid = tc.refurl;
     for key,item of siteHistory
-      if item.url is tc.refurl then rid = item.vid; #console.log siteNetwork[key]
-      if item.url is tc.url then id = item.vid
-    referrer[id] = rid
-              
+      if item.url is tc.refurl 
+        rid = item.vid
+      if item.url is tc.url
+        id = item.vid
+    #referrer[id] = rid
   for key,item of siteHistory
+    item.block = blocks[key]
+    #console.log item.vid + " - " + item.ref + " - " + referrer[item.vid] + " - " + item.type
     if item.ref is "0" and referrer[item.vid]
-        item.ref = referrer[item.vid]
+      null
+      #item.ref = referrer[item.vid]
+
+
+
   
-  bookmartise()
+  for key,item of visitIdArray
+    processIt++;  
+    if visitIdArray[item.ref]?
+      #item.sidref = visitIdArray[item.ref].sid
+      # für die ausgabe der benachbarten seitenIds
+      siteHistory[item.sid].sidref = visitIdArray[item.ref].sid
+    #scheint nichts wichtiges mehr zu machen
+    if item.ref is "0" and referrer[item.vid]
+      null
+      #item.ref = referrer[item.vid]
+    processIt--;
+    
   
+  if processIt is 0
+    bookmartise()
+  
+
+
+
+
+
 
 
 
@@ -159,54 +305,22 @@ processTabConnections = () ->
 bookmartise = () ->
   
   bprocessed = 0;
-  #console.log siteHistory
   for key,val of siteHistory
     bprocessed++
-    #console.log "sid"
-    #console.log val.vid
-    #bookmark = (bmark for bmark in bookmarks when bmark.id is val.vid)[0]
-    
-    if bookMarks[val.url]
-    #if bookmark? 
-      #console.log bookMarks[val.url]
-      val.context = bookMarks[val.url].context
-      #val.bid = bookmark.bid
-      #setConmark val.context, val.sid
-      #for i in siteNetwork[val.sid].referrer
-        #if i isnt "0" && vidArray[i]
-          #console.log i
-          #console.log siteNetwork[vidArray[i].sid].referrer
-          #vidArray[i].context = bookmark.context+"next"
+
+    bookmark = if bookMarks[val.url]?
+      bookMarks[val.url].bid
+      val.bookmark = true  
+      blockStyle[blocks[key]] = bookMarks[val.url].context
 
   if bprocessed = filter.results  
     siteHistory.sort (a,b) ->
       return if a.vid >= b.vid then 1 else -1
-  
-    console.log siteNetwork
-    console.log vidArray
-    console.log refArray
-  
+
     for key,item of siteHistory.reverse()
       specialise(item)
 
 
-
-
-
-
-
-
-
-setConmark = (context, sid) ->
-  console.log context + " " + sid
-  for i in siteNetwork[sid].referrer
-    console.log vidArray[i]
-    if i isnt "0" && vidArray[i]
-      #console.log vidArray[i].sid
-      #console.log i
-      #console.log siteNetwork[vidArray[i].sid].referrer
-      siteContext[i] = context+"next"
-      setConmark context, vidArray[i].sid
 
 
 
@@ -230,10 +344,20 @@ specialise = (site) ->
       special = "image"
       title = "Abbildung"
     else if (/youtube/.test(url)) && (/watch/.test(url))
-      special = "video"
+      title = title.split("- YouTube")[0]
+      if (v_max > 0)
+        url = "https://www.youtube.com/embed/" + url.split("v=")[1].split('=')[0].split('&')[0]
+        special = "video"
+        v_max--
     else if /Google-Suche/.test(title)
       special = "google"
-
+    else if /mail.google.com/.test(url)
+      #title = title.split(" - Gmail")[0]
+      special = "mail"
+  
+  title = title.split(" - ")[0]
+  title = if (title.length > 20) then (title.substr(0,8) + "...") else title
+  site.url = url
   site.title = title
   site.special = special
   renderItem(site)
@@ -241,30 +365,10 @@ specialise = (site) ->
 
 
 
-
-
-
-
-
 renderItem = (item) ->
   
-  ## ############################################################################################
-  #if item.context isnt undefined
-  
-  #console.log item.context
-  #console.log item.id
-  #console.log item.children
-  ## ############################################################################################
-
-  
-  #console.log item.sid
-  #console.log item.context
-  
-
-  
-  
-  url = item.url
   title = item.title
+  url = item.url
   sid = item.sid
   vid = item.vid
   type = item.type
@@ -272,24 +376,21 @@ renderItem = (item) ->
   special = item.special
   ref = item.ref
   relevance = item.relevance
+
+
+  if blockStyle[blocks[item.sid]]?
+    item.context = blockStyle[blocks[item.sid]]
+  if item.bookmark isnt undefined
+    item.context += " bookmark" 
+  
   context = item.context
-  
-  #console.log item.context
-  
-  #console.log vidArray[i].context
-  
 
-  if context is undefined
-    if siteContext[item.vid]?
-      context = siteContext[item.vid]
-
-
-    
   # falls refid auf url des vorgängerszeigt ->verlinken
-  
   t_panel = $ "<div>"
   t_panel.addClass "panel"
   t_panel.addClass type
+  if item.nav?
+    t_panel.addClass item.nav
   if ref is "0" then t_panel.addClass "refzero"
   t_panel.addClass special  
   c_panel = $ "<div>"
@@ -312,10 +413,7 @@ renderItem = (item) ->
   favicon.addClass "favicon"
   c_panel.append $ favicon
   
-  referer = $ "<p>"
-  referer.addClass "referrer"
 
-  referer.text vid + " <- " + ref
   
   #console.log special
   if special isnt "google" and special isnt "empty"
@@ -327,7 +425,7 @@ renderItem = (item) ->
     button2.click () -> bookmarkIt(item, "second")
     button3 = $ "<button>"
     button3.text "3"
-    button3.click () -> bookmarkIt(item, "third")#(c_panel, vid, url, title, "third")
+    button3.click () -> bookmarkIt(item, "third")
     c_panel.append $ button
     c_panel.append $ button2
     c_panel.append $ button3
@@ -343,34 +441,44 @@ renderItem = (item) ->
     else if ttl.indexOf(qtl) < 0 && utl.indexOf(qtl) < 0
       t_panel.addClass "unimportant"
             
- 
   if special is "image" then pic = $ "<img>"; pic.attr src:url.substr(url.search /http/); pic.addClass "imgpreview"; inhalt.append pic; link.append $ inhalt
-  else if url? and special is "video"
-    if (v_max >= 0)
-      videoframe = $ "<iframe>"; videoframe.addClass "youtubevideo"; #vid.attr width:"200"; vid.attr height:"80"; vid.attr frameborder:"0";
-      y_id = "https://www.youtube.com/embed/" + url.split("watch?v=")[1].split('=')[0].split('&')[0]
-      videoframe.attr src:y_id;  c_panel.append videoframe
-      v_max--;
-    else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
-  else if special is "google" then title = title.split(" - Google-Suche")[0]; inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
+  if special is "google" then title = title.split(" - Google-Suche")[0]; inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
+  if special is "video"
+    videoframe = $ "<iframe>"; videoframe.addClass "youtubevideo";
+    videoframe.attr src:url;  c_panel.append videoframe
+  #else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
   else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
 
   t_panel.addClass special
-  
   c_panel.append $ link
-  c_panel.append $ referer
   t_panel.append $ c_panel
+  
+  
+  info = $ "<p>"
+  info.addClass "referrer"
+  info.text "Block: " + item.block
+  
+  info1 = $ "<p>"
+  info1.addClass "referrer"
+  info1.text sid + " > " + item.sidref
+  
+  info2 = $ "<p>"
+  info2.addClass "referrer"
+  info2.text vid + " > " + ref
+  
+  info3 = $ "<p>"
+  info3.addClass "referrer"
+  info3.text ""
+  
+  c_panel.append $ info
+  c_panel.append $ info1
+  c_panel.append $ info2
+
+  
   $("#historycontent").append $ t_panel
 
 
-    
-    
-    
-    
-    
-    
-    
-    
+
 bookmarkIt = (site, context) ->
   url = site.url
   context = context
@@ -384,6 +492,7 @@ bookmarkIt = (site, context) ->
   else
     createBookmark site, context
 
+  
   
 createBookmark = (site, context) ->
   chrome.bookmarks.getTree (bookmarkTreeNodes) ->
