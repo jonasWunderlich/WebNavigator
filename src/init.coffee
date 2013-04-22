@@ -69,29 +69,37 @@ reload = () ->
   refToBlock = []
   blockStyle = []
   blockId = 0
+  refMissing = []
+  urltoSid = {}
+  findOutlater = []
+  shortUrls = []
 
 # 1: Load all Bookmarks and save them in bookmarks[]
 loadBookmarks = () ->
   todo = 0
   chrome.bookmarks.getTree (bookmarkTreeNodes) ->
     #console.log bookmarkTreeNodes
+    bfolder = ""
     morebms = bookmarkTreeNodes[0].children[1].children;
     for n in morebms
-     if n.title is "conmarks"
-      for m in n.children
-        todo++
-        if m.children?
-          for o in m.children 
-            todo++
-            bookMarks[o.url] = context:m.title, id:o.title.split("___", 1)[0], bid:o.id
+      if n.title is "conmarks"
+        console.log "found"
+        bfolder = n.title;
+        for m in n.children
+          todo++
+          if m.children?
+            for o in m.children 
+              bookMarks[o.url] = context:m.title, id:o.title.split("___", 1)[0], bid:o.id
             todo--
-          todo--
-        else
-          bookMarks[m.url] = context:undefined, id:m.title.split("___", 1)[0], bid:m.id
-          todo--
-    if todo is 0
-      loadHistory()
-    null
+          else
+            bookMarks[m.url] = context:undefined, id:m.title.split("___", 1)[0], bid:m.id
+            todo-- 
+    if !bfolder
+      chrome.bookmarks.create {'parentId': "2", 'title': 'conmarks'}, (bookmarkTreeNodes) -> null
+
+  if todo is 0
+    loadHistory()
+  null
 
 
 # 2: Load GoogleChrome-Historydata
@@ -119,6 +127,14 @@ processVisitItems = (site, visitItems) ->
   type = visitItems[visitItems.length-1].transition
   ref = visitItems[visitItems.length-1].referringVisitId
   relevance = visitItems.length
+  
+  
+  
+  
+  
+  
+  
+  
   
   #console.log vid + " - " + ref
   ###----------------------------------------------------------------------------------------###
@@ -149,16 +165,17 @@ processVisitItems = (site, visitItems) ->
   siteNetwork[id] = visits:visits, referrer:referrer
   ###----------------------------------------------------------------------------------------###
   
+  ###
   doit = true
   shortUrl = site.url.split("#")[0]
-  console.log shortUrl
+  #console.log shortUrl
   testArray = $.inArray shortUrl, shortUrls 
   if (testArray is -1)
     shortUrls.push shortUrl
-  else if referrer.length is 0 && site.url.split("#")[1]?
-    null
+  else #if referrer.length is 0 #&& site.url.split("#")[1]?
+    #null
     #doit = false
-
+  ###
   
   ###
   if referrer.length is 0 && site.url.split("#")[1]?
@@ -183,9 +200,8 @@ processVisitItems = (site, visitItems) ->
 
   urltoSid[site.url] = id
   
-  if doit
-    SiteItem = sid:site.id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:relevance
-    siteHistory[id] = SiteItem
+  SiteItem = sid:site.id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:relevance
+  siteHistory[id] = SiteItem
   
   processed--;
   if processed is 0 then processTabConnections()
@@ -276,9 +292,10 @@ processTabConnections = () ->
   for key,item of visitIdArray
     processIt++;  
     if visitIdArray[item.ref]?
-      #item.sidref = visitIdArray[item.ref].sid
+      item.sidref = visitIdArray[item.ref].sid
       # für die ausgabe der benachbarten seitenIds
       siteHistory[item.sid].sidref = visitIdArray[item.ref].sid
+      
     #scheint nichts wichtiges mehr zu machen
     if item.ref is "0" and referrer[item.vid]
       null
@@ -315,7 +332,20 @@ bookmartise = () ->
       return if a.vid >= b.vid then 1 else -1
 
     for key,item of siteHistory.reverse()
-      specialise(item)
+      
+      doit = true
+      shortUrl = item.url.split("#")[0]
+      #console.log shortUrl
+      testArray = $.inArray shortUrl, shortUrls 
+      if (testArray is -1)
+        shortUrls.push shortUrl
+        specialise(item)
+      else #if referrer.length is 0 #&& site.url.split("#")[1]?
+        #null
+        #doit = false
+      
+      
+      
 
 
 
@@ -353,7 +383,8 @@ specialise = (site) ->
       special = "mail"
   
   title = title.split(" - ")[0]
-  title = if (title.length > 20) then (title.substr(0,12) + "...") else title
+  shorten = 40
+  title = if (title.length > shorten) then (title.substr(0,shorten) + "...") else title
   site.url = url
   site.title = title
   site.special = special
@@ -405,7 +436,8 @@ renderItem = (item) ->
   
   ## PANELHEADER
   head_div = $ "<div>"
-  head_div.addClass "head"  
+  content_div = $ "<div>"
+  head_div.addClass "head"
   favicon = $ "<img>"
   favicon.attr src:"chrome://favicon/"+url
   favicon.addClass "favicon"
@@ -427,28 +459,21 @@ renderItem = (item) ->
   clear.addClass "clear"
   head_div.append $ clear  
 
-  content_div = $ "<div>"
+  
   ## Bookmarks und zugehörige Kontexte auszeichnen
   if blockStyle[blocks[item.sid]]?
     context = blockStyle[blocks[item.sid]]
-    console.log "sdf"
     head_div.addClass context
   if item.bookmark isnt undefined
     item.context += " bookmark"
     content_div.addClass context
 
 
-
-
-
-
   ##content
-  
-  
   link = $ "<a>"
+  inhalt = $ "<p>"
   link.attr href:url
-  link.addClass "urladress"
-  inhalt = $ "<p>"  
+  link.addClass "urladress"  
   
   # check Importance of queryresults
   if filter.query isnt ""
@@ -479,17 +504,13 @@ renderItem = (item) ->
   info2.text vid + " > " + ref  
   
   
-  
-  content_div.addClass "content"
-  
+  content_div.addClass "content"  
   content_div.append $ link
-  content_div.append $ info
-  content_div.append $ info1
-  content_div.append $ info2
+  #content_div.append $ info
+  #content_div.append $ info1
+  #content_div.append $ info2
 
-  
-  panel_div.addClass special
-  
+  panel_div.addClass special  
   panel_div.append head_div
   panel_div.append $ content_div  
   
@@ -541,3 +562,6 @@ createBookmark = (site, context) ->
             if context is m.title
               chrome.bookmarks.create {parentId:m.id, title:newtitle, url:site.url}, ->
                 reload()
+                
+                
+             

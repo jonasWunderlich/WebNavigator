@@ -165,7 +165,7 @@ div.panel  {
 .head {
 	background: #E9E9E9;
 	padding:4px;
-	
+	height:28px;
 }
 
 .content {
@@ -204,7 +204,7 @@ div.link.tab {
   margin-right:0;
   border-right:4px dashed #FFF;
 }
-div.link.empty  {
+div.empty  {
   background: #000 url("img/blockquote.png") no-repeat bottom right !important;
   display:none;
 }

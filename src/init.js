@@ -106,18 +106,25 @@
     blocks = {};
     refToBlock = [];
     blockStyle = [];
-    return blockId = 0;
+    blockId = 0;
+    refMissing = [];
+    urltoSid = {};
+    findOutlater = [];
+    return shortUrls = [];
   };
 
   loadBookmarks = function() {
     var todo;
     todo = 0;
-    return chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
-      var m, morebms, n, o, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+    chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
+      var bfolder, m, morebms, n, o, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+      bfolder = "";
       morebms = bookmarkTreeNodes[0].children[1].children;
       for (_i = 0, _len = morebms.length; _i < _len; _i++) {
         n = morebms[_i];
         if (n.title === "conmarks") {
+          console.log("found");
+          bfolder = n.title;
           _ref = n.children;
           for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
             m = _ref[_j];
@@ -126,13 +133,11 @@
               _ref1 = m.children;
               for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
                 o = _ref1[_k];
-                todo++;
                 bookMarks[o.url] = {
                   context: m.title,
                   id: o.title.split("___", 1)[0],
                   bid: o.id
                 };
-                todo--;
               }
               todo--;
             } else {
@@ -146,11 +151,19 @@
           }
         }
       }
-      if (todo === 0) {
-        loadHistory();
+      if (!bfolder) {
+        return chrome.bookmarks.create({
+          'parentId': "2",
+          'title': 'conmarks'
+        }, function(bookmarkTreeNodes) {
+          return null;
+        });
       }
-      return null;
     });
+    if (todo === 0) {
+      loadHistory();
+    }
+    return null;
   };
 
   loadHistory = function() {
@@ -183,7 +196,7 @@
   };
 
   processVisitItems = function(site, visitItems) {
-    var SiteItem, blockofreferredsid, doit, i, id, noblockreferred, ref, referrer, relevance, shortUrl, testArray, type, vid, visits, _i, _len;
+    var SiteItem, blockofreferredsid, i, id, noblockreferred, ref, referrer, relevance, type, vid, visits, _i, _len;
     id = site.id;
     vid = visitItems[visitItems.length - 1].visitId;
     type = visitItems[visitItems.length - 1].transition;
@@ -222,29 +235,32 @@
       /*----------------------------------------------------------------------------------------
       */
 
-    };
-    doit = true;
-    shortUrl = site.url.split("#")[0];
-    console.log(shortUrl);
-    testArray = $.inArray(shortUrl, shortUrls);
-    if (testArray === -1) {
-      shortUrls.push(shortUrl);
-    } else if (referrer.length === 0 && (site.url.split("#")[1] != null)) {
-      null;
-    }
-    /*
-      if referrer.length is 0 && site.url.split("#")[1]?
-        #shortUrl = site.url.split("#")[0]
+      /*
+        doit = true
         shortUrl = site.url.split("#")[0]
-        testArray = $.inArray shortUrl, shortUrls
+        #console.log shortUrl
+        testArray = $.inArray shortUrl, shortUrls 
         if (testArray is -1)
           shortUrls.push shortUrl
-          console.log site.url
-        else
-          doit = false
-          #console.log site.url
-    */
+        else #if referrer.length is 0 #&& site.url.split("#")[1]?
+          #null
+          #doit = false
+      */
 
+      /*
+        if referrer.length is 0 && site.url.split("#")[1]?
+          #shortUrl = site.url.split("#")[0]
+          shortUrl = site.url.split("#")[0]
+          testArray = $.inArray shortUrl, shortUrls
+          if (testArray is -1)
+            shortUrls.push shortUrl
+            console.log site.url
+          else
+            doit = false
+            #console.log site.url
+      */
+
+    };
     if (referrer.length === 0) {
       refMissing[id] = site.url;
     }
@@ -255,18 +271,16 @@
       blocks[id] = blocks[blockofreferredsid];
     }
     urltoSid[site.url] = id;
-    if (doit) {
-      SiteItem = {
-        sid: site.id,
-        vid: vid,
-        url: site.url,
-        title: site.title,
-        type: type,
-        ref: ref,
-        relevance: relevance
-      };
-      siteHistory[id] = SiteItem;
-    }
+    SiteItem = {
+      sid: site.id,
+      vid: vid,
+      url: site.url,
+      title: site.title,
+      type: type,
+      ref: ref,
+      relevance: relevance
+    };
+    siteHistory[id] = SiteItem;
     processed--;
     if (processed === 0) {
       return processTabConnections();
@@ -341,6 +355,7 @@
       item = visitIdArray[key];
       processIt++;
       if (visitIdArray[item.ref] != null) {
+        item.sidref = visitIdArray[item.ref].sid;
         siteHistory[item.sid].sidref = visitIdArray[item.ref].sid;
       }
       if (item.ref === "0" && referrer[item.vid]) {
@@ -352,7 +367,7 @@
   };
 
   bookmartise = function() {
-    var bookmark, bprocessed, item, key, val, _ref, _results;
+    var bookmark, bprocessed, doit, item, key, shortUrl, testArray, val, _ref, _results;
     bprocessed = 0;
     for (key in siteHistory) {
       val = siteHistory[key];
@@ -371,14 +386,22 @@
       _results = [];
       for (key in _ref) {
         item = _ref[key];
-        _results.push(specialise(item));
+        doit = true;
+        shortUrl = item.url.split("#")[0];
+        testArray = $.inArray(shortUrl, shortUrls);
+        if (testArray === -1) {
+          shortUrls.push(shortUrl);
+          _results.push(specialise(item));
+        } else {
+
+        }
       }
       return _results;
     }
   };
 
   specialise = function(site) {
-    var special, title, url;
+    var shorten, special, title, url;
     url = site.url;
     title = site.title;
     context = void 0;
@@ -404,7 +427,8 @@
       }
     }
     title = title.split(" - ")[0];
-    title = title.length > 20 ? title.substr(0, 12) + "..." : title;
+    shorten = 40;
+    title = title.length > shorten ? title.substr(0, shorten) + "..." : title;
     site.url = url;
     site.title = title;
     site.special = special;
@@ -439,6 +463,7 @@
       panel_div.addClass("rel_twice");
     }
     head_div = $("<div>");
+    content_div = $("<div>");
     head_div.addClass("head");
     favicon = $("<img>");
     favicon.attr({
@@ -469,10 +494,8 @@
     clear = $("<div>");
     clear.addClass("clear");
     head_div.append($(clear));
-    content_div = $("<div>");
     if (blockStyle[blocks[item.sid]] != null) {
       context = blockStyle[blocks[item.sid]];
-      console.log("sdf");
       head_div.addClass(context);
     }
     if (item.bookmark !== void 0) {
@@ -480,11 +503,11 @@
       content_div.addClass(context);
     }
     link = $("<a>");
+    inhalt = $("<p>");
     link.attr({
       href: url
     });
     link.addClass("urladress");
-    inhalt = $("<p>");
     if (filter.query !== "") {
       qtl = filter.query.toLowerCase();
       ttl = title.toLowerCase();
@@ -537,9 +560,6 @@
     info2.text(vid + " > " + ref);
     content_div.addClass("content");
     content_div.append($(link));
-    content_div.append($(info));
-    content_div.append($(info1));
-    content_div.append($(info2));
     panel_div.addClass(special);
     panel_div.append(head_div);
     panel_div.append($(content_div));
