@@ -1,0 +1,159 @@
+/*
+ * Styling für Panels
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+div.panel  {
+  margin:6px 0 0 0;
+  padding: 0px;
+  font-size:16px;
+  width:100px;
+  float:left;
+  border-right: -2px 8px 14px -6px #868686;
+  box-shadow: -3px 6px 14px -6px #868686;
+}
+
+.head {
+	background: #E9E9E9;
+	padding:4px;
+	height:28px;
+}
+
+.content {
+	background: white;
+	height:120px;
+}
+
+
+div.link.refzero  {
+  margin-right:4px;
+}
+div.link.tab {
+  margin-right:0;
+  border-right:4px dotted #FFF;
+}
+
+/* Eingetippte Adresse */
+div.typed  {  
+  	margin-right:8px;
+  	width:120px;
+}
+div.typed .content {
+  	background: #5A5A5A url("img/blockquote.png") no-repeat bottom right;
+}
+div.typed .content a {
+  	color:white;
+}
+
+
+/* Extern aufgerufene Adresse */
+div.auto_toplevel  {  
+  	margin-right:8px;
+  	width:160px;
+}
+div.auto_toplevel .content {
+  	background: #ABCBDA url("img/blockquote.png") no-repeat bottom right;
+}
+div.auto_toplevel .content a {
+  	color:black;
+}
+
+/* Extern aufgerufene Adresse */
+div.keyword  {  
+  	margin-right:8px;
+  	width:160px;
+}
+div.keyword .content {
+  	background: #C0DAAB url("img/blockquote.png") no-repeat bottom right;
+}
+div.keyword .content a {
+  	color:black;
+}
+
+
+/* Google Suche */
+div.google {
+	box-shadow:none;
+	width:120px;
+}
+div.google .head {
+	background:none !important;
+}
+div.google .content {
+	background:none !important;
+}
+div.google .content a {
+	color:#505050;
+	font-weight:bold;
+}
+
+/* Müllpanel*/
+div.empty  {
+  	display:none;
+}
+
+
+
+/* BOOKMARKS */
+div.first {
+  	background: #E3FAA9 !important;
+}
+div.second {
+  	background: #35B6FF !important;
+}
+div.third {
+  	background: #FF41E7 !important;
+}
+div.bookmark {
+}
+div.bookmark a {
+  	color:black !important;
+}
+
+
+/*Seitenaufrufe */
+div.panel.rel_big {		width:400px;}
+div.panel.rel_some { 	width:250px;}
+div.panel.rel_twice {	width:150px;}
+
+/* Query-Importance */
+div.lessimportant  {
+  	background: #5E5E5E url("img/blockquote.png") no-repeat bottom right !important;
+  	width:90px;
+  	opacity: .8;
+  	font-size: 0.8em;
+  	border:0;
+}
+div.unimportant  {
+  	background: #5E5E5E url("img/blockquote.png") no-repeat bottom right !important;
+  	width:80px;
+  	opacity: .6;
+  	font-size: 0.6em;
+  	border:0;
+}
+
+
+
+
+/*
+div.reload  {
+  background: rgb(0, 255, 255) url("img/blockquote.png") no-repeat bottom right !important;
+}
+div.form_submit  {
+  background: yellow !important;
+}
+div.generated  {
+  background: orange url("img/blockquote.png") no-repeat bottom right !important;
+}
+div.auto_bookmark  {
+  background: rgb(103, 140, 255) url("img/blockquote.png") no-repeat bottom right !important;
+}
+
+div.forward_back {
+  	background:#001FFF !important;
+} 
+*/

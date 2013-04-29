@@ -473,7 +473,7 @@ renderItem = (item) ->
     context = blockStyle[blocks[item.sid]]
     head_div.addClass context
   if item.bookmark isnt undefined
-    item.context += " bookmark"
+    context += " bookmark"
     content_div.addClass context
 
 
@@ -492,8 +492,8 @@ renderItem = (item) ->
       panel_div.addClass "unimportant"
           
   if special is "image" then pic = $ "<img>"; pic.attr src:url.substr(url.search /http/); pic.addClass "imgpreview"; inhalt.append pic; link.append $ inhalt
-  if special is "google" then title = title.split(" - Google-Suche")[0]; inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
-  if special is "video"
+  else if special is "google" then title = title.split(" - Google-Suche")[0]; inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
+  else if special is "video"
     videoframe = $ "<iframe>"; videoframe.addClass "youtubevideo";
     videoframe.attr src:url;  content_div.append videoframe
   #else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
@@ -502,21 +502,21 @@ renderItem = (item) ->
   
   # Entwicklungsinformationen
   info = $ "<p>"
-  info.addClass "referrer"
+  info.addClass "devinfo"
   info.text "Block: " + item.block
   info1 = $ "<p>"
-  info1.addClass "referrer"
+  info1.addClass "devinfo"
   info1.text sid + " > " + item.sidref
   info2 = $ "<p>"
-  info2.addClass "referrer"
+  info2.addClass "devinfo"
   info2.text vid + " > " + ref  
   
   
   content_div.addClass "content"  
   content_div.append $ link
-  #content_div.append $ info
-  #content_div.append $ info1
-  #content_div.append $ info2
+  content_div.append $ info
+  content_div.append $ info1
+  content_div.append $ info2
 
   panel_div.addClass special  
   panel_div.append head_div

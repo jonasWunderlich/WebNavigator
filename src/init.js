@@ -505,7 +505,7 @@
       head_div.addClass(context);
     }
     if (item.bookmark !== void 0) {
-      item.context += " bookmark";
+      context += " bookmark";
       content_div.addClass(context);
     }
     link = $("<a>");
@@ -532,16 +532,14 @@
       pic.addClass("imgpreview");
       inhalt.append(pic);
       link.append($(inhalt));
-    }
-    if (special === "google") {
+    } else if (special === "google") {
       title = title.split(" - Google-Suche")[0];
       inhalt.text(title);
       inhalt.attr({
         id: sid
       });
       link.append($(inhalt));
-    }
-    if (special === "video") {
+    } else if (special === "video") {
       videoframe = $("<iframe>");
       videoframe.addClass("youtubevideo");
       videoframe.attr({
@@ -556,16 +554,19 @@
       link.append($(inhalt));
     }
     info = $("<p>");
-    info.addClass("referrer");
+    info.addClass("devinfo");
     info.text("Block: " + item.block);
     info1 = $("<p>");
-    info1.addClass("referrer");
+    info1.addClass("devinfo");
     info1.text(sid + " > " + item.sidref);
     info2 = $("<p>");
-    info2.addClass("referrer");
+    info2.addClass("devinfo");
     info2.text(vid + " > " + ref);
     content_div.addClass("content");
     content_div.append($(link));
+    content_div.append($(info));
+    content_div.append($(info1));
+    content_div.append($(info2));
     panel_div.addClass(special);
     panel_div.append(head_div);
     panel_div.append($(content_div));
