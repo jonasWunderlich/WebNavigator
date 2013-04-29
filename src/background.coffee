@@ -9,7 +9,7 @@ chrome.storage.local.get "connections", (result) ->
 
 
 chrome.tabs.onCreated.addListener (tab) ->
-  #console.log tab
+  console.log tab
   #save NewTab in Array
   tabArray[tab.id] = url:tab.url,index:tab.index,windowId:tab.windowId,openerTabId:tab.openerTabId,highlighted:tab.highlighted,active:tab.active,pinned:tab.pinned, title:tab.title,incognito:tab.incognito
   syncTabs()
