@@ -1,35 +1,38 @@
 #chrome.storage.local.remove("tabs")
-#chrome.storage.local.remove("connections")
+chrome.storage.local.remove("tabConnections")
 lastPage = ""
 #tabArray = []
-connections = []
+tabConnections = {}
 
 # bisherig gespeicherte Verbindungen laden  
-chrome.storage.local.get "connections", (result) ->
-  if result.connections? 
-    connections = result.connections
-    #console.log connections
+chrome.storage.local.get "tabConnections", (result) ->
+  if result.tabConnections? 
+    tabConnections = result.tabConnections
+    #console.log tabConnections
     
 
 # Tab Inhalt geladen? --> 
 chrome.tabs.onUpdated.addListener (tabId, changeInfo, tab) ->
   if changeInfo.status is "complete"
-    console.log tab
-    setTabConnection(tab.url,tab.openerTabId)
+    #console.log tab
+    setTabConnection(tab.url, tab.openerTabId)
     #tabArray[tab.id] = url:tab.url,index:tab.index,windowId:tab.windowId,openerTabId:tab.openerTabId,highlighted:tab.highlighted,active:tab.active,pinned:tab.pinned, title:tab.title,incognito:tab.incognito
     #syncTabs()
     
 
 # Verbindung speichern falls Referenz auf fremdes Tab zeigt
 # & Übersicht nicht involviert ist
-setTabConnection = (orgTabUrl,referrerTabId) ->
-  if typeof(referrerTabId) isnt "undefined"
-    chrome.tabs.get referrerTabId, (tab) ->
-      if tab.url isnt "chrome://newtab/" and orgTabUrl isnt "chrome://newtab/"
-        connections.push url:orgTabUrl, refurl:tab.url, nav:"tab"
-        chrome.storage.local.set "connections":connections
-      lastPage = tab.url
-      
+setTabConnection = (newTabUrl, openerTabId) ->
+  visit = 0
+  if typeof(openerTabId) isnt "undefined"
+    chrome.tabs.get openerTabId, (tab) ->
+      if tab.url isnt "chrome://newtab/" and newTabUrl isnt "chrome://newtab/"          
+        chrome.history.getVisits {url:newTabUrl}, (visitItems) ->
+          visit = visitItems[visitItems.length-1].visitId
+        chrome.history.getVisits {url:tab.url}, (visitItems) ->
+          tabConnections[visit] = visitItems[visitItems.length-1].visitId
+          console.log tabConnections
+          chrome.storage.local.set "tabConnections":tabConnections
 
 
 
