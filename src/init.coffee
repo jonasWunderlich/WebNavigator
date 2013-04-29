@@ -13,7 +13,6 @@ siteHistory = []
 # Missing Tabconnections
 tabconnections = []
 
-siteNetwork = []
 siteContext = []
 visitIdArray = {}
 refArray = []
@@ -29,6 +28,14 @@ refMissing = []
 urltoSid = {}
 findOutlater = []
 shortUrls = []
+
+
+
+
+
+
+
+
 
 $(document).ready ->   
   chrome.storage.local.get "query", (result) ->
@@ -75,6 +82,16 @@ reload = () ->
   shortUrls = []
   loadBookmarks()
 
+
+
+
+
+
+
+
+
+
+
 # 1: Load all Bookmarks and save them in bookmarks[]
 loadBookmarks = () ->
   todo = 0
@@ -113,44 +130,35 @@ loadHistory = () ->
   endtime   = daydate - (microsecondsPerDay * (time-1))
   starttime = daydate - (microsecondsPerDay * (30+time))
   
-  
-  chrome.history.search({text:filter.query, startTime:starttime, endTime:endtime, maxResults:filter.results}
-    (historyItems) ->
-      historyItems.forEach (site) ->
-        console.log site.url
-        processed++
-        chrome.history.getVisits {url:site.url}, (visitItems) -> processVisitItems(site, visitItems)
-      null)
-  null
+  chrome.history.search {text:filter.query, startTime:starttime, endTime:endtime, maxResults:filter.results}, (historyItems) ->
+    historyItems.forEach (site) ->
+    #(historyItems.reverse()).forEach (site) ->
+      processed++
+      chrome.history.getVisits {url:site.url}, (visitItems) -> processVisitItems(site, visitItems)
+    null
   
 processVisitItems = (site, visitItems) ->
   
   id = site.id
   vid = visitItems[visitItems.length-1].visitId
   type = visitItems[visitItems.length-1].transition
-  ref = visitItems[visitItems.length-1].referringVisitId
+  ref = undefined #visitItems[visitItems.length-1].referringVisitId
   relevance = visitItems.length
   
   
-  
-  
-  
-  
-  
-  
-  
-  #console.log vid + " - " + ref
+
   ###----------------------------------------------------------------------------------------###
-  #console.log visitItems
-  visits = []
+  #console.log visitItems.length
   referrer = []
   noblockreferred = true
   blockofreferredsid = 0
   
   for i in visitItems
-
-    visits.push i.visitId
-    if i.referringVisitId isnt "0" then referrer.push i.referringVisitId
+    
+    console.log i.visitId + " - " + i.referringVisitId
+    if i.referringVisitId isnt "0" 
+      referrer.push i.referringVisitId
+      ref = i.referringVisitId
     
     visitIdArray[i.visitId] = sid:id, ref:i.referringVisitId, vid:i.visitId   
 
@@ -164,34 +172,19 @@ processVisitItems = (site, visitItems) ->
     if refToBlock[i.visitId]?
       noblockreferred = false;
       blockofreferredsid = refToBlock[i.visitId]
-    
-  siteNetwork[id] = visits:visits, referrer:referrer
+     
+     
+    ### 
+    if i.referringVisitId is "0"
+      if tabconnections[i.visitId]?
+        console.log i.referringVisitId
+        
+       
+    if arraymitRef[i.visitId]?
+    ###
   ###----------------------------------------------------------------------------------------###
   
-  ###
-  doit = true
-  shortUrl = site.url.split("#")[0]
-  #console.log shortUrl
-  testArray = $.inArray shortUrl, shortUrls 
-  if (testArray is -1)
-    shortUrls.push shortUrl
-  else #if referrer.length is 0 #&& site.url.split("#")[1]?
-    #null
-    #doit = false
-  ###
-  
-  ###
-  if referrer.length is 0 && site.url.split("#")[1]?
-    #shortUrl = site.url.split("#")[0]
-    shortUrl = site.url.split("#")[0]
-    testArray = $.inArray shortUrl, shortUrls
-    if (testArray is -1)
-      shortUrls.push shortUrl
-      console.log site.url
-    else
-      doit = false
-      #console.log site.url
-  ###
+
     
   if referrer.length is 0
     refMissing[id] = site.url
@@ -222,11 +215,12 @@ processVisitItems = (site, visitItems) ->
 processTabConnections = () ->
   
   #console.log tabconnections
-  #console.log siteNetwork
   #console.log visitIdArray
   #console.log refArray
   #console.log siteHistory
   #console.log refMissing
+  
+  
   
   
   ## Interpolate Missing Tablinks
@@ -247,8 +241,7 @@ processTabConnections = () ->
           
           for kk,val of blocks 
             if val is oldblockindex
-              blocks[kk] = newblockindex  
-              
+              blocks[kk] = newblockindex        
     processIt--;  
     
     
@@ -265,30 +258,10 @@ processTabConnections = () ->
         if val is oldblockindex
           blocks[kk] = newblockindex
     
-            
 
-  
-  
-
-  
-  # keine Ahnung was das hier eigentlich nochmal macht
-  referrer = []
-  referrer[666] = "chrome://newtab/"
-  for tc in tabconnections.reverse()
-    id = 0; rid = tc.refurl;
-    for key,item of siteHistory
-      if item.url is tc.refurl 
-        rid = item.vid
-      if item.url is tc.url
-        id = item.vid
-    #referrer[id] = rid
+    
   for key,item of siteHistory
     item.block = blocks[key]
-    #console.log item.vid + " - " + item.ref + " - " + referrer[item.vid] + " - " + item.type
-    if item.ref is "0" and referrer[item.vid]
-      null
-      #item.ref = referrer[item.vid]
-
 
 
   
@@ -297,16 +270,9 @@ processTabConnections = () ->
     if visitIdArray[item.ref]?
       item.sidref = visitIdArray[item.ref].sid
       # für die ausgabe der benachbarten seitenIds
-      siteHistory[item.sid].sidref = visitIdArray[item.ref].sid
-      
-    #scheint nichts wichtiges mehr zu machen
-    if item.ref is "0" and referrer[item.vid]
-      null
-      #item.ref = referrer[item.vid]
+      siteHistory[item.sid].sidref = visitIdArray[item.ref].sid    
     processIt--;
-    
-  
-  #if processIt is 0
+
   bookmartise()
   
 
@@ -324,32 +290,14 @@ bookmartise = () ->
   bprocessed = 0;
   for key,val of siteHistory
     bprocessed++
-
     bookmark = if bookMarks[val.url]?
       bookMarks[val.url].bid
       val.bookmark = true  
       blockStyle[blocks[key]] = bookMarks[val.url].context
 
   if bprocessed = filter.results  
-    siteHistory.sort (a,b) ->
-      return if a.vid >= b.vid then 1 else -1
-
+    siteHistory.sort (a,b) -> return if a.vid >= b.vid then 1 else -1
     for key,item of siteHistory.reverse()
-      
-      ###
-      doit = true
-      shortUrl = item.url.split("#")[0]
-      #console.log shortUrl
-      testArray = $.inArray shortUrl, shortUrls 
-      if (testArray is -1)
-        shortUrls.push shortUrl
-        
-      else #if referrer.length is 0 #&& site.url.split("#")[1]?
-        #null
-        #doit = false
-     
-      ###
-      
       specialise(item)      
       
       
@@ -433,15 +381,11 @@ renderItem = (item) ->
     panel_div.addClass item.nav
   if ref is "0" then panel_div.addClass "refzero"
 
-
   if relevance>20  then panel_div.addClass "rel_big"
   else if relevance>5  then panel_div.addClass "rel_some"
   else if relevance>=2  then panel_div.addClass "rel_twice"
     
-
-  
-  
-  
+    
   ## PANELHEADER
   head_div = $ "<div>"
   content_div = $ "<div>"
@@ -496,10 +440,8 @@ renderItem = (item) ->
   else if special is "video"
     videoframe = $ "<iframe>"; videoframe.addClass "youtubevideo";
     videoframe.attr src:url;  content_div.append videoframe
-  #else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
   else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
 
-  
   # Entwicklungsinformationen
   info = $ "<p>"
   info.addClass "devinfo"
@@ -532,15 +474,6 @@ renderItem = (item) ->
 
 
 
-
-
-
-
-
-
-
-
-
 bookmarkIt = (site, context) ->
   url = site.url
   context = context
@@ -553,7 +486,6 @@ bookmarkIt = (site, context) ->
         createBookmark site, context 
   else
     createBookmark site, context
-
   
   
 createBookmark = (site, context) ->
