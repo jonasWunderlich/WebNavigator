@@ -21,7 +21,7 @@
 
   siteHistory = [];
 
-  tabconnections = [];
+  tabconnections = {};
 
   siteContext = [];
 
@@ -82,9 +82,9 @@
       });
       return reload();
     });
-    chrome.storage.local.get("connections", function(result) {
-      if (result.connections != null) {
-        tabconnections = result.connections;
+    chrome.storage.local.get("tabConnections", function(result) {
+      if (result.tabConnections) {
+        tabconnections = result.tabConnections;
       } else {
         tabconnections = [];
       }
@@ -173,13 +173,14 @@
     microsecondsPerDay = 1000 * 60 * 60 * 24;
     endtime = daydate - (microsecondsPerDay * (time - 1));
     starttime = daydate - (microsecondsPerDay * (30 + time));
+    console.log(tabconnections);
     return chrome.history.search({
       text: filter.query,
       startTime: starttime,
       endTime: endtime,
       maxResults: filter.results
     }, function(historyItems) {
-      historyItems.forEach(function(site) {
+      (historyItems.reverse()).forEach(function(site) {
         processed++;
         return chrome.history.getVisits({
           url: site.url
@@ -196,7 +197,7 @@
     id = site.id;
     vid = visitItems[visitItems.length - 1].visitId;
     type = visitItems[visitItems.length - 1].transition;
-    ref = void 0;
+    ref = 0;
     relevance = visitItems.length;
     /*----------------------------------------------------------------------------------------
     */
@@ -206,31 +207,36 @@
     blockofreferredsid = 0;
     for (_i = 0, _len = visitItems.length; _i < _len; _i++) {
       i = visitItems[_i];
-      console.log(i.visitId + " - " + i.referringVisitId);
-      if (i.referringVisitId !== "0") {
+      if (tabconnections[i.visitId] != null) {
+        ref = tabconnections[i.visitId];
+      } else if (i.referringVisitId !== "0") {
         referrer.push(i.referringVisitId);
         ref = i.referringVisitId;
       }
+      console.log(i.visitId + " - " + ref);
+      if (refToBlock[ref] != null) {
+        noblockreferred = false;
+        blockofreferredsid = refToBlock[ref];
+        console.log(blockofreferredsid);
+      }
+      refToBlock[i.visitId] = id;
       visitIdArray[i.visitId] = {
         sid: id,
-        ref: i.referringVisitId,
+        ref: ref,
         vid: i.visitId
       };
-      if ((refToBlock[i.referringVisitId] != null) && i.referringVisitId !== "0") {
-        findOutlater[refToBlock[i.referringVisitId]] = i.referringVisitId;
-      }
-      refToBlock[i.referringVisitId] = id;
-      if (refToBlock[i.visitId] != null) {
+      /*
+      # die ReferrerId auf die Aktuelle SeitenId verlinken
+      # PROBLEM nur eine ReferrerId möglich
+      if refToBlock[i.referringVisitId]? and i.referringVisitId isnt "0"
+        findOutlater[refToBlock[i.referringVisitId]] = i.referringVisitId
+      
+      refToBlock[i.referringVisitId] = id
+      # ist diese visitId schon als Referrer vorgemerkt ?
+      # wenn ja die Seite (aktuelle VisitId) zum schon bestehenden Block hinzufügen
+      if refToBlock[i.visitId]?
         noblockreferred = false;
-        blockofreferredsid = refToBlock[i.visitId];
-      }
-      /* 
-      if i.referringVisitId is "0"
-        if tabconnections[i.visitId]?
-          console.log i.referringVisitId
-          
-         
-      if arraymitRef[i.visitId]?
+        blockofreferredsid = refToBlock[i.visitId]
       */
 
     }
@@ -240,7 +246,7 @@
     if (referrer.length === 0) {
       refMissing[id] = site.url;
     }
-    if (noblockreferred) {
+    if (noblockreferred || !blocks[blockofreferredsid]) {
       blocks[id] = blockId;
       blockId++;
     } else {

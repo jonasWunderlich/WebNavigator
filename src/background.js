@@ -2,8 +2,6 @@
 (function() {
   var lastPage, setTabConnection, tabConnections;
 
-  chrome.storage.local.remove("tabConnections");
-
   lastPage = "";
 
   tabConnections = {};
@@ -26,19 +24,20 @@
     if (typeof openerTabId !== "undefined") {
       return chrome.tabs.get(openerTabId, function(tab) {
         if (tab.url !== "chrome://newtab/" && newTabUrl !== "chrome://newtab/") {
-          chrome.history.getVisits({
+          return chrome.history.getVisits({
             url: newTabUrl
           }, function(visitItems) {
-            return visit = visitItems[visitItems.length - 1].visitId;
-          });
-          return chrome.history.getVisits({
-            url: tab.url
-          }, function(visitItems) {
-            tabConnections[visit] = visitItems[visitItems.length - 1].visitId;
-            console.log(tabConnections);
-            return chrome.storage.local.set({
-              "tabConnections": tabConnections
-            });
+            if (visitItems.length > 0) {
+              visit = visitItems[visitItems.length - 1].visitId;
+              return chrome.history.getVisits({
+                url: tab.url
+              }, function(visitItems) {
+                tabConnections[visit] = visitItems[visitItems.length - 1].visitId;
+                return chrome.storage.local.set({
+                  "tabConnections": tabConnections
+                });
+              });
+            }
           });
         }
       });

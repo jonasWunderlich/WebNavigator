@@ -1,5 +1,5 @@
 #chrome.storage.local.remove("tabs")
-chrome.storage.local.remove("tabConnections")
+#chrome.storage.local.remove("tabConnections")
 lastPage = ""
 #tabArray = []
 tabConnections = {}
@@ -26,13 +26,15 @@ setTabConnection = (newTabUrl, openerTabId) ->
   visit = 0
   if typeof(openerTabId) isnt "undefined"
     chrome.tabs.get openerTabId, (tab) ->
-      if tab.url isnt "chrome://newtab/" and newTabUrl isnt "chrome://newtab/"          
+      if tab.url isnt "chrome://newtab/" and newTabUrl isnt "chrome://newtab/"
         chrome.history.getVisits {url:newTabUrl}, (visitItems) ->
-          visit = visitItems[visitItems.length-1].visitId
-        chrome.history.getVisits {url:tab.url}, (visitItems) ->
-          tabConnections[visit] = visitItems[visitItems.length-1].visitId
-          console.log tabConnections
-          chrome.storage.local.set "tabConnections":tabConnections
+          #console.log visitItems
+          if visitItems.length > 0
+            visit = visitItems[visitItems.length-1].visitId
+            chrome.history.getVisits {url:tab.url}, (visitItems) ->
+              tabConnections[visit] = visitItems[visitItems.length-1].visitId
+              #console.log tabConnections
+              chrome.storage.local.set "tabConnections":tabConnections
 
 
 

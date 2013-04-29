@@ -11,7 +11,7 @@ bookMarks = {}
 # Working Array
 siteHistory = []
 # Missing Tabconnections
-tabconnections = []
+tabconnections = {}
 
 siteContext = []
 visitIdArray = {}
@@ -58,12 +58,15 @@ $(document).ready ->
     chrome.storage.local.set "query":filter.query
     reload()
  
-  chrome.storage.local.get "connections", (result) ->
-    if result.connections? then tabconnections = result.connections
+  chrome.storage.local.get "tabConnections", (result) ->
+    if result.tabConnections then tabconnections = result.tabConnections
     else tabconnections = []
     loadBookmarks()
     #loadHistory()
   null
+
+
+
 
 reload = () ->
   $('#historycontent').empty()
@@ -130,9 +133,11 @@ loadHistory = () ->
   endtime   = daydate - (microsecondsPerDay * (time-1))
   starttime = daydate - (microsecondsPerDay * (30+time))
   
+  console.log tabconnections
+  
   chrome.history.search {text:filter.query, startTime:starttime, endTime:endtime, maxResults:filter.results}, (historyItems) ->
-    historyItems.forEach (site) ->
-    #(historyItems.reverse()).forEach (site) ->
+    #historyItems.forEach (site) ->
+    (historyItems.reverse()).forEach (site) ->
       processed++
       chrome.history.getVisits {url:site.url}, (visitItems) -> processVisitItems(site, visitItems)
     null
@@ -142,7 +147,7 @@ processVisitItems = (site, visitItems) ->
   id = site.id
   vid = visitItems[visitItems.length-1].visitId
   type = visitItems[visitItems.length-1].transition
-  ref = undefined #visitItems[visitItems.length-1].referringVisitId
+  ref = 0 #visitItems[visitItems.length-1].referringVisitId
   relevance = visitItems.length
   
   
@@ -155,33 +160,45 @@ processVisitItems = (site, visitItems) ->
   
   for i in visitItems
     
-    console.log i.visitId + " - " + i.referringVisitId
-    if i.referringVisitId isnt "0" 
+    
+    if tabconnections[i.visitId]?
+      ref = tabconnections[i.visitId]
+    else if i.referringVisitId isnt "0" 
       referrer.push i.referringVisitId
       ref = i.referringVisitId
-    
-    visitIdArray[i.visitId] = sid:id, ref:i.referringVisitId, vid:i.visitId   
+   
+    console.log i.visitId + " - " + ref
+   
+    #if refToBlock[i.referringVisitId]? and i.referringVisitId isnt "0"
+      #findOutlater[refToBlock[i.referringVisitId]] = i.referringVisitId
+   
+    # ist diese visitId schon als Referrer vorgemerkt ?
+    # wenn ja die Seite (aktuelle VisitId) zum schon bestehenden Block hinzufügen
+    if refToBlock[ref]?
+      noblockreferred = false;
+      blockofreferredsid = refToBlock[ref]
+      console.log blockofreferredsid
+   
+    #if ref isnt undefined
+    refToBlock[i.visitId] = id
+   
+    visitIdArray[i.visitId] = sid:id, ref:ref, vid:i.visitId   
 
+
+    ###
     # die ReferrerId auf die Aktuelle SeitenId verlinken
     # PROBLEM nur eine ReferrerId möglich
     if refToBlock[i.referringVisitId]? and i.referringVisitId isnt "0"
       findOutlater[refToBlock[i.referringVisitId]] = i.referringVisitId
+    
     refToBlock[i.referringVisitId] = id
     # ist diese visitId schon als Referrer vorgemerkt ?
     # wenn ja die Seite (aktuelle VisitId) zum schon bestehenden Block hinzufügen
     if refToBlock[i.visitId]?
       noblockreferred = false;
       blockofreferredsid = refToBlock[i.visitId]
-     
-     
-    ### 
-    if i.referringVisitId is "0"
-      if tabconnections[i.visitId]?
-        console.log i.referringVisitId
-        
-       
-    if arraymitRef[i.visitId]?
     ###
+  
   ###----------------------------------------------------------------------------------------###
   
 
@@ -189,7 +206,7 @@ processVisitItems = (site, visitItems) ->
   if referrer.length is 0
     refMissing[id] = site.url
   
-  if noblockreferred
+  if noblockreferred or !blocks[blockofreferredsid]
     blocks[id] = blockId
     blockId++
   else blocks[id] = blocks[blockofreferredsid]
