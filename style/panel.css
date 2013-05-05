@@ -99,13 +99,16 @@ div.empty  {
 
 
 /* BOOKMARKS */
-div.first {
+.panel .head.c1, 
+.panel .content.bookmark.c1 {
   	background: #E3FAA9 !important;
 }
-div.second {
+.panel .head.c2,
+.panel .content.bookmark.c2 {
   	background: #35B6FF !important;
 }
-div.third {
+.panel .head.c3,
+.panel .content.bookmark.c3 {
   	background: #FF41E7 !important;
 }
 div.bookmark {
@@ -152,7 +155,6 @@ div.generated  {
 div.auto_bookmark  {
   background: rgb(103, 140, 255) url("img/blockquote.png") no-repeat bottom right !important;
 }
-
 div.forward_back {
   	background:#001FFF !important;
 } 

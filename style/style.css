@@ -71,14 +71,32 @@ a {
 
 button {
   	height: 15px;
+  	width:15px;
   	padding: 0 4px;
   	font-size: 10px;
   	float: left;
   	background-color:#FFFFFF;
   	float:right;
-  	border:0;
+  	border:0px solid white;
   	margin:2px;
+  	color:white;
 }
+button.c1 {
+  	background: #B7FF00;
+  	color: #B7FF00;
+}
+button.c2 {
+  	background: #35B6FF;
+  	color: #35B6FF;
+}
+button.c3 {
+  	background: #FF41E7;
+  	color: #FF41E7;
+}
+.buttonactivestate {
+	opacity:.4;
+}
+
 .imgpreview {
   	height:80px;
 }

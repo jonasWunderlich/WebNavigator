@@ -63,6 +63,18 @@ $(document).ready ->
     else tabconnections = []
     loadBookmarks()
     #loadHistory()
+  
+  
+  $("#configbar > button").click () -> 
+    $(this).toggleClass("buttonactivestate")
+    console.log $(this).context.className
+    switch $(this).context.className.split(" ")[0]
+      when "c1" then $("#historycontent .c1").toggle("fast") #console.log "1"
+      when "c2" then $("#historycontent .c2").toggle("fast") #console.log "2"
+      when "c3" then $("#historycontent .c3").toggle("fast") #console.log "3"
+      when "c0" then $("#historycontent .c0").toggle("fast") #console.log "3"
+    
+    
   null
 
 
@@ -335,24 +347,21 @@ specialise = (site) ->
   context = undefined
   special = undefined
 
-  if title is ""
-    special = "empty"
-    title = url
-  else
-    if ((url.substr -4) is ".jpg") or ((url.substr -4) is ".png") or ((url.substr -5) is ".jpeg")
-      special = "image"
-      title = "Abbildung"
-    else if (/youtube/.test(url)) && (/watch/.test(url))
-      title = title.split("- YouTube")[0]
-      if (v_max > 0)
-        url = "https://www.youtube.com/embed/" + url.split("v=")[1].split('=')[0].split('&')[0]
-        special = "video"
-        v_max--
-    else if /Google-Suche/.test(title)
-      special = "google"
-    else if /mail.google.com/.test(url)
-      #title = title.split(" - Gmail")[0]
-      special = "mail"
+
+  if ((url.substr -4) is ".jpg") or ((url.substr -4) is ".png") or ((url.substr -5) is ".jpeg")
+    special = "image"
+    title = "Abbildung"
+  else if (/youtube/.test(url)) && (/watch/.test(url))
+    title = title.split("- YouTube")[0]
+    if (v_max > 0)
+      url = "https://www.youtube.com/embed/" + url.split("v=")[1].split('=')[0].split('&')[0]
+      special = "video"
+      v_max--
+  else if /Google-Suche/.test(title)
+    special = "google"
+  else if /mail.google.com/.test(url)
+    #title = title.split(" - Gmail")[0]
+    special = "mail"
   
   title = title.split(" - ")[0]
   title = title.split(" – ")[0]
@@ -361,7 +370,12 @@ specialise = (site) ->
   site.url = url
   site.title = title
   site.special = special
-  renderItem(site)
+  
+  if title is ""
+    special = "empty"
+    title = url
+  else
+    renderItem(site)
 
 
 
@@ -406,33 +420,40 @@ renderItem = (item) ->
   ## PANELHEADER
   head_div = $ "<div>"
   content_div = $ "<div>"
+  content_div.addClass "content"
   head_div.addClass "head"
   favicon = $ "<img>"
   favicon.attr src:"chrome://favicon/"+url
   favicon.addClass "favicon"
   head_div.append $ favicon
   if special isnt "google" and special isnt "empty"
-    button = $ "<button>"
-    button.text "1"
-    button.click () -> bookmarkIt(item, "first")
+    button1 = $ "<button>"
+    button1.text ""
+    button1.click () -> bookmarkIt(item, "c1")
     button2 = $ "<button>"
-    button2.text "2"
-    button2.click () -> bookmarkIt(item, "second")
+    button2.text ""
+    button2.click () -> bookmarkIt(item, "c2")
     button3 = $ "<button>"
-    button3.text "3"
-    button3.click () -> bookmarkIt(item, "third")
+    button3.text ""
+    button3.click () -> bookmarkIt(item, "c3")
+    button1.addClass "c1"
+    button2.addClass "c2"
+    button3.addClass "c3"    
     head_div.append $ button3
     head_div.append $ button2
-    head_div.append $ button
+    head_div.append $ button1
   clear = $ "<div>"
   clear.addClass "clear"
-  head_div.append $ clear  
+  head_div.append $ clear
 
   
   ## Bookmarks und zugehörige Kontexte auszeichnen
   if blockStyle[blocks[item.sid]]?
     context = blockStyle[blocks[item.sid]]
     head_div.addClass context
+    panel_div.addClass context
+  else 
+    panel_div.addClass "c0"
   if item.bookmark isnt undefined
     context += " bookmark"
     content_div.addClass context
@@ -471,7 +492,7 @@ renderItem = (item) ->
   info2.text vid + " > " + ref  
   
   
-  content_div.addClass "content"  
+  
   content_div.append $ link
   content_div.append $ info
   content_div.append $ info1
@@ -528,4 +549,9 @@ createBookmark = (site, context) ->
         contextfolder = bookmarkTreeNodes
         chrome.bookmarks.create {parentId:contextfolder.id, title:newtitle, url:site.url}, ->
         reload()
+
+
+
+
+
 
