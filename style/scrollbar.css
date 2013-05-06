@@ -1,0 +1,70 @@
+body {
+  scrollbar-face-color: #808080;
+  scrollbar-track-color: #333333; /* #000000;*/
+  scrollbar-arrow-color: #FFFFFF;
+  scrollbar-highlight-color: #808080;
+  scrollbar-shadow-color: #808080;
+  scrollbar-3dlight-color: #E0E0E0;
+  scrollbar-darkshadow-color: #616161;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 10px; }
+ 
+::-webkit-scrollbar:hover {
+  height: 18px; }
+ 
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+  height: 15px;
+  width: 9px;
+  display: block;
+  background: #101211;
+  background-repeat: no-repeat; }
+ 
+::-webkit-scrollbar-button:horizontal:decrement {
+  background-image: url(img/horizontal-decrement-arrow.png);
+  background-position: 4px 3px; }
+ 
+::-webkit-scrollbar-button:horizontal:increment {
+  background-image: url(img/horizontal-increment-arrow.png);
+  background-position: 3px 3px; }
+ 
+::-webkit-scrollbar-button:vertical:decrement {
+  background-image: url(img/vertical-decrement-arrow.png);
+  background-position: 3px 4px; }
+ 
+::-webkit-scrollbar-button:vertical:increment {
+  background-image: url(img/vertical-increment-arrow.png);
+  background-position: 3px 4px; }
+ 
+::-webkit-scrollbar-button:horizontal:decrement:active {
+  background-image: url(img/horizontal-decrement-arrow-active.png); }
+ 
+::-webkit-scrollbar-button:horizontal:increment:active {
+  background-image: url(img/horizontal-increment-arrow-active.png); }
+ 
+::-webkit-scrollbar-button:vertical:decrement:active {
+  background-image: url(img/vertical-decrement-arrow-active.png); }
+ 
+::-webkit-scrollbar-button:vertical:increment:active {
+  background-image: url(img/vertical-increment-arrow-active.png); }
+ 
+::-webkit-scrollbar-track-piece {
+  /*background-color: #151716;*/
+}
+ 
+::-webkit-scrollbar-thumb:vertical {
+  height: 50px;
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, #4d4d4d), color-stop(100%, #333333));
+  border: 1px solid #0d0d0d;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666; }
+ 
+::-webkit-scrollbar-thumb:horizontal {
+  width: 50px;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #4d4d4d), color-stop(100%, #333333));
+  border: 1px solid #1f1f1f;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666; }

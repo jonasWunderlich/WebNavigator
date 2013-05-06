@@ -1,7 +1,7 @@
 html, body {
 	margin:0;
   	padding:0;
-  	background: #C9C9C9;
+  	background-color:#C9C9C9;
 }
 
 body, caption, th, td, input, textarea, select, option, legend, fieldset,
@@ -13,7 +13,10 @@ body, caption, th, td, input, textarea, select, option, legend, fieldset {
 }
 h2 {
   	font-weight:600;
+  	margin-bottom:2px;
+  	margin-top: 10px;
 }
+
 h1 {
   	font-weight:700;  
 }
@@ -22,10 +25,12 @@ p {
   	margin:0;
   	padding:2px;
   	line-height: 16px;
+  	display:inline;
 }
 p.devinfo {
 	font-size:.6em;
 	color:#FFA500;
+	display: block;
 }
 
 a {
@@ -41,7 +46,11 @@ a {
 
 /* Configbar */
 #configbar {
-  	background-color:#181818;
+	position:fixed;
+	top:0;
+	left:0;
+	width:80%;
+  	/*background-color:#181818;*/
   	margin:0;
   	padding:4px;
   	color:white;
@@ -56,16 +65,70 @@ a {
 #mode-slider {
   	width:200px;
 }
-#searchfield {
-  	position:relative;
-  	height:30px;
-  	line-height: 30px;
-}
 
 /* PanelContent */
 #historycontent {
-	margin-left:4px;
+	position:absolute;
+	top:50px;
+	left:0;
+	width:100%;
+	padding-left:4px;
+	width:80%;
+	height: 105%;
+	background: #C9C9C9;
 }
+#sidebar {
+	position:fixed;
+	left:80%;
+	top:0px;
+	width:20%;
+	padding-left:10px;
+	color:black;
+}
+#searchfield {
+  	line-height: 30px;
+  	margin-bottom:22px;
+}
+#bookmarklist h2 {
+	padding: 2px 8px;
+	cursor:pointer;
+	color: #363636;
+	box-shadow: -3px 6px 14px -6px #868686;
+	/*background:#544545;*/
+}
+#bookmarklist h2:hover {
+	color:#A8A8A8;
+}
+#bookmarklist .bookmark {
+	background:#D5D5D5;
+	margin-top: 5px;
+	cursor:pointer;
+}
+#bookmarklist .bookmark:hover {
+	background:#E9E9E9;
+}
+
+
+
+
+input[type=text]
+{
+    background-color: #E4E4E4;
+    border:solid 0px #BFBDBD;
+    color: #3F3F3F;
+    height: 32px;
+    padding-left:12px;
+    box-shadow: 2px 2px 0 #8F8F8F inset;
+}
+input#search {
+	margin-top: 8px;
+	width:100%;
+}
+
+
+
+
+
 
 
 
@@ -74,26 +137,15 @@ button {
   	width:15px;
   	padding: 0 4px;
   	font-size: 10px;
-  	float: left;
   	background-color:#FFFFFF;
   	float:right;
   	border:0px solid white;
   	margin:2px;
   	color:white;
 }
-button.c1 {
-  	background: #B7FF00;
-  	color: #B7FF00;
-}
-button.c2 {
-  	background: #35B6FF;
-  	color: #35B6FF;
-}
-button.c3 {
-  	background: #FF41E7;
-  	color: #FF41E7;
-}
-.buttonactivestate {
+
+
+.contextactivestate {
 	opacity:.4;
 }
 
@@ -106,3 +158,50 @@ button.c3 {
 	width:100px;
 	border: 0;
 }
+
+
+
+
+
+
+
+
+
+
+h2.c0 {
+	background:#ffffff;
+}
+h2.privat,
+button.privat {
+  	background: #B7FF00;
+}
+h2.uni,
+button.uni {
+  	background: #35B6FF;
+}
+h2.arbeit,
+button.arbeit {
+  	background: #FF41E7;
+}
+/* BOOKMARKS */
+.panel .head.privat, 
+.panel .content.bookmark.privat {
+  	background: #E3FAA9 !important;
+}
+.panel .head.uni,
+.panel .content.bookmark.uni {
+  	background: #35B6FF !important;
+}
+.panel .head.arbeit,
+.panel .content.bookmark.arbeit {
+  	background: #FF41E7 !important;
+}
+
+
+
+
+
+
+
+
+

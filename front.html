@@ -4,33 +4,44 @@
     <title>Check it Out</title>
 
     <link rel="stylesheet" type="text/css" href="style/style.css">
+    <link rel="stylesheet" type="text/css" href="style/scrollbar.css">
     <link rel="stylesheet" type="text/css" href="style/panel.css">
     <link rel="stylesheet" type="text/css" href="style/dragdealer.css">
+	<link rel="stylesheet" type="text/css" href="style/colorpicker.css" />
+
 
     <script src='bib/jquery-1.9.1.min.js'></script>
     <script src='bib/dragdealer.js'></script>
-
-    <script src='src/config.js'></script> 
+    <script src='bib/jquery.colorPicker.js'></script>
+    
     <script src='src/bookmarks.js'></script>
+    <script src='src/config.js'></script> 
+
     <script src='src/init.js'></script>
+
   </head>
 
   <body>
   	
-   <div id="configbar">
+   	<div id="configbar">
       <div id="simple-slider" class="conf dragdealer rounded-cornered">
         <div id="handle_amount" class="red-bar handle">drag me</div>
       </div>
-      <div id="searchfield" class="conf">Search: <input id="search" class="rounded-cornered"></div>
-      <button class="c3">3</button>
-      <button class="c2">2</button>
-      <button class="c1">1</button>
-      <button class="c0">0</button>
-      <div class="clear">
-      </div>
+      <div class="clear"></div>
+  	</div>
+    
+    <div id="historycontent">
+    </div>
+    <div class="clear"></div>
+    	
+    <div id="sidebar">
+    	Click here: <input class="color" value="66ff00">
+    	<div id="searchfield"><input type="text" id="search" class="rounded-cornered" placeholder="Suche"></div>
+    	<div id="bookmarklist">
+    	</div>
+      	<div class="clear"></div>
     </div>
     
-    <div id="historycontent"> </div>
     
   </body>
 </html>

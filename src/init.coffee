@@ -7,29 +7,42 @@ hSlider = 0
 processed = 0
 
 # Temporaily Save all Bookmarks
+storedBookmarks = {} # !!!!!!!!!!!!!!!!!!!
+storedContexts = {} # !!!!!!!!!!!!!!!!!!!
 bookMarks = {}
 # Working Array
 siteHistory = []
 # Missing Tabconnections
 tabconnections = {}
 
-siteContext = []
-visitIdArray = {}
-refArray = []
 
-
-
+# Blockvariablen
 blockId = 0
 blocks = {}
-refToBlock = []
+visitId_pointo_SiteId = []
+#visitIdArray = {}
 blockStyle = []
 
-refMissing = []
-urltoSid = {}
-findOutlater = []
-shortUrls = []
 
 
+
+reload = () ->
+  chrome.storage.local.set "storedBookmarks":storedBookmarks
+  $('#historycontent').empty()
+  $('#bookmarklist').empty()
+  siteHistory = []
+  bookMarks = {}
+  tabconnections = {}
+  
+  v_max = 0
+  
+  blockId = 0
+  blocks = {}
+  visitId_pointo_SiteId = []
+  #visitIdArray = []
+  blockStyle = []
+ 
+  loadBookmarks()
 
 
 
@@ -42,9 +55,18 @@ $(document).ready ->
     if result.query?
       filter.query = result.query
       $("#search").val result.query
+      
   chrome.storage.local.get "hSlider", (result) ->
     if result.hSlider?
-      query_slider.x = result.hSlider     
+      query_slider.x = result.hSlider
+      
+  chrome.storage.local.get "storedBookmarks", (result) ->
+    if result.storedBookmarks
+      storedBookmarks = result.storedBookmarks
+  chrome.storage.local.get "storedContexts", (result) ->
+    if result.storedContexts
+      storedContexts = result.storedContexts
+      
   #slider to configure amount of Historydata
   min = 50; max = 500
   query_slider = new Dragdealer('simple-slider',
@@ -64,38 +86,20 @@ $(document).ready ->
     loadBookmarks()
     #loadHistory()
   
-  
-  $("#configbar > button").click () -> 
-    $(this).toggleClass("buttonactivestate")
-    console.log $(this).context.className
-    switch $(this).context.className.split(" ")[0]
-      when "c1" then $("#historycontent .c1").toggle("fast") #console.log "1"
-      when "c2" then $("#historycontent .c2").toggle("fast") #console.log "2"
-      when "c3" then $("#historycontent .c3").toggle("fast") #console.log "3"
-      when "c0" then $("#historycontent .c0").toggle("fast") #console.log "3"
-    
+  $("#bookmarklist").on "click", "h2", ->
+    toggleContext = ".bcontext." + $(this).context.className.split(" ")[0]
+    $(toggleContext).toggleClass("contextactivestate")
+    toggleBookmark = "." + $(this).context.className.split(" ")[0] + " .bookmark"
+    $(toggleBookmark).toggle("fast")
+    contextClass = "#historycontent ." + $(this).context.className.split(" ")[0]
+    $(contextClass).toggle("fast")
     
   null
 
 
 
 
-reload = () ->
-  $('#historycontent').empty()
-  siteHistory = []
-  bookMarks = {}
-  visitIdArray = []
-  siteContext = []
-  v_max = 0
-  blocks = {}
-  refToBlock = []
-  blockStyle = []
-  blockId = 0
-  refMissing = []
-  urltoSid = {}
-  findOutlater = []
-  shortUrls = []
-  loadBookmarks()
+
 
 
 
@@ -109,29 +113,118 @@ reload = () ->
 
 # 1: Load all Bookmarks and save them in bookmarks[]
 loadBookmarks = () ->
-  todo = 0
+  
+  # no context header
+  context_div = $ "<div>"
+  context_div.addClass "bcontext"
+  context_div.addClass "c0"
+  head = $ "<h2>"
+  head.addClass "c0"
+  head.text "kontextlos"
+  context_div.append head
+  $("#bookmarklist").append $ context_div
+  
+  counter = 0
+    
   chrome.bookmarks.getTree (bookmarkTreeNodes) ->
-    #console.log bookmarkTreeNodes
     bfolder = ""
-    morebms = bookmarkTreeNodes[0].children[1].children;
+    morebms = bookmarkTreeNodes[0].children[0].children;
+    
     for n in morebms
       if n.title is "conmarks"
         bfolder = n.title;
         for m in n.children
-          todo++
-          if m.children?
-            for o in m.children 
-              bookMarks[o.url] = context:m.title, id:o.title.split("___", 1)[0], bid:o.id
-            todo--
+          
+          
+          contextColor = "9F0"
+          if !storedContexts[m.title] 
+            storedContexts[m.title] = color:contextColor
           else
-            bookMarks[m.url] = context:undefined, id:m.title.split("___", 1)[0], bid:m.id
-            todo-- 
+            contextColor = storedContexts[m.title].color
+          
+          context_div = $ "<div>"
+          context_div.addClass "bcontext"
+          context_div.addClass m.title
+          head = $ "<h2>"
+          head.addClass m.title
+          head.addClass "bookmark"+counter
+          head.text m.title
+          
+          coloref = "color"+counter
+          
+          cdiv = $ "<div>"
+          clabel = $ "<label>"
+          clabel.attr "for", coloref
+          clabel.text coloref
+          cdiv.append clabel
+          color = $ "<input>"
+          color.attr "id",  coloref
+          color.attr "name", coloref
+          color.attr "type","text"
+          color.attr "value", contextColor
+          cdiv.append color
+          
+          
+          #color.colorPicker()
+          color.colorPicker onColorChange: (id, newValue) ->
+            console.log "ID: " + id + " has been changed to " + newValue
+            storedContexts[m.title].color = newValue
+            chrome.storage.local.set "storedContexts":storedContexts
+          
+          
+          context_div.append cdiv
+          context_div.append head
+          $("#bookmarklist").append $ context_div
+          
+          counter++
+
+          if m.children?
+            for o in m.children
+              
+              bookMarks[o.url] = context:m.title, id:o.title, bid:o.id
+              if !storedBookmarks[o.url] then storedBookmarks[o.url] = bid:o.id, visitTime:dateAdded
+              
+              
+              bm_div = $ "<div>"
+              bm_div.addClass "bookmark" 
+              favicon = $ "<img>"
+              favicon.attr src:"chrome://favicon/"+o.url
+              favicon.addClass "favic"
+              bm_div.append $ favicon                  
+              bmtitle = $ "<p>"
+              bmtitle.text o.title
+              bm_div.append bmtitle
+              context_div.append bm_div
+              
+          else
+            bookMarks[m.url] = context:undefined, id:m.title, bid:m.id
+
     if !bfolder
       chrome.bookmarks.create {'parentId': "2", 'title': 'conmarks'}, (bookmarkTreeNodes) -> null
+  
+  
+    context_div = $ "<div>"
+    context_div.addClass "bcontext"
+    context_div.addClass "c+"
+    head = $ "<h2>"
+    head.addClass "c+"
+    head.text "+"
+    context_div.append head
+    $("#bookmarklist").append $ context_div 
+ 
+ 
+  loadHistory()
 
-  if todo is 0
-    loadHistory()
-  null
+
+
+
+
+
+
+
+
+
+
 
 
 # 2: Load GoogleChrome-Historydata
@@ -145,191 +238,140 @@ loadHistory = () ->
   endtime   = daydate - (microsecondsPerDay * (time-1))
   starttime = daydate - (microsecondsPerDay * (30+time))
   
-  console.log tabconnections
-  
   chrome.history.search {text:filter.query, startTime:starttime, endTime:endtime, maxResults:filter.results}, (historyItems) ->
-    #historyItems.forEach (site) ->
     (historyItems.reverse()).forEach (site) ->
       processed++
       chrome.history.getVisits {url:site.url}, (visitItems) -> processVisitItems(site, visitItems)
     null
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
   
 processVisitItems = (site, visitItems) ->
   
   id = site.id
   vid = visitItems[visitItems.length-1].visitId
   type = visitItems[visitItems.length-1].transition
-  ref = 0 #visitItems[visitItems.length-1].referringVisitId
+  time = visitItems[visitItems.length-1].visitTime
+  ref = visitItems[visitItems.length-1].referringVisitId
   relevance = visitItems.length
   
   
-
+  
   ###----------------------------------------------------------------------------------------###
-  #console.log visitItems.length
+  refs = ""
   referrer = []
   noblockreferred = true
-  blockofreferredsid = 0
-  
+  referringSiteId = ""
   for i in visitItems
     
-    
-    if tabconnections[i.visitId]?
+    # Fehlende Verlinkung bei Tabs ergänzen
+    if tabconnections[i.visitId]? #and ref is "0" 
+      type = "tab"
+      # eigentlich nicht notwendigerweise in der schleife aufrufen
       ref = tabconnections[i.visitId]
-    else if i.referringVisitId isnt "0" 
+      referrer.push tabconnections[i.visitId]
+
+    # ist der Referrer bereits als VisitId eingetragen ?
+    # wenn ja die dem Ref zugehörige SiteId ermitteln
+    if visitId_pointo_SiteId[ref]?
+      noblockreferred = false;
+      referringSiteId = visitId_pointo_SiteId[ref]
+    
+    # Verweis der VisitId auf die Pageid merken
+    visitId_pointo_SiteId[i.visitId] = id
+    #visitIdArray[i.visitId] = sid:id, ref:ref, vid:i.visitId
+    
+    if i.referringVisitId isnt "0"
+      #ref += i.referringVisitId + " "
       referrer.push i.referringVisitId
-      ref = i.referringVisitId
-   
-    console.log i.visitId + " - " + ref
-   
-    #if refToBlock[i.referringVisitId]? and i.referringVisitId isnt "0"
-      #findOutlater[refToBlock[i.referringVisitId]] = i.referringVisitId
-   
-    # ist diese visitId schon als Referrer vorgemerkt ?
-    # wenn ja die Seite (aktuelle VisitId) zum schon bestehenden Block hinzufügen
-    if refToBlock[ref]?
-      noblockreferred = false;
-      blockofreferredsid = refToBlock[ref]
-      console.log blockofreferredsid
-   
-    #if ref isnt undefined
-    refToBlock[i.visitId] = id
-   
-    visitIdArray[i.visitId] = sid:id, ref:ref, vid:i.visitId   
-
-
-    ###
-    # die ReferrerId auf die Aktuelle SeitenId verlinken
-    # PROBLEM nur eine ReferrerId möglich
-    if refToBlock[i.referringVisitId]? and i.referringVisitId isnt "0"
-      findOutlater[refToBlock[i.referringVisitId]] = i.referringVisitId
     
-    refToBlock[i.referringVisitId] = id
-    # ist diese visitId schon als Referrer vorgemerkt ?
-    # wenn ja die Seite (aktuelle VisitId) zum schon bestehenden Block hinzufügen
-    if refToBlock[i.visitId]?
-      noblockreferred = false;
-      blockofreferredsid = refToBlock[i.visitId]
-    ###
-  
-  ###----------------------------------------------------------------------------------------###
-  
+  ###----------------------------------------------------------------------------------------###  
 
-    
-  if referrer.length is 0
-    refMissing[id] = site.url
-  
-  if noblockreferred or !blocks[blockofreferredsid]
+  # falls keine Referenz in der Auswahl ermittelt werden konnte neuen Block hinzufügen
+  if noblockreferred #or !blocks[referringSiteId]
     blocks[id] = blockId
     blockId++
-  else blocks[id] = blocks[blockofreferredsid]
-
-  urltoSid[site.url] = id
+    #console.log site.title
+    #console.log referrer.length
+    if referrer.length > 0 then null
+      #console.log site.title
+      #console.log referrer
+  else blocks[id] = blocks[referringSiteId]
   
-  SiteItem = sid:site.id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:relevance
+  
+  
+  
+  SiteItem = sid:site.id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:relevance, block:blockId, sidref:referringSiteId, time:time
+  
+  bookmark = if bookMarks[site.url]?
+    #SiteItem["bookmark"] = true
+    null
+    #blockStyle[blockId] = bookMarks[site.url].context
+    #SiteItem["bookmark"] = true
+    #console.log blockStyle
+    #console.log blockId
+    #console.log blocks
+  
   siteHistory[id] = SiteItem
   
   processed--;
-  if processed is 0 then processTabConnections()
+  if processed is 0 then bookmartise()
      
 
 
 
 
-
-
-
-
-
-
-processTabConnections = () ->
-  
-  #console.log tabconnections
-  #console.log visitIdArray
-  #console.log refArray
-  #console.log siteHistory
-  #console.log refMissing
-  
-  
-  
-  
-  ## Interpolate Missing Tablinks
-  processIt = 0;
-  for tc in tabconnections
-    processIt++;
-
-    for sid,v_url of refMissing
-      if v_url is tc.url
-        
-        ref_id = urltoSid[tc.refurl]
-        siteHistory[sid].nav = tc.nav
-        
-        if ref_id isnt undefined
-          oldblockindex = blocks[sid]
-          newblockindex = blocks[ref_id]
-          blocks[sid] = newblockindex
-          
-          for kk,val of blocks 
-            if val is oldblockindex
-              blocks[kk] = newblockindex        
-    processIt--;  
-    
-    
-  
-  ## Refresh Blocks of double Reference-links
-  for key,val of findOutlater
-    if val isnt "0"
-      oldblockindex = blocks[key]
-      newblockindex = blocks[refToBlock[val]]         
-      #console.log oldblockindex + " " + newblockindex
-      blocks[key] = newblockindex
-      
-      for kk,val of blocks 
-        if val is oldblockindex
-          blocks[kk] = newblockindex
-    
-
-    
-  for key,item of siteHistory
-    item.block = blocks[key]
-
-
-  
-  for key,item of visitIdArray
-    processIt++;  
-    if visitIdArray[item.ref]?
-      item.sidref = visitIdArray[item.ref].sid
-      # für die ausgabe der benachbarten seitenIds
-      siteHistory[item.sid].sidref = visitIdArray[item.ref].sid    
-    processIt--;
-
-  bookmartise()
-  
-
-
-
-
-
-
-
-
-   
-
 bookmartise = () ->
   
-  bprocessed = 0;
+  console.log storedContexts
+  
+  bmsProcessed = 0;
   for key,val of siteHistory
-    bprocessed++
+    bmsProcessed++
     bookmark = if bookMarks[val.url]?
+      #console.log blocks[key]
       bookMarks[val.url].bid
       val.bookmark = true  
       blockStyle[blocks[key]] = bookMarks[val.url].context
-
-  if bprocessed = filter.results  
+  ###
+      for (key in findOutlater) {
+        val = findOutlater[key];
+        if (val !== "0") {
+          oldblockindex = blocks[key];
+          newblockindex = blocks[visitId_pointo_SiteId[val]];
+          blocks[key] = newblockindex;
+          for (kk in blocks) {
+            val = blocks[kk];
+            if (val === oldblockindex) {
+              blocks[kk] = newblockindex;
+            }
+          }
+        }
+      }
+  ###
+  if bmsProcessed = filter.results  
+    # Nach Aktualität sortieren und daraufhin Rendern
     siteHistory.sort (a,b) -> return if a.vid >= b.vid then 1 else -1
     for key,item of siteHistory.reverse()
-      specialise(item)      
+      specialise(item)
       
       
+
+
+
+
+
+
+
+
 
 
 
@@ -360,7 +402,6 @@ specialise = (site) ->
   else if /Google-Suche/.test(title)
     special = "google"
   else if /mail.google.com/.test(url)
-    #title = title.split(" - Gmail")[0]
     special = "mail"
   
   title = title.split(" - ")[0]
@@ -373,20 +414,9 @@ specialise = (site) ->
   
   if title is ""
     special = "empty"
-    title = url
+    site.title = url
   else
     renderItem(site)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -401,7 +431,6 @@ renderItem = (item) ->
   special = item.special
   ref = item.ref
   relevance = item.relevance
-
 
   # Panel
   # falls refid auf url des vorgängerszeigt ->verlinken
@@ -429,16 +458,16 @@ renderItem = (item) ->
   if special isnt "google" and special isnt "empty"
     button1 = $ "<button>"
     button1.text ""
-    button1.click () -> bookmarkIt(item, "c1")
+    button1.click () -> bookmarkIt(item, "privat")
     button2 = $ "<button>"
     button2.text ""
-    button2.click () -> bookmarkIt(item, "c2")
+    button2.click () -> bookmarkIt(item, "uni")
     button3 = $ "<button>"
     button3.text ""
-    button3.click () -> bookmarkIt(item, "c3")
-    button1.addClass "c1"
-    button2.addClass "c2"
-    button3.addClass "c3"    
+    button3.click () -> bookmarkIt(item, "arbeit")
+    button1.addClass "privat"
+    button2.addClass "uni"
+    button3.addClass "arbeit"    
     head_div.append $ button3
     head_div.append $ button2
     head_div.append $ button1
@@ -456,7 +485,7 @@ renderItem = (item) ->
     panel_div.addClass "c0"
   if item.bookmark isnt undefined
     context += " bookmark"
-    content_div.addClass context
+    content_div.addClass context# + " bookmark"#context
 
 
   ##content
@@ -491,8 +520,6 @@ renderItem = (item) ->
   info2.addClass "devinfo"
   info2.text vid + " > " + ref  
   
-  
-  
   content_div.append $ link
   content_div.append $ info
   content_div.append $ info1
@@ -506,21 +533,18 @@ renderItem = (item) ->
 
 
 
-
-
-
-
-
-
 bookmarkIt = (site, context) ->
+  console.log storedBookmarks[site.url]
   url = site.url
   context = context
   if bookMarks[url]?
     if bookMarks[url].context is context
-      chrome.bookmarks.remove bookMarks[url].bid, ->
+      chrome.bookmarks.remove storedBookmarks[url].bid, ->
+        delete storedBookmarks[site.url]
         reload()
     else if bookMarks[url].context isnt undefined
-      chrome.bookmarks.remove bookMarks[url].bid, ->
+      chrome.bookmarks.remove storedBookmarks[url].bid, ->
+        delete storedBookmarks[site.url]
         createBookmark site, context 
   else
     createBookmark site, context
@@ -528,7 +552,7 @@ bookmarkIt = (site, context) ->
   
 createBookmark = (site, context) ->
   chrome.bookmarks.getTree (bookmarkTreeNodes) ->
-    folder = bookmarkTreeNodes[0].children[1].children;
+    folder = bookmarkTreeNodes[0].children[0].children;
     newtitle = "#{site.vid}___#{site.title}"
     bookmarkfolder = undefined
     contextfolder = undefined
@@ -537,21 +561,19 @@ createBookmark = (site, context) ->
       if sub.title is "conmarks"
         bookmarkfolder = sub
     
-    for m in sub.children
+    for m in bookmarkfolder.children
       if context is m.title
         contextfolder = m
-        chrome.bookmarks.create {parentId:m.id, title:newtitle, url:site.url}, ->
-        reload()
+        chrome.bookmarks.create {parentId:m.id, title:site.title, url:site.url}, (BookmarkTreeNode) ->
+          storedBookmarks[site.url] = bid:BookmarkTreeNode.id, visitTime:site.time
+          reload()
     
     if contextfolder is undefined
-      chrome.bookmarks.create {parentId:sub.id, title:context}, (bookmarkTreeNodes) ->
+      chrome.bookmarks.create {parentId:bookmarkfolder.id, title:context}, (bookmarkTreeNodes) ->
+        storedContexts[context] = color:"#fff".id
         console.log bookmarkTreeNodes
         contextfolder = bookmarkTreeNodes
-        chrome.bookmarks.create {parentId:contextfolder.id, title:newtitle, url:site.url}, ->
-        reload()
-
-
-
-
-
-
+        chrome.bookmarks.create {parentId:contextfolder.id, title:site.title, url:site.url}, ->
+          reload()
+  
+    

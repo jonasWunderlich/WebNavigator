@@ -32,7 +32,7 @@ div.panel  {
 div.link.refzero  {
   margin-right:4px;
 }
-div.link.tab {
+div.tab {
   margin-right:0;
   border-right:4px dotted #FFF;
 }
@@ -98,19 +98,7 @@ div.empty  {
 
 
 
-/* BOOKMARKS */
-.panel .head.c1, 
-.panel .content.bookmark.c1 {
-  	background: #E3FAA9 !important;
-}
-.panel .head.c2,
-.panel .content.bookmark.c2 {
-  	background: #35B6FF !important;
-}
-.panel .head.c3,
-.panel .content.bookmark.c3 {
-  	background: #FF41E7 !important;
-}
+
 div.bookmark {
 }
 div.bookmark a {
