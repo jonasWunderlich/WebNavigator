@@ -50,10 +50,10 @@ a {
 	top:0;
 	left:0;
 	width:80%;
-  	/*background-color:#181818;*/
-  	margin:0;
-  	padding:4px;
-  	color:white;
+	/*background-color:#181818;*/
+	margin:0;
+	padding:4px;
+	color:white;
 }
 .conf{
   	float:left;
@@ -94,15 +94,28 @@ a {
 	margin-top:10px;
 }
 
+.bcontext > div {
+	box-shadow: -3px 1px 13px -6px #4B4B4B;
+} 
+
+
 #bookmarklist h2 {
 	margin:0;
 	display:inline-block;
-	width:70%;
+	/*width:70%;*/
 	padding: 2px 8px;
 	cursor:pointer;
 	color: #363636;
-	box-shadow: -3px 6px 14px -6px #868686;
+	box-shadow: -3px 0px 14px -6px #868686;
 	/*background:#544545;*/
+}
+#bookmarklist .nocontext {
+	background:#ffffff;
+}
+#bookmarklist .newcontext {
+	background: #FFF;
+	opacity: 0.3;
+	color: #000;
 }
 #bookmarklist h2:hover {
 	color:#A8A8A8;
@@ -112,6 +125,7 @@ a {
 	cursor: pointer;
 	font-size: .7em;
 	margin-left: 20px;
+	box-shadow: 0 0 0 #868686;
 
 }
 #bookmarklist .bookmark img {
@@ -119,11 +133,12 @@ a {
 	padding: 0px 0px 0px 0px;
 	float: left;
 }
-#bookmarklist .bookmark p {
+#bookmarklist .bookmark a {
 	background:#D5D5D5;
+	font-size: .9em;
 }
-#bookmarklist .bookmark p:hover {
-	background:#E9E9E9;
+#bookmarklist .bookmark a:hover {
+	background:#E6E6E6;
 }
 
 
@@ -137,7 +152,12 @@ input[type=text]
     color: #3F3F3F;
     height: 32px;
     padding-left:12px;
-    box-shadow: 2px 2px 0 #8F8F8F inset;
+    /*box-shadow: 2px 2px 0 #8F8F8F inset;*/
+    outline:none;
+}
+input[type=text]:focus
+{
+    background-color: #fff;
 }
 input#search {
 	margin-top: 8px;
@@ -187,6 +207,4 @@ button {
 
 
 
-h2.c0 {
-	background:#ffffff;
-}
+
