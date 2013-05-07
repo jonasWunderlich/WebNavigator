@@ -169,10 +169,14 @@
             context_div.append(color);
             color.colorPicker({
               onColorChange: function(id, newValue) {
-                var newhead;
+                var button, content, newhead;
 
                 newhead = ".bcontext." + id + " h2";
                 $(newhead).css("background", newValue);
+                button = "button." + id;
+                content = "div.head." + id + ", div.content." + id + ".bookmark";
+                $(button).css("background", newValue);
+                $(content).css("background", newValue);
                 storedContexts[id].color = newValue;
                 return chrome.storage.local.set({
                   "storedContexts": storedContexts

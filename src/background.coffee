@@ -1,5 +1,3 @@
-#chrome.storage.local.remove("tabs")
-#chrome.storage.local.remove("tabConnections")
 lastPage = ""
 #tabArray = []
 tabConnections = {}

@@ -26,6 +26,13 @@ blockStyle = []
 
 
 
+#chrome.storage.local.remove("tabs")
+#chrome.storage.local.remove("tabConnections")
+#chrome.storage.local.remove("storedBookmarks")
+#chrome.storage.local.remove("storedContexts")
+
+
+
 reload = () ->
   chrome.storage.local.set "storedBookmarks":storedBookmarks
   $('#historycontent').empty()
@@ -160,6 +167,10 @@ loadBookmarks = () ->
           color.colorPicker onColorChange: (id, newValue) ->
             newhead = ".bcontext." + id + " h2"
             $(newhead).css "background", newValue
+            button = "button." + id
+            content = "div.head." + id + ", div.content."+id+".bookmark" 
+            $(button).css "background", newValue
+            $(content).css "background", newValue
             storedContexts[id].color = newValue
             chrome.storage.local.set "storedContexts":storedContexts
           
