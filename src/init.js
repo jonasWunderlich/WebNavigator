@@ -172,7 +172,6 @@
                 var newhead;
 
                 newhead = ".bcontext." + id + " h2";
-                console.log(newhead);
                 $(newhead).css("background", newValue);
                 storedContexts[id].color = newValue;
                 return chrome.storage.local.set({
@@ -187,7 +186,6 @@
               _ref1 = m.children;
               for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
                 o = _ref1[_k];
-                console.log(o);
                 bookMarks[o.url] = {
                   context: m.title,
                   id: o.title,
@@ -336,7 +334,7 @@
   };
 
   bookmartise = function() {
-    var bmsProcessed, bookmark, item, key, val, _ref, _results;
+    var bmsProcessed, bookmark, button, content, count, item, key, v, val, _ref, _results;
 
     console.log(storedContexts);
     bmsProcessed = 0;
@@ -370,13 +368,24 @@
           return -1;
         }
       });
+      count = 0;
       _ref = siteHistory.reverse();
-      _results = [];
       for (key in _ref) {
         item = _ref[key];
-        _results.push(specialise(item));
+        specialise(item);
+        count++;
       }
-      return _results;
+      if (count = filter.results) {
+        _results = [];
+        for (context in storedContexts) {
+          v = storedContexts[context];
+          button = "button." + context;
+          content = "div.head." + context + ", div.content." + context + ".bookmark";
+          $(button).css("background", v.color);
+          _results.push($(content).css("background", v.color));
+        }
+        return _results;
+      }
     }
   };
 

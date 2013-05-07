@@ -141,7 +141,7 @@ loadBookmarks = () ->
             storedContexts[m.title] = color:contextColor
           else
             contextColor = storedContexts[m.title].color
-          
+ 
           context_div = $ "<div>"
           context_div.addClass "bcontext"
           context_div.addClass m.title
@@ -159,7 +159,6 @@ loadBookmarks = () ->
 
           color.colorPicker onColorChange: (id, newValue) ->
             newhead = ".bcontext." + id + " h2"
-            console.log newhead
             $(newhead).css "background", newValue
             storedContexts[id].color = newValue
             chrome.storage.local.set "storedContexts":storedContexts
@@ -171,9 +170,7 @@ loadBookmarks = () ->
 
           if m.children?
             for o in m.children
-              
-              console.log o
-              
+  
               bookMarks[o.url] = context:m.title, id:o.title, bid:o.id
               if !storedBookmarks[o.url] then storedBookmarks[o.url] = bid:o.id, visitTime:o.dateAdded
               
@@ -333,6 +330,7 @@ bookmartise = () ->
       bookMarks[val.url].bid
       val.bookmark = true  
       blockStyle[blocks[key]] = bookMarks[val.url].context
+      
   ###
       for (key in findOutlater) {
         val = findOutlater[key];
@@ -349,12 +347,23 @@ bookmartise = () ->
         }
       }
   ###
+  
   if bmsProcessed = filter.results  
     # Nach Aktualität sortieren und daraufhin Rendern
     siteHistory.sort (a,b) -> return if a.vid >= b.vid then 1 else -1
+    count = 0
     for key,item of siteHistory.reverse()
       specialise(item)
-      
+      count++
+    
+    if count = filter.results
+      for context,v of storedContexts
+        button = "button." + context
+        content = "div.head." + context + ", div.content."+context+".bookmark" 
+        $(button).css "background", v.color
+        $(content).css "background", v.color
+
+
       
 
 

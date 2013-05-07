@@ -186,37 +186,3 @@ button {
 h2.c0 {
 	background:#ffffff;
 }
-h2.privat,
-button.privat {
-  	background: #B7FF00;
-}
-h2.uni,
-button.uni {
-  	background: #35B6FF;
-}
-h2.arbeit,
-button.arbeit {
-  	background: #FF41E7;
-}
-/* BOOKMARKS */
-.panel .head.privat, 
-.panel .content.bookmark.privat {
-  	background: #E3FAA9 !important;
-}
-.panel .head.uni,
-.panel .content.bookmark.uni {
-  	background: #35B6FF !important;
-}
-.panel .head.arbeit,
-.panel .content.bookmark.arbeit {
-  	background: #FF41E7 !important;
-}
-
-
-
-
-
-
-
-
-
