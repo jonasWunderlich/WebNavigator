@@ -87,6 +87,7 @@ $(document).ready ->
     #loadHistory()
   
   $("#bookmarklist").on "click", "h2", ->
+    console.log $(this).context.className
     toggleContext = ".bcontext." + $(this).context.className.split(" ")[0]
     $(toggleContext).toggleClass("contextactivestate")
     toggleBookmark = "." + $(this).context.className.split(" ")[0] + " .bookmark"
@@ -135,7 +136,6 @@ loadBookmarks = () ->
         bfolder = n.title;
         for m in n.children
           
-          
           contextColor = "9F0"
           if !storedContexts[m.title] 
             storedContexts[m.title] = color:contextColor
@@ -146,33 +146,24 @@ loadBookmarks = () ->
           context_div.addClass "bcontext"
           context_div.addClass m.title
           head = $ "<h2>"
+          head.css "background", contextColor
           head.addClass m.title
-          head.addClass "bookmark"+counter
           head.text m.title
           
-          coloref = "color"+counter
-          
-          cdiv = $ "<div>"
-          clabel = $ "<label>"
-          clabel.attr "for", coloref
-          clabel.text coloref
-          cdiv.append clabel
           color = $ "<input>"
-          color.attr "id",  coloref
-          color.attr "name", coloref
+          color.attr "id",  m.title
+          color.attr "name", m.title
           color.attr "type","text"
           color.attr "value", contextColor
-          cdiv.append color
-          
-          
-          #color.colorPicker()
+          context_div.append color
+
           color.colorPicker onColorChange: (id, newValue) ->
-            console.log "ID: " + id + " has been changed to " + newValue
-            storedContexts[m.title].color = newValue
+            newhead = ".bcontext." + id + " h2"
+            console.log newhead
+            $(newhead).css "background", newValue
+            storedContexts[id].color = newValue
             chrome.storage.local.set "storedContexts":storedContexts
           
-          
-          context_div.append cdiv
           context_div.append head
           $("#bookmarklist").append $ context_div
           
@@ -181,9 +172,10 @@ loadBookmarks = () ->
           if m.children?
             for o in m.children
               
-              bookMarks[o.url] = context:m.title, id:o.title, bid:o.id
-              if !storedBookmarks[o.url] then storedBookmarks[o.url] = bid:o.id, visitTime:dateAdded
+              console.log o
               
+              bookMarks[o.url] = context:m.title, id:o.title, bid:o.id
+              if !storedBookmarks[o.url] then storedBookmarks[o.url] = bid:o.id, visitTime:o.dateAdded
               
               bm_div = $ "<div>"
               bm_div.addClass "bookmark" 

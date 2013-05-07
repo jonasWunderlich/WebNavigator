@@ -89,7 +89,20 @@ a {
   	line-height: 30px;
   	margin-bottom:22px;
 }
+
+.bcontext {
+	margin-top:10px;
+}
+div.colorPicker-picker {
+	display:inline;
+	float: left;
+
+}
+
 #bookmarklist h2 {
+	margin:0;
+	display:inline-block;
+	width:70%;
 	padding: 2px 8px;
 	cursor:pointer;
 	color: #363636;
@@ -103,6 +116,8 @@ a {
 	background:#D5D5D5;
 	margin-top: 5px;
 	cursor:pointer;
+	font-size:.7em;
+	margin-left:18px;
 }
 #bookmarklist .bookmark:hover {
 	background:#E9E9E9;

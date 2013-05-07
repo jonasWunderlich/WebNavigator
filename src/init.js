@@ -111,6 +111,7 @@
     $("#bookmarklist").on("click", "h2", function() {
       var contextClass, toggleBookmark, toggleContext;
 
+      console.log($(this).context.className);
       toggleContext = ".bcontext." + $(this).context.className.split(" ")[0];
       $(toggleContext).toggleClass("contextactivestate");
       toggleBookmark = "." + $(this).context.className.split(" ")[0] + " .bookmark";
@@ -134,7 +135,7 @@
     $("#bookmarklist").append($(context_div));
     counter = 0;
     chrome.bookmarks.getTree(function(bookmarkTreeNodes) {
-      var bfolder, bm_div, bmtitle, cdiv, clabel, color, coloref, contextColor, favicon, m, morebms, n, o, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+      var bfolder, bm_div, bmtitle, color, contextColor, favicon, m, morebms, n, o, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
 
       bfolder = "";
       morebms = bookmarkTreeNodes[0].children[0].children;
@@ -157,31 +158,28 @@
             context_div.addClass("bcontext");
             context_div.addClass(m.title);
             head = $("<h2>");
+            head.css("background", contextColor);
             head.addClass(m.title);
-            head.addClass("bookmark" + counter);
             head.text(m.title);
-            coloref = "color" + counter;
-            cdiv = $("<div>");
-            clabel = $("<label>");
-            clabel.attr("for", coloref);
-            clabel.text(coloref);
-            cdiv.append(clabel);
             color = $("<input>");
-            color.attr("id", coloref);
-            color.attr("name", coloref);
+            color.attr("id", m.title);
+            color.attr("name", m.title);
             color.attr("type", "text");
             color.attr("value", contextColor);
-            cdiv.append(color);
+            context_div.append(color);
             color.colorPicker({
               onColorChange: function(id, newValue) {
-                console.log("ID: " + id + " has been changed to " + newValue);
-                storedContexts[m.title].color = newValue;
+                var newhead;
+
+                newhead = ".bcontext." + id + " h2";
+                console.log(newhead);
+                $(newhead).css("background", newValue);
+                storedContexts[id].color = newValue;
                 return chrome.storage.local.set({
                   "storedContexts": storedContexts
                 });
               }
             });
-            context_div.append(cdiv);
             context_div.append(head);
             $("#bookmarklist").append($(context_div));
             counter++;
@@ -189,6 +187,7 @@
               _ref1 = m.children;
               for (_k = 0, _len2 = _ref1.length; _k < _len2; _k++) {
                 o = _ref1[_k];
+                console.log(o);
                 bookMarks[o.url] = {
                   context: m.title,
                   id: o.title,
@@ -197,7 +196,7 @@
                 if (!storedBookmarks[o.url]) {
                   storedBookmarks[o.url] = {
                     bid: o.id,
-                    visitTime: dateAdded
+                    visitTime: o.dateAdded
                   };
                 }
                 bm_div = $("<div>");
