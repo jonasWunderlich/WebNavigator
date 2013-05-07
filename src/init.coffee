@@ -138,6 +138,8 @@ loadBookmarks = () ->
     bfolder = ""
     morebms = bookmarkTreeNodes[0].children[0].children;
     
+    console.log bookmarkTreeNodes
+    
     for n in morebms
       if n.title is "conmarks"
         bfolder = n.title;
@@ -200,7 +202,7 @@ loadBookmarks = () ->
             bookMarks[m.url] = context:undefined, id:m.title, bid:m.id
 
     if !bfolder
-      chrome.bookmarks.create {'parentId': "2", 'title': 'conmarks'}, (bookmarkTreeNodes) -> null
+      chrome.bookmarks.create {'parentId': "1", 'title': 'conmarks'}, (bookmarkTreeNodes) -> null
   
   
     context_div = $ "<div>"
@@ -330,9 +332,7 @@ processVisitItems = (site, visitItems) ->
 
 
 bookmartise = () ->
-  
-  console.log storedContexts
-  
+    
   bmsProcessed = 0;
   for key,val of siteHistory
     bmsProcessed++
@@ -468,21 +468,18 @@ renderItem = (item) ->
   favicon.addClass "favicon"
   head_div.append $ favicon
   if special isnt "google" and special isnt "empty"
-    button1 = $ "<button>"
-    button1.text ""
-    button1.click () -> bookmarkIt(item, "privat")
-    button2 = $ "<button>"
-    button2.text ""
-    button2.click () -> bookmarkIt(item, "uni")
-    button3 = $ "<button>"
-    button3.text ""
-    button3.click () -> bookmarkIt(item, "arbeit")
-    button1.addClass "privat"
-    button2.addClass "uni"
-    button3.addClass "arbeit"    
-    head_div.append $ button3
-    head_div.append $ button2
-    head_div.append $ button1
+    
+    createButton = (item,c) ->
+      button = $ "<button>"
+      #button.css "background", v.color
+      button.addClass c
+      button.text ""
+      button.on "click", -> bookmarkIt(item, c)
+      head_div.append $ button
+    
+    for c,v of storedContexts
+      createButton(item,c)
+       
   clear = $ "<div>"
   clear.addClass "clear"
   head_div.append $ clear
@@ -546,7 +543,7 @@ renderItem = (item) ->
 
 
 bookmarkIt = (site, context) ->
-  console.log storedBookmarks[site.url]
+  console.log context
   url = site.url
   context = context
   if bookMarks[url]?

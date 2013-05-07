@@ -93,11 +93,6 @@ a {
 .bcontext {
 	margin-top:10px;
 }
-div.colorPicker-picker {
-	display:inline;
-	float: left;
-
-}
 
 #bookmarklist h2 {
 	margin:0;
@@ -113,15 +108,24 @@ div.colorPicker-picker {
 	color:#A8A8A8;
 }
 #bookmarklist .bookmark {
-	background:#D5D5D5;
 	margin-top: 5px;
-	cursor:pointer;
-	font-size:.7em;
-	margin-left:18px;
+	cursor: pointer;
+	font-size: .7em;
+	margin-left: 20px;
+
 }
-#bookmarklist .bookmark:hover {
+#bookmarklist .bookmark img {
+	margin: 0px 0px 0px -20px;
+	padding: 0px 0px 0px 0px;
+	float: left;
+}
+#bookmarklist .bookmark p {
+	background:#D5D5D5;
+}
+#bookmarklist .bookmark p:hover {
 	background:#E9E9E9;
 }
+
 
 
 

@@ -1,14 +1,18 @@
 div.colorPicker-picker {
-  height: 16px;
+  height: 33px; /*16px;*/
   width: 16px;
   padding: 0 !important;
-  border: 1px solid #ccc;
-  background: url(arrow.gif) no-repeat top right;
+  /*border: 1px solid #ccc;*/
+  /*background: url(arrow.gif) no-repeat top right;*/
   cursor: pointer;
   line-height: 16px;
   font-size:0.75em;
   font-weight:bold;
   text-align: center;
+  
+  display:inline;
+  float: left;
+
 }
 
 div.colorPicker-palette {

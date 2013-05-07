@@ -139,6 +139,7 @@
 
       bfolder = "";
       morebms = bookmarkTreeNodes[0].children[0].children;
+      console.log(bookmarkTreeNodes);
       for (_i = 0, _len = morebms.length; _i < _len; _i++) {
         n = morebms[_i];
         if (n.title === "conmarks") {
@@ -226,7 +227,7 @@
       }
       if (!bfolder) {
         chrome.bookmarks.create({
-          'parentId': "2",
+          'parentId': "1",
           'title': 'conmarks'
         }, function(bookmarkTreeNodes) {
           return null;
@@ -340,7 +341,6 @@
   bookmartise = function() {
     var bmsProcessed, bookmark, button, content, count, item, key, v, val, _ref, _results;
 
-    console.log(storedContexts);
     bmsProcessed = 0;
     for (key in siteHistory) {
       val = siteHistory[key];
@@ -431,7 +431,7 @@
   };
 
   renderItem = function(item) {
-    var bid, button1, button2, button3, clear, content_div, favicon, head_div, info, info1, info2, inhalt, link, panel_div, pic, qtl, ref, relevance, sid, special, title, ttl, type, url, utl, vid, videoframe;
+    var bid, c, clear, content_div, createButton, favicon, head_div, info, info1, info2, inhalt, link, panel_div, pic, qtl, ref, relevance, sid, special, title, ttl, type, url, utl, v, vid, videoframe;
 
     title = item.title;
     url = item.url;
@@ -469,27 +469,21 @@
     favicon.addClass("favicon");
     head_div.append($(favicon));
     if (special !== "google" && special !== "empty") {
-      button1 = $("<button>");
-      button1.text("");
-      button1.click(function() {
-        return bookmarkIt(item, "privat");
-      });
-      button2 = $("<button>");
-      button2.text("");
-      button2.click(function() {
-        return bookmarkIt(item, "uni");
-      });
-      button3 = $("<button>");
-      button3.text("");
-      button3.click(function() {
-        return bookmarkIt(item, "arbeit");
-      });
-      button1.addClass("privat");
-      button2.addClass("uni");
-      button3.addClass("arbeit");
-      head_div.append($(button3));
-      head_div.append($(button2));
-      head_div.append($(button1));
+      createButton = function(item, c) {
+        var button;
+
+        button = $("<button>");
+        button.addClass(c);
+        button.text("");
+        button.on("click", function() {
+          return bookmarkIt(item, c);
+        });
+        return head_div.append($(button));
+      };
+      for (c in storedContexts) {
+        v = storedContexts[c];
+        createButton(item, c);
+      }
     }
     clear = $("<div>");
     clear.addClass("clear");
@@ -572,7 +566,7 @@
   bookmarkIt = function(site, context) {
     var url;
 
-    console.log(storedBookmarks[site.url]);
+    console.log(context);
     url = site.url;
     context = context;
     if (bookMarks[url] != null) {
