@@ -159,7 +159,6 @@
 
       bfolder = "";
       morebms = bookmarkTreeNodes[0].children[0].children;
-      console.log(bookmarkTreeNodes);
       for (_i = 0, _len = morebms.length; _i < _len; _i++) {
         n = morebms[_i];
         if (n.title === "conmarks") {
@@ -320,7 +319,7 @@
   };
 
   processVisitItems = function(site, visitItems) {
-    var SiteItem, bookmark, i, id, noblockreferred, ref, referrer, referringSiteId, refs, relevance, time, type, vid, _i, _len;
+    var SiteItem, bookmark, i, id, noblockreferred, ref, referrer, referringSiteId, relevance, time, type, vid, _i, _len;
 
     id = site.id;
     vid = visitItems[visitItems.length - 1].visitId;
@@ -328,17 +327,16 @@
     time = visitItems[visitItems.length - 1].visitTime;
     ref = visitItems[visitItems.length - 1].referringVisitId;
     relevance = visitItems.length;
+    console.log(type + " " + id + " " + ref);
     /*----------------------------------------------------------------------------------------
     */
 
-    refs = "";
     referrer = [];
     noblockreferred = true;
     referringSiteId = "";
     for (_i = 0, _len = visitItems.length; _i < _len; _i++) {
       i = visitItems[_i];
       if (tabconnections[i.visitId] != null) {
-        type = "tab";
         ref = tabconnections[i.visitId];
         referrer.push(tabconnections[i.visitId]);
       }
@@ -354,7 +352,7 @@
     /*----------------------------------------------------------------------------------------
     */
 
-    if (noblockreferred) {
+    if (type === "typed" || noblockreferred) {
       blocks[id] = blockId;
       blockId++;
       if (referrer.length > 0) {
@@ -392,26 +390,9 @@
       bmsProcessed++;
       bookmark = bookMarks[val.url] != null ? (bookMarks[val.url].bid, val.bookmark = true, blockStyle[blocks[key]] = bookMarks[val.url].context) : void 0;
     }
-    /*
-        for (key in findOutlater) {
-          val = findOutlater[key];
-          if (val !== "0") {
-            oldblockindex = blocks[key];
-            newblockindex = blocks[visitId_pointo_SiteId[val]];
-            blocks[key] = newblockindex;
-            for (kk in blocks) {
-              val = blocks[kk];
-              if (val === oldblockindex) {
-                blocks[kk] = newblockindex;
-              }
-            }
-          }
-        }
-    */
-
     if (bmsProcessed = filter.results) {
       siteHistory.sort(function(a, b) {
-        if (a.vid >= b.vid) {
+        if (a.vid <= b.vid) {
           return 1;
         } else {
           return -1;
@@ -432,7 +413,6 @@
           content = "div.head." + context + ", div.content." + context + ".bookmark";
           $(button).css("background", v.color);
           $(content).css("background", v.color);
-          console.log(context);
           if (!v.active) {
             _results.push(toggleActiveState(context));
           } else {
@@ -468,7 +448,7 @@
     }
     title = title.split(" - ")[0];
     title = title.split(" – ")[0];
-    shorten = 40;
+    shorten = 20;
     title = title.length > shorten ? title.substr(0, shorten) + "..." : title;
     site.url = url;
     site.title = title;

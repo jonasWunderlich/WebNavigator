@@ -23,17 +23,18 @@
 
     visit = 0;
     if (typeof openerTabId !== "undefined") {
-      return chrome.tabs.get(openerTabId, function(tab) {
-        if (tab.url !== "chrome://newtab/" && newTabUrl !== "chrome://newtab/") {
+      return chrome.tabs.get(openerTabId, function(openertab) {
+        if (openertab.url !== "chrome://newtab/" && newTabUrl !== "chrome://newtab/") {
           return chrome.history.getVisits({
             url: newTabUrl
           }, function(visitItems) {
             if (visitItems.length > 0) {
               visit = visitItems[visitItems.length - 1].visitId;
               return chrome.history.getVisits({
-                url: tab.url
+                url: openertab.url
               }, function(visitItems) {
                 tabConnections[visit] = visitItems[visitItems.length - 1].visitId;
+                console.log(visitItems);
                 return chrome.storage.local.set({
                   "tabConnections": tabConnections
                 });

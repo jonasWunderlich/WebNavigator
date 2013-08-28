@@ -23,15 +23,15 @@ chrome.tabs.onUpdated.addListener (tabId, changeInfo, tab) ->
 setTabConnection = (newTabUrl, openerTabId) ->
   visit = 0
   if typeof(openerTabId) isnt "undefined"
-    chrome.tabs.get openerTabId, (tab) ->
-      if tab.url isnt "chrome://newtab/" and newTabUrl isnt "chrome://newtab/"
+    chrome.tabs.get openerTabId, (openertab) ->
+      if openertab.url isnt "chrome://newtab/" and newTabUrl isnt "chrome://newtab/"
         chrome.history.getVisits {url:newTabUrl}, (visitItems) ->
           #console.log visitItems
           if visitItems.length > 0
             visit = visitItems[visitItems.length-1].visitId
-            chrome.history.getVisits {url:tab.url}, (visitItems) ->
+            chrome.history.getVisits {url:openertab.url}, (visitItems) ->
               tabConnections[visit] = visitItems[visitItems.length-1].visitId
-              #console.log tabConnections
+              #alttabConnections[visit] = visitItems[visitItems.length-1].id
               chrome.storage.local.set "tabConnections":tabConnections
 
 

@@ -6,7 +6,7 @@ context = "empty"
 hSlider = 0
 processed = 0
 
-# Temporaily Save all Bookmarks
+# Temp. Save all Bookmarks
 storedBookmarks = {} # !!!!!!!!!!!!!!!!!!!
 storedContexts = {} # !!!!!!!!!!!!!!!!!!!
 bookMarks = {}
@@ -144,9 +144,7 @@ loadBookmarks = () ->
   chrome.bookmarks.getTree (bookmarkTreeNodes) ->
     bfolder = ""
     morebms = bookmarkTreeNodes[0].children[0].children;
-    
-    console.log bookmarkTreeNodes
-    
+        
     for n in morebms
       if n.title is "conmarks"
         bfolder = n.title;
@@ -288,19 +286,17 @@ processVisitItems = (site, visitItems) ->
   ref = visitItems[visitItems.length-1].referringVisitId
   relevance = visitItems.length
   
-  
+  console.log type + " " + id + " " + ref 
   
   ###----------------------------------------------------------------------------------------###
-  refs = ""
   referrer = []
   noblockreferred = true
   referringSiteId = ""
   for i in visitItems
     
     # Fehlende Verlinkung bei Tabs ergänzen
-    if tabconnections[i.visitId]? #and ref is "0" 
-      type = "tab"
-      # eigentlich nicht notwendigerweise in der schleife aufrufen
+    if tabconnections[i.visitId]?
+      #type = "tab"
       ref = tabconnections[i.visitId]
       referrer.push tabconnections[i.visitId]
 
@@ -321,7 +317,7 @@ processVisitItems = (site, visitItems) ->
   ###----------------------------------------------------------------------------------------###  
 
   # falls keine Referenz in der Auswahl ermittelt werden konnte neuen Block hinzufügen
-  if noblockreferred #or !blocks[referringSiteId]
+  if type is "typed" or noblockreferred #or !blocks[referringSiteId]
     blocks[id] = blockId
     blockId++
     #console.log site.title
@@ -365,26 +361,10 @@ bookmartise = () ->
       val.bookmark = true  
       blockStyle[blocks[key]] = bookMarks[val.url].context
       
-  ###
-      for (key in findOutlater) {
-        val = findOutlater[key];
-        if (val !== "0") {
-          oldblockindex = blocks[key];
-          newblockindex = blocks[visitId_pointo_SiteId[val]];
-          blocks[key] = newblockindex;
-          for (kk in blocks) {
-            val = blocks[kk];
-            if (val === oldblockindex) {
-              blocks[kk] = newblockindex;
-            }
-          }
-        }
-      }
-  ###
   
   if bmsProcessed = filter.results  
     # Nach Aktualität sortieren und daraufhin Rendern
-    siteHistory.sort (a,b) -> return if a.vid >= b.vid then 1 else -1
+    siteHistory.sort (a,b) -> return if a.vid <= b.vid then 1 else -1
     count = 0
     for key,item of siteHistory.reverse()
       specialise(item)
@@ -396,7 +376,6 @@ bookmartise = () ->
         content = "div.head." + context + ", div.content."+context+".bookmark" 
         $(button).css "background", v.color
         $(content).css "background", v.color
-        console.log context
         if(!v.active) then toggleActiveState(context)
 
       
@@ -442,7 +421,7 @@ specialise = (site) ->
   
   title = title.split(" - ")[0]
   title = title.split(" – ")[0]
-  shorten = 40
+  shorten = 20
   title = if (title.length > shorten) then (title.substr(0,shorten) + "...") else title
   site.url = url
   site.title = title
@@ -453,6 +432,14 @@ specialise = (site) ->
     site.title = url
   else
     renderItem(site)
+
+
+
+
+
+
+
+
 
 
 

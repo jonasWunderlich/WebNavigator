@@ -44,6 +44,7 @@ div.typed  {
 }
 div.typed .content {
   	background: #5A5A5A url("img/blockquote.png") no-repeat bottom right;
+    margin-left: 20px;
 }
 div.typed .content a {
   	color:white;
