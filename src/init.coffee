@@ -55,7 +55,6 @@ reload = () ->
 
 
 
-
 $(document).ready ->   
   chrome.storage.local.get "query", (result) ->
     if result.query?

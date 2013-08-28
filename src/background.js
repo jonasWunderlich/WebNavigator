@@ -34,7 +34,6 @@
                 url: openertab.url
               }, function(visitItems) {
                 tabConnections[visit] = visitItems[visitItems.length - 1].visitId;
-                console.log(visitItems);
                 return chrome.storage.local.set({
                   "tabConnections": tabConnections
                 });
