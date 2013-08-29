@@ -1,8 +1,8 @@
 {
   "name": "WebNavigator",
-  "version": "0.4",
+  "version": "0.5",
   "manifest_version": 2,
-  "description": "Shows history, bookmarks and tabs",
+  "description": "This Tool organises the Webhistory taskoriented - Shows , bookmarks and tabs",
   "background" : {
   	"page": "background.html"
   },
@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["bib/jquery-1.9.1.min.js", "src/contentScript.js"]
+      "js": ["src/bib/jquerymin.js"] //, "src/js/z_contentScript.js"]
     }
   ],
   "permissions": ["history", "bookmarks", "tabs", "storage", "webNavigation", "chrome://favicon/", "http://*/*", "https://*/*" ],

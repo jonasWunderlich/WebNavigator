@@ -200,8 +200,17 @@ button {
 
 
 
+div.infotext {
+    width: 100px;
+    display: inline-block;
+    font-size: .8em;
+}
 
-
+div.infotext.title {
+    width: 400px;
+    display: inline-block;
+    font-size: .8em;
+}
 
 
 

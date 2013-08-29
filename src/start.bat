@@ -1,1 +1,0 @@
-coffee -wc init.coffee
