@@ -1,0 +1,32 @@
+.group {
+    display: inline;
+}
+
+
+.group.pz {
+    margin-right:3em;
+}
+
+
+.panel {
+    width: 200px;
+    height: 200px;
+    margin: 2px;
+    display: inline-block;
+}
+
+
+
+
+.group .panel {
+    background: lightgreen;
+}
+
+.group.px .panel {
+    background: blueviolet;
+    margin-right:0em
+}
+
+.group.pz .panel {
+    background: deepskyblue;
+}

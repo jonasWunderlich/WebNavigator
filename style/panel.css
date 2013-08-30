@@ -7,13 +7,48 @@
  */
 
 
+
+.contextgroup {
+  margin: 0 .3em .0em .3em;
+  display:inline-block;
+  /*border: 3px solid #000;*/
+}
+
+
+
+
+
 div.panel  {
-  margin:6px 0 0 0;
-  padding: 0px;
+  /*margin:6px 0 0 0;*/
+  /*padding: 0px;*/
   font-size:16px;
   width:100px;
-  float:left;
+  /*float:left;*/
+  display:inline-table;
   box-shadow: -3px 6px 14px -6px #868686;
+}
+
+.notab,
+.tabbutton {
+    width: 20px;
+    height: 15px;
+}
+
+.tabbutton {
+    background: #BB4E4E;
+    width: 25px;
+    border-radius: 5px 5px 0 0;
+    top: -15px;
+    left: 7px;
+}
+
+.itsatab .head {
+    background: #353535;
+}
+.itsatab .content,
+.itsatab .content a {
+    background: #353535;
+    color: white;
 }
 
 .head {
@@ -24,12 +59,12 @@ div.panel  {
 
 .content {
 	background: white;
-	height:120px;
+	height:104px;
 }
 
 
 div.link.refzero  {
-  margin-right:4px;
+
 }
 div.tab {
   margin-right:0;
@@ -37,13 +72,11 @@ div.tab {
 }
 
 /* Eingetippte Adresse */
-div.typed  {  
-  	margin-right:8px;
+div.typed  {
   	width:120px;
 }
 div.typed .content {
   	background: #5A5A5A url("img/blockquote.png") no-repeat bottom right;
-    margin-left: 20px;
 }
 div.typed .content a {
   	color:white;
