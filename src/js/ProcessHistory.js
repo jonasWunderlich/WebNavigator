@@ -3,10 +3,13 @@
   window.hv = window.hv || {};
 
   window.hv.ProcessHistory = function(filter) {
-    var addContextClasses, blockId, blockStyle, blocks, createBlocks, idToRef, idToVid, logInfo, processHistoryItems, processVisitItems, processed, siteHistory, tabconnections, visitIdAufSID;
+    var block, blockId, blockStyle, blocks, createBlocks, idToRef, idToVid, lastUrl, lastVid, logInfo, processHistoryItems, processVisitItems, processed, siteHistory, tabconnections, visitIdAufSID;
 
     processed = 0;
     tabconnections = [];
+    block = 0;
+    lastVid = 0;
+    lastUrl = "";
     siteHistory = {};
     idToRef = {};
     idToVid = {};
@@ -41,7 +44,7 @@
         endTime: endtime,
         maxResults: filter.results
       }, function(historyItems) {
-        historyItems.forEach(function(site) {
+        return (historyItems.reverse()).forEach(function(site) {
           processed++;
           return chrome.history.getVisits({
             url: site.url
@@ -49,11 +52,10 @@
             return processVisitItems(site, visitItems);
           });
         });
-        return null;
       });
     };
     processVisitItems = function(site, visitItems) {
-      var count, i, id, ref, referrer, siteItem, time, type, vid, vids, _i, _len;
+      var count, i, id, ref, referrer, siteItem, time, type, vid, vids, visual, _i, _len;
 
       referrer = vids = [];
       id = site.id;
@@ -75,6 +77,13 @@
         }
       }
       idToRef[id] = referrer;
+      if (type === "link" && (lastVid === ref || lastUrl === site.url.substr(0, 10))) {
+        null;
+      } else {
+        block++;
+      }
+      lastVid = vid;
+      lastUrl = site.url.substr(0, 10);
       siteItem = {
         sid: id,
         vid: vid,
@@ -84,24 +93,23 @@
         ref: ref,
         relevance: count,
         time: time,
-        block: 0
+        block: block
       };
       siteHistory[id] = siteItem;
+      logInfo([site.title.substr(0, 40), id, vid, ref, type, block]);
       processed--;
       if (processed === 0) {
-        createBlocks();
+        visual = new hv.Visualisation();
+        return visual.visualise();
       }
-      return null;
     };
     createBlocks = function() {
-      var block, i, id, k, s, v, val, vid, _i, _j, _len, _len1, _ref;
+      var i, id, k, s, v, val, _i, _j, _len, _len1, _ref;
 
       block = 1;
-      for (k in siteHistory) {
-        val = siteHistory[k];
+      for (id in siteHistory) {
+        val = siteHistory[id];
         processed++;
-        id = val.sid;
-        vid = val.vid;
         _ref = idToRef[id];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           v = _ref[_i];
@@ -118,57 +126,32 @@
               }
               val.block = siteHistory[visitIdAufSID[v]].block;
             } else {
-
-            }
-            if (val.block === 0) {
-              siteHistory[visitIdAufSID[v]].block = val.block = block;
-              block++;
-            } else {
-              siteHistory[visitIdAufSID[v]].block = val.block;
+              if (val.block === 0) {
+                siteHistory[visitIdAufSID[v]].block = val.block = block;
+                block++;
+              } else {
+                siteHistory[visitIdAufSID[v]].block = val.block;
+              }
             }
           }
           processed--;
         }
+        if (val.block === 0 || idToRef[id].length === 0) {
+          val.block = block;
+          block++;
+        }
         processed--;
       }
-      console.log(block);
       if (processed === 0) {
         for (k in siteHistory) {
           i = siteHistory[k];
-          logInfo([i.url.substr(0, 40), i.sid, i.vid, i.ref, i.type, i.block]);
+          null;
         }
       }
       return null;
     };
-    addContextClasses = function() {
-      /*
-      bmsProcessed = 0;
-      for key,val of siteHistory
-        bmsProcessed++
-        bookmark = if bookMarks[val.url]?
-          #console.log blocks[key]
-          bookMarks[val.url].bid
-          val.bookmark = true
-          blockStyle[blocks[key]] = bookMarks[val.url].context
-      
-      
-      if bmsProcessed = filter.results
-        # Nach Aktualität sortieren und daraufhin Rendern
-        siteHistory.sort (a,b) -> return if a.vid <= b.vid then 1 else -1
-        count = 0
-        for key,item of siteHistory.reverse()
-          specialise(item)
-          count++
-      
-        if count = filter.results
-          for context,v of storedContexts
-            button = "button." + context
-            content = "div.head." + context + ", div.content."+context+".bookmark"
-            $(button).css "background", v.color
-            $(content).css "background", v.color
-            if(!v.active) then toggleActiveState(context)
-      */
-      return null;
+    this.getHistory = function() {
+      return siteHistory;
     };
     logInfo = function(infoarray) {
       var i, info, k, siteinfo;

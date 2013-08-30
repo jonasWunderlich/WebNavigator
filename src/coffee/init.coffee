@@ -1,5 +1,8 @@
 v_max = 0                                           # Maximum of Videos to show
-filter = results:50, time:0, query:"", mode:"none" # Default Filter-Settings
+filter = results:40, time:0, query:"", mode:"none" # Default Filter-Settings
+
+bmarks = 0
+phistory  = 0
 
 $(document).ready ->
 
@@ -22,9 +25,19 @@ $(document).ready ->
 
   bmarks = new hv.Bookmarks()
   phistory = new hv.ProcessHistory(filter)
+
   bmarks.loadBookmarks()
-  phistory.loadHistory()
+
+  try
+    phistory.loadHistory()
+  finally
+    console.log  phistory.getHistory()
+
+
+  #(phistory.loadHistory()) -> console.log phistory.getHistory()
+
   null
+
 
 
 

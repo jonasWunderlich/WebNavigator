@@ -4,6 +4,10 @@ window.hv.ProcessHistory = (filter) ->
   processed = 0
   tabconnections = []
 
+  block = 0
+  lastVid = 0
+  lastUrl = ""
+
   siteHistory = {}
   idToRef = {}
   idToVid = {}
@@ -13,12 +17,16 @@ window.hv.ProcessHistory = (filter) ->
   blocks = {}
   blockStyle = []
 
-  this.loadHistory = () ->
 
+
+
+  this.loadHistory = () ->
     chrome.storage.local.get "tabConnections", (result) ->
       if result.tabConnections then tabconnections = result.tabConnections
       else tabconnections = []
       processHistoryItems()
+
+
 
 
   processHistoryItems = () ->
@@ -31,17 +39,18 @@ window.hv.ProcessHistory = (filter) ->
     endtime   = daydate - (microsecondsPerDay * (time-1))
     starttime = daydate - (microsecondsPerDay * (30+time))
     chrome.history.search {text:filter.query, startTime:starttime, endTime:endtime, maxResults:filter.results}, (historyItems) ->
-      (historyItems).forEach (site) ->
+      (historyItems.reverse()).forEach (site) ->
         processed++
         chrome.history.getVisits {url:site.url}, (visitItems) -> processVisitItems(site, visitItems)
-      null
+
+
+
 
 
   processVisitItems = (site, visitItems) ->
     referrer = vids = []
     id = site.id
     vid = visitItems[visitItems.length-1].visitId
-
     ref = visitItems[visitItems.length-1].referringVisitId
     type = visitItems[visitItems.length-1].transition
     time = visitItems[visitItems.length-1].visitTime
@@ -55,14 +64,31 @@ window.hv.ProcessHistory = (filter) ->
         #vids.push i.visitId
         visitIdAufSID[i.visitId] = id
 
-    idToRef[id] = referrer
-    #idToVid[id] = vids
-    #logInfo([site.title, id, vid, ref, type])
+    idToRef[id] = referrer #idToVid[id] = vids
 
-    siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:0
+    ## Grobe Blockbildung
+    if type is "link" and (lastVid is ref or lastUrl is site.url.substr(0,10)) then null
+    else block++
+    lastVid = vid
+    lastUrl = site.url.substr(0,10)
+
+
+    siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block
     siteHistory[id] = siteItem
-    processed--; if processed is 0 then createBlocks()
-    null
+
+    logInfo([site.title.substr(0,40), id, vid, ref, type, block])
+    processed--; if processed is 0
+      visual = new hv.Visualisation()
+      visual.visualise()
+      #return siteHistory # createBlocks()
+
+
+
+
+
+
+
+
 
 
   createBlocks = () ->
@@ -71,12 +97,12 @@ window.hv.ProcessHistory = (filter) ->
     #console.log idToVid
     block = 1
 
-    for k,val of siteHistory
+    for id,val of siteHistory
       processed++
-      id = val.sid
-      vid = val.vid
+
       for v in idToRef[id]
         processed++
+
         if visitIdAufSID[v]?
           if siteHistory[visitIdAufSID[v]].block != 0 #block wird geerbt
             if val.block != 0
@@ -84,20 +110,23 @@ window.hv.ProcessHistory = (filter) ->
                 if s.block == val.block then s.block = siteHistory[visitIdAufSID[v]].block
             val.block = siteHistory[visitIdAufSID[v]].block
           else
-          if val.block == 0
-            siteHistory[visitIdAufSID[v]].block = val.block = block #gibt nix zu erben man braucht einen neuen
-            block++
-          else
-            siteHistory[visitIdAufSID[v]].block = val.block #gibt nix & man hat schon -> in die andere richtung vererben
+            if val.block == 0
+              siteHistory[visitIdAufSID[v]].block = val.block = block #gibt nix zu erben man braucht einen neuen
+              block++
+            else
+              siteHistory[visitIdAufSID[v]].block = val.block #gibt nix & man hat schon -> in die andere richtung vererben
+
         processed--
+
+      if val.block is 0 or idToRef[id].length is 0
+        val.block = block
+        block++
       processed--
-
-
-    console.log block
 
     if processed is 0
       for k,i of siteHistory
-        logInfo([i.url.substr(0,40), i.sid, i.vid, i.ref, i.type, i.block])
+        #logInfo([i.title.substr(0,40), i.sid, i.vid, i.ref, i.type, i.block])
+        null
 
     null
 
@@ -105,37 +134,8 @@ window.hv.ProcessHistory = (filter) ->
 
 
 
-
-
-  addContextClasses = () ->
-    ###
-    bmsProcessed = 0;
-    for key,val of siteHistory
-      bmsProcessed++
-      bookmark = if bookMarks[val.url]?
-        #console.log blocks[key]
-        bookMarks[val.url].bid
-        val.bookmark = true
-        blockStyle[blocks[key]] = bookMarks[val.url].context
-
-
-    if bmsProcessed = filter.results
-      # Nach Aktualität sortieren und daraufhin Rendern
-      siteHistory.sort (a,b) -> return if a.vid <= b.vid then 1 else -1
-      count = 0
-      for key,item of siteHistory.reverse()
-        specialise(item)
-        count++
-
-      if count = filter.results
-        for context,v of storedContexts
-          button = "button." + context
-          content = "div.head." + context + ", div.content."+context+".bookmark"
-          $(button).css "background", v.color
-          $(content).css "background", v.color
-          if(!v.active) then toggleActiveState(context)
-    ###
-    null
+  this.getHistory = () ->
+    return siteHistory
 
 
 

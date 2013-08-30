@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["src/bib/jquerymin.js"] //, "src/js/z_contentScript.js"]
+      "js": ["src/bib/jquery-2.0.3.min.js"] //, "src/js/z_contentScript.js"]
     }
   ],
   "permissions": ["history", "bookmarks", "tabs", "storage", "webNavigation", "chrome://favicon/", "http://*/*", "https://*/*" ],
