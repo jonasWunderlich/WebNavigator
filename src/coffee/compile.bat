@@ -1,1 +1,1 @@
-coffee -wcj ..\js\code.js init.coffee processHistory.coffee bookmarks.coffee visualisation.coffee
+coffee -wcj ..\js\code.js processHistory.coffee bookmarks.coffee createPanels.coffee init.coffee

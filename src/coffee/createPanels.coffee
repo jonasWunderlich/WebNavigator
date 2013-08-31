@@ -31,10 +31,10 @@ specialise = (site, divToGo) ->
   if title is ""
     special = "empty"
     site.title = url #.substr(0,shorten) + "..."
-    #renderItem(site, divToGo)
+    renderItem(site, divToGo)
   else
     null
-    #renderItem(site, divToGo)
+  renderItem(site, divToGo)
   null
 
 
@@ -172,7 +172,7 @@ createButtons = (head_div, special,item) ->
       button.css "background", v.color
       button.addClass c
       button.text ""
-      button.on "click", -> bookmarkIt(item, c)
+      button.on "click", -> bookmarkIt(item, $(this))
       if !storedContexts[c].active
         button.hide()
       head_div.append $ button

@@ -34,9 +34,11 @@
     if (title === "") {
       special = "empty";
       site.title = url;
+      renderItem(site, divToGo);
     } else {
       null;
     }
+    renderItem(site, divToGo);
     return null;
   };
 
@@ -185,7 +187,7 @@
         button.addClass(c);
         button.text("");
         button.on("click", function() {
-          return bookmarkIt(item, c);
+          return bookmarkIt(item, $(this));
         });
         if (!storedContexts[c].active) {
           button.hide();

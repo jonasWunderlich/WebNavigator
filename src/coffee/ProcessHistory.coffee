@@ -4,21 +4,30 @@ tabconnections = []
 block = 0
 lastVid = 0
 lastUrl = ""
-
 siteHistory = []
-idToRef = {}
-idToVid = {}
-
 visitIdAufSID = []
-blockId = 0
-blocks = {}
 blockSum = 0;
+blocks = {}
 blockStyle = []
+idToRef = {}
+#idToVid = {}
+#blockId = 0
+
 
 
 
 
 loadHistory = (callbackFn) ->
+  block = 0
+  lastVid = 0
+  lastUrl = ""
+  siteHistory = []
+  visitIdAufSID = []
+  blockSum = 0;
+  idToRef = {}
+  blocks = {}
+  blockStyle = []
+
   chrome.storage.local.get "tabConnections", (result) ->
     if result.tabConnections then tabconnections = result.tabConnections
     else tabconnections = []
@@ -31,7 +40,6 @@ loadHistory = (callbackFn) ->
 
 processHistoryItems = (callbackFn) ->
   time = filter.time
-  mode = filter.mode
   processed = 0
   date = new Date()
   daydate = date.getTime()-((((date.getHours()+1) * 60 + date.getMinutes()) * 60 + date.getSeconds() ) * 1000)
@@ -72,18 +80,20 @@ processVisitItems = (site, visitItems, callbackFn) ->
   lastVid = vid
   lastUrl = site.url.substr(0,10)
 
-  context = if bookMarks[site.url]? then bookMarks[site.url].context else ""
+  context = ""
+  bookmark = undefined
+  if bookMarks[site.url]?
+    context = bookMarks[site.url].context
+    bookmark = bookMarks[site.url].bid
+
   tab = if tabArray[site.url]? then tabArray[site.url] else ""
 
-  siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block, context:context, tab:tab
+  siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block, context:context, tab:tab, bid:bookmark
   siteHistory[id] = siteItem
-
-  #console.log site.url
-  #logInfo([site.url.substr(0,40), id, vid, ref, type, block])
+  #logInfo([site.url.substr(0,40), id, vid, ref, type, block, bookmark])
 
   processed--;
   if processed is 0
-    #return siteHistory # createBlocks()
     blockSum = block
     callbackFn()
 
@@ -110,21 +120,9 @@ logInfo = (infoarray)->
     siteinfo.append $ info
   $("#historycontent").append $ siteinfo
 
-
-
-
-
-
-
-
-
-
+###
 createBlocks = () ->
-
-  #console.log idToRef
-  #console.log idToVid
   block = 1
-
   for id,val of siteHistory
     processed++
     for v in idToRef[id]
@@ -146,11 +144,8 @@ createBlocks = () ->
       val.block = block
       block++
     processed--
-
   if processed is 0
     for k,i of siteHistory
-      #logInfo([i.title.substr(0,40), i.sid, i.vid, i.ref, i.type, i.block])
-      null
+      logInfo([i.title.substr(0,40), i.sid, i.vid, i.ref, i.type, i.block])
 
-  null
-null
+###

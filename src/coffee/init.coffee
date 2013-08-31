@@ -23,41 +23,7 @@ $(document).ready ->
     reload()
 
 
-
-  createBlocks = ()->
-    console.log siteHistory
-
-    num = blockSum+1
-    while num -= 1
-      contextGroup = $ "<div>"
-      contextGroup.addClass "contextgroup"
-      contextGroup.addClass "nocontext"
-      contextGroup.addClass "group"+num
-      $("#historycontent").append $ contextGroup
-
-    blockdings = blockSum+1
-    siteHistory.sort (a,b) -> return if a.vid <= b.vid then 1 else -1
-
-    for key,item of siteHistory
-      if item.context != "" and !$(".group"+item.block).hasClass(item.context)
-        $(".group"+item.block).addClass item.context
-        $(".group"+item.block).removeClass "nocontext"
-      if blockdings > item.block
-        blockdings--
-      specialise(item, $(".group"+item.block))
-      if item.context isnt ""
-        $(".group"+item.block+" .panel .head").css "background", storedContexts[item.context].color
-
-
-
-  createHistory = () ->
-    chrome.tabs.query {}, (tabs) ->
-      for i in tabs
-        tabArray[i.url] = i.id
-    loadHistory(createBlocks)
-
-
-  loadBookmarks(createHistory)
+  start()
 
 
   $("#bookmarklist").on "click", "h2", ->
@@ -80,6 +46,55 @@ $(document).ready ->
 
 
 
+createBlocks = ()->
+  num = blockSum+1
+  while num -= 1
+    contextGroup = $ "<div>"
+    contextGroup.addClass "contextgroup"
+    contextGroup.addClass "nocontext"
+    contextGroup.addClass "group"+num
+    $("#historycontent").append $ contextGroup
+
+  blockdings = blockSum+1
+  siteHistory.sort (a,b) -> return if a.vid <= b.vid then 1 else -1
+
+  for key,item of siteHistory
+    $contextgroup = $(".group"+item.block)
+
+    #specialise(item, $(".group1"))
+
+    if item.context != "" and !$contextgroup.hasClass(item.context)
+      $contextgroup.addClass item.context
+      $contextgroup.removeClass "nocontext"
+
+    if blockdings > item.block
+      blockdings--
+
+    specialise(item, $(".group"+item.block))
+
+
+    if item.context isnt ""
+      $(".group"+item.block+" .panel .head").css "background", storedContexts[item.context].color
+
+
+createHistory = () ->
+  chrome.tabs.query {}, (tabs) ->
+    for i in tabs
+      tabArray[i.url] = i.id
+  loadHistory(createBlocks)
+
+start = () ->
+  loadBookmarks(createHistory)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -93,16 +108,8 @@ initSlider = (hSlider) ->
     animationCallback: (x) -> $("#handle_amount").text parseInt((max-min)*x+min)
 
 reload = () ->
-  chrome.storage.local.set "storedBookmarks":storedBookmarks
   $('#historycontent').empty()
   $('#bookmarklist').empty()
   v_max = 0
-  siteHistory = []
-  bookMarks = {}
-  #tabconnections = {}
-  blockId = 0
-  blocks = {}
-  visitId_pointo_SiteId = []
-  #visitIdArray = []
-  blockStyle = []
-#loadBookmarks()
+  start()
+  null

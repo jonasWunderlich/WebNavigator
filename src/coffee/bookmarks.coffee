@@ -4,6 +4,9 @@ bookMarks = {}
 #chrome.storage.local.remove("storedContexts")
 
 loadBookmarks = (callbackFn) ->
+  storedBookmarks = {}
+  storedContexts = {}
+  bookMarks = {}
   chrome.storage.local.get "storedBookmarks", (result) ->
     if result.storedBookmarks
       storedBookmarks = result.storedBookmarks
@@ -153,8 +156,8 @@ toggleActiveState = (context) ->
 
 
 
-bookmarkIt = (site, context) ->
-  console.log context
+bookmarkIt = (site, button) ->
+  context = button.attr "class"
   url = site.url
   if bookMarks[url]?
     if bookMarks[url].context is context

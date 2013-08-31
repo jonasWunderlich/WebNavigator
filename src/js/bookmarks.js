@@ -9,6 +9,9 @@
   bookMarks = {};
 
   loadBookmarks = function(callbackFn) {
+    storedBookmarks = {};
+    storedContexts = {};
+    bookMarks = {};
     chrome.storage.local.get("storedBookmarks", function(result) {
       if (result.storedBookmarks) {
         return storedBookmarks = result.storedBookmarks;
@@ -206,10 +209,10 @@
     return null;
   };
 
-  bookmarkIt = function(site, context) {
-    var url;
+  bookmarkIt = function(site, button) {
+    var context, url;
 
-    console.log(context);
+    context = button.attr("class");
     url = site.url;
     if (bookMarks[url] != null) {
       if (bookMarks[url].context === context) {
