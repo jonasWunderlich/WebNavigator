@@ -9,7 +9,7 @@
 
 
 .contextgroup {
-  margin: 0 .3em .0em .3em;
+  margin: .2em .3em .0em .3em;
   display:inline-block;
   /*border: 3px solid #000;*/
 }
@@ -45,11 +45,23 @@ div.panel  {
 .itsatab .head {
     background: #353535;
 }
-.itsatab .content,
-.itsatab .content a {
+.itsatab .infocontent,
+.itsatab .infocontent a {
     background: #353535;
     color: white;
 }
+
+
+.panel.image,
+.panel.image .head,
+.panel.image .infocontent,
+.panel.image p{
+    background:none;
+}
+
+
+
+
 
 .head {
 	background: #E9E9E9;
@@ -57,7 +69,7 @@ div.panel  {
 	height:28px;
 }
 
-.content {
+.infocontent {
 	background: white;
 	height:104px;
 }
@@ -75,10 +87,10 @@ div.tab {
 div.typed  {
   	width:120px;
 }
-div.typed .content {
+div.typed .infocontent {
   	background: #5A5A5A url("img/blockquote.png") no-repeat bottom right;
 }
-div.typed .content a {
+div.typed .infocontent a {
   	color:white;
 }
 
@@ -88,10 +100,10 @@ div.auto_toplevel  {
   	margin-right:8px;
   	width:160px;
 }
-div.auto_toplevel .content {
+div.auto_toplevel .infocontent {
   	background: #ABCBDA url("img/blockquote.png") no-repeat bottom right;
 }
-div.auto_toplevel .content a {
+div.auto_toplevel .infocontent a {
   	color:black;
 }
 
@@ -100,10 +112,10 @@ div.keyword  {
   	margin-right:8px;
   	width:160px;
 }
-div.keyword .content {
+div.keyword .infocontent {
   	background: #C0DAAB url("img/blockquote.png") no-repeat bottom right;
 }
-div.keyword .content a {
+div.keyword .infocontent a {
   	color:black;
 }
 
@@ -113,13 +125,23 @@ div.google {
 	box-shadow:none;
 	width:120px;
 }
-div.google .head {
-	background:none !important;
-}
 div.google .content {
+	background: #DFDFDF;
+    opacity: .7;
+}
+
+div.google .infocontent .p {
+}
+
+
+
+
+
+
+div.google .infocontent {
 	background:none !important;
 }
-div.google .content a {
+div.google .infocontent a {
 	color:#505050;
 	font-weight:bold;
 }

@@ -8,11 +8,12 @@ body, caption, th, td, input, textarea, select, option, legend, fieldset,
 h1,h2,h3,input, #navigation a {
   	font-family: 'Open Sans', Tahoma, Verdana, sans-serif;
 }
-body, caption, th, td, input, textarea, select, option, legend, fieldset {
-  	font-weight:400;  
+body, caption, th, td, input, textarea, select, option, legend, fieldset, p {
+  	font-weight:300;
 }
 h2 {
-  	font-weight:600;
+    font-weight: 400;
+    font-size: 1.5em;
   	margin-bottom:2px;
   	margin-top: 10px;
 }
@@ -21,11 +22,10 @@ h1 {
   	font-weight:700;  
 }
 p {
-  	font-family: 'Droid Sans', sans-serif;
-  	margin:0;
-  	padding:2px;
-  	line-height: 16px;
-  	display:inline;
+    margin: 0;
+    padding: 5px;
+    line-height: 16px;
+    display: block;
 }
 p.devinfo {
 	font-size:.6em;
@@ -182,7 +182,9 @@ button {
   	margin:2px;
   	color:white;
 }
-
+button:hover {
+    background: white !important;
+}
 
 .contextactivestate {
 	opacity:.4;

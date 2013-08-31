@@ -11,7 +11,7 @@
     special = void 0;
     if (((url.substr(-4)) === ".jpg") || ((url.substr(-4)) === ".png") || ((url.substr(-5)) === ".jpeg")) {
       special = "image";
-      title = "Abbildung";
+      title = "@";
     } else if ((/youtube/.test(url)) && (/watch/.test(url))) {
       title = title.split("- YouTube")[0];
       if (v_max > 0) {
@@ -41,7 +41,7 @@
   };
 
   renderItem = function(item, divToGo) {
-    var bid, content_div, context, favicon, head_div, inhalt, link, notabhead, panel_div, pic, qtl, ref, relevance, sid, special, tabhead, title, ttl, type, url, utl, vid, videoframe;
+    var bid, content_div, context, favicon, head_div, info_div, inhalt, link, notabhead, panel_div, qtl, ref, relevance, sid, special, tabhead, title, ttl, type, url, utl, vid, videoframe;
 
     title = item.title;
     url = item.url;
@@ -69,18 +69,30 @@
       panel_div.addClass("rel_twice");
     }
     panel_div.addClass(special);
-    head_div = $("<div>");
     content_div = $("<div>");
+    head_div = $("<div>");
+    info_div = $("<div>");
     content_div.addClass("content");
+    info_div.addClass("infocontent");
     head_div.addClass("head");
     if (item.tab !== "") {
       tabhead = $("<div>");
       tabhead.addClass("tabbutton");
+      panel_div.addClass("itsatab");
       tabhead.attr("tabid", item.tab);
       tabhead.on("click", function() {
-        return chrome.tabs.remove(item.tab);
+        chrome.tabs.remove(item.tab);
+        tabhead.removeClass("tabbutton");
+        return panel_div.removeClass("itsatab");
       });
-      panel_div.addClass("itsatab");
+      info_div.click(function() {
+        return chrome.tabs.get(item.tab, function(geTab) {
+          return chrome.tabs.highlight({
+            windowId: geTab.windowId,
+            tabs: geTab.index
+          }, function() {});
+        });
+      });
       panel_div.append($(tabhead));
     } else {
       notabhead = $("<div>");
@@ -104,7 +116,7 @@
     }
     if (item.bookmark !== void 0) {
       context += " bookmark";
-      content_div.addClass(context + " bookmark");
+      info_div.addClass(context + " bookmark");
     }
     link = $("<a>");
     inhalt = $("<p>");
@@ -123,14 +135,9 @@
       }
     }
     if (special === "image") {
-      pic = $("<img>");
-      pic.attr({
-        src: url.substr(url.search(/http/))
-      });
-      pic.addClass("imgpreview");
-      inhalt.append(pic);
-      link.append($(inhalt));
-    } else if (special === "google") {
+      content_div.css("background", "url(" + url.substr(url.search(/http/)) + ") 50% 20% ");
+    }
+    if (special === "google") {
       title = title.split(" - Google-Suche")[0];
       inhalt.text(title);
       inhalt.attr({
@@ -143,7 +150,7 @@
       videoframe.attr({
         src: url
       });
-      content_div.append(videoframe);
+      info_div.append(videoframe);
     } else {
       inhalt.text(title);
       inhalt.attr({
@@ -151,8 +158,9 @@
       });
       link.append($(inhalt));
     }
-    content_div.append($(link));
-    panel_div.append(head_div);
+    info_div.append($(link));
+    content_div.append(head_div);
+    content_div.append(info_div);
     panel_div.append($(content_div));
     return divToGo.append($(panel_div));
   };

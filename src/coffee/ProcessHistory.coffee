@@ -78,7 +78,8 @@ processVisitItems = (site, visitItems, callbackFn) ->
   siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block, context:context, tab:tab
   siteHistory[id] = siteItem
 
-  #logInfo([site.title.substr(0,40), id, vid, ref, type, block])
+  #console.log site.url
+  #logInfo([site.url.substr(0,40), id, vid, ref, type, block])
 
   processed--;
   if processed is 0

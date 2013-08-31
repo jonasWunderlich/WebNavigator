@@ -8,7 +8,7 @@ specialise = (site, divToGo) ->
 
   if ((url.substr -4) is ".jpg") or ((url.substr -4) is ".png") or ((url.substr -5) is ".jpeg")
     special = "image"
-    title = "Abbildung"
+    title = "@"
   else if (/youtube/.test(url)) && (/watch/.test(url))
     title = title.split("- YouTube")[0]
     if (v_max > 0)
@@ -64,19 +64,28 @@ renderItem = (item, divToGo) ->
 
 
   ## PANELHEADER
-  head_div = $ "<div>"
   content_div = $ "<div>"
+  head_div = $ "<div>"
+  info_div = $ "<div>"
   content_div.addClass "content"
+  info_div.addClass "infocontent"
+
   head_div.addClass "head"
 
   if item.tab isnt ""
     tabhead = $ "<div>"
     tabhead.addClass "tabbutton"
+    panel_div.addClass "itsatab"
     tabhead.attr "tabid", item.tab
     tabhead.on "click", ->
       #console.log $(this).attr "tabid" # $(this)
       chrome.tabs.remove item.tab
-    panel_div.addClass "itsatab"
+      tabhead.removeClass "tabbutton"
+      panel_div.removeClass "itsatab"
+    #highlightInfo = 0, item.tab
+    info_div.click ->
+      chrome.tabs.get item.tab, (geTab) ->
+        chrome.tabs.highlight {windowId:geTab.windowId, tabs:geTab.index}, ->
     panel_div.append $ tabhead
   else
     notabhead = $ "<div>"
@@ -103,7 +112,7 @@ renderItem = (item, divToGo) ->
     panel_div.addClass "nocontext"
   if item.bookmark isnt undefined
     context += " bookmark"
-    content_div.addClass context + " bookmark"#context
+    info_div.addClass context + " bookmark"#context
 
 
   ##content
@@ -120,18 +129,23 @@ renderItem = (item, divToGo) ->
     else if ttl.indexOf(qtl) < 0 && utl.indexOf(qtl) < 0
       panel_div.addClass "unimportant"
 
-  if special is "image" then pic = $ "<img>"; pic.attr src:url.substr(url.search /http/); pic.addClass "imgpreview"; inhalt.append pic; link.append $ inhalt
-  else if special is "google" then title = title.split(" - Google-Suche")[0]; inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
+
+  if special is "image"
+    content_div.css "background", "url("+ url.substr(url.search /http/) + ") 50% 20% "
+
+
+  if special is "google" then title = title.split(" - Google-Suche")[0]; inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
   else if special is "video"
     videoframe = $ "<iframe>"; videoframe.addClass "youtubevideo";
-    videoframe.attr src:url;  content_div.append videoframe
+    videoframe.attr src:url;  info_div.append videoframe
   else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
 
-  content_div.append $ link
+  info_div.append $ link
   # Entwicklungsinformationen
-  #addDevInfo(content_div, ["Block "+item.block, sid+" > "+item.sidref, vid+" > "+ref])
+  #addDevInfo(info_div, ["Block "+item.block, sid+" > "+item.sidref, vid+" > "+ref])
 
-  panel_div.append head_div
+  content_div.append head_div
+  content_div.append info_div
   panel_div.append $ content_div
   #$("#historycontent").append $ panel_div
   divToGo.append $ panel_div
