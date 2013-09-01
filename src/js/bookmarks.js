@@ -78,7 +78,7 @@
             context_div.append(head);
             color.colorPicker({
               onColorChange: function(id, newValue) {
-                var button, content, newhead, newhead2;
+                var $bcontent, $pheads, button, content, newhead, newhead2;
 
                 newhead = ".bcontext." + id + " h2";
                 newhead2 = ".bcontext ." + id;
@@ -88,6 +88,10 @@
                 content = "div.head." + id + ", div.content." + id + ".bookmark";
                 $(button).css("background", newValue);
                 $(content).css("background", newValue);
+                $pheads = ".contextgroup." + id + " div.head";
+                $($pheads).css("background", newValue);
+                $bcontent = ".contextgroup." + id + " div.infocontent.bookmark";
+                $($bcontent).css("background", newValue);
                 storedContexts[id].color = newValue;
                 chrome.storage.local.set({
                   "storedContexts": storedContexts

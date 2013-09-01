@@ -30,7 +30,7 @@ specialise = (site, divToGo) ->
 
   if title is ""
     special = "empty"
-    site.title = url #.substr(0,shorten) + "..."
+    site.title = url.substr(0,shorten) + "..."
     renderItem(site, divToGo)
   else
     null
@@ -108,6 +108,7 @@ renderItem = (item, divToGo) ->
   ## Bookmarks und zugehörige Kontexte auszeichnen
   if item.bid isnt undefined
     info_div.attr "bookmark", item.bid
+    info_div.addClass "bookmark"
     info_div.css "background", storedContexts[item.context].color
 
 

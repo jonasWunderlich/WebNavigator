@@ -47,6 +47,7 @@
   processHistoryItems = function(callbackFn) {
     var date, daydate, endtime, microsecondsPerDay, starttime, time;
 
+    console.log(filter);
     time = filter.time;
     processed = 0;
     date = new Date();
@@ -60,6 +61,7 @@
       endTime: endtime,
       maxResults: filter.results
     }, function(historyItems) {
+      console.log(historyItems.length);
       return (historyItems.reverse()).forEach(function(site) {
         processed++;
         return chrome.history.getVisits({

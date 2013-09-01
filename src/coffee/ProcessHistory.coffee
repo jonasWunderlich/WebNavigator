@@ -39,6 +39,7 @@ loadHistory = (callbackFn) ->
 
 
 processHistoryItems = (callbackFn) ->
+  console.log filter
   time = filter.time
   processed = 0
   date = new Date()
@@ -47,6 +48,7 @@ processHistoryItems = (callbackFn) ->
   endtime   = daydate - (microsecondsPerDay * (time-1))
   starttime = daydate - (microsecondsPerDay * (30+time))
   chrome.history.search {text:filter.query, startTime:starttime, endTime:endtime, maxResults:filter.results}, (historyItems) ->
+    console.log historyItems.length
     (historyItems.reverse()).forEach (site) ->
       processed++
       chrome.history.getVisits {url:site.url}, (visitItems) -> processVisitItems(site, visitItems, callbackFn)

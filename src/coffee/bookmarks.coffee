@@ -72,6 +72,13 @@ renderTaskMenu = (callbackFn) ->
             content = "div.head." + id + ", div.content."+id+".bookmark"
             $(button).css "background", newValue
             $(content).css "background", newValue
+
+            $pheads = ".contextgroup."+id+" div.head"
+            $($pheads).css "background", newValue
+
+            $bcontent = ".contextgroup."+id+" div.infocontent.bookmark"
+            $($bcontent).css "background", newValue
+
             storedContexts[id].color = newValue
             chrome.storage.local.set "storedContexts":storedContexts
             null

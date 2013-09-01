@@ -33,7 +33,7 @@
     site.special = special;
     if (title === "") {
       special = "empty";
-      site.title = url;
+      site.title = url.substr(0, shorten) + "...";
       renderItem(site, divToGo);
     } else {
       null;
@@ -111,6 +111,7 @@
     addClearDiv(head_div);
     if (item.bid !== void 0) {
       info_div.attr("bookmark", item.bid);
+      info_div.addClass("bookmark");
       info_div.css("background", storedContexts[item.context].color);
     }
     link = $("<a>");
