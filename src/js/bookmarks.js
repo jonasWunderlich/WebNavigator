@@ -204,7 +204,7 @@
     $(toggleContext).toggleClass("contextactivestate");
     toggleBookmark = "." + context + " .bookmark";
     $(toggleBookmark).toggle("fast");
-    contextClass = ".contextgroup." + context;
+    contextClass = "#historycontent ." + context;
     $(contextClass).toggle("fast");
     return null;
   };

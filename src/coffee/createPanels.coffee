@@ -106,16 +106,9 @@ renderItem = (item, divToGo) ->
 
 
   ## Bookmarks und zugehörige Kontexte auszeichnen
-  #console.log item.bookmark
-  if blockStyle[blocks[item.sid]]?
-    context = blockStyle[blocks[item.sid]]
-    head_div.addClass context
-    panel_div.addClass context
-  else
-    panel_div.addClass "nocontext"
-  if item.bookmark isnt undefined
-    context += " bookmark"
-    info_div.addClass context + " bookmark"#context
+  if item.bid isnt undefined
+    info_div.attr "bookmark", item.bid
+    info_div.css "background", storedContexts[item.context].color
 
 
   ##content

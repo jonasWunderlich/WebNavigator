@@ -28,7 +28,6 @@ $(document).ready ->
 
   $("#bookmarklist").on "click", "h2", ->
     context = $(this).context.className.split(" ")[0]
-    console.log context
     toggleActiveState(context)
     if context isnt "nocontext"
       if storedContexts[context].active then storedContexts[context].active = false
@@ -60,17 +59,15 @@ createBlocks = ()->
 
   for key,item of siteHistory
     $contextgroup = $(".group"+item.block)
-
-    #specialise(item, $(".group1"))
-
     if item.context != "" and !$contextgroup.hasClass(item.context)
       $contextgroup.addClass item.context
       $contextgroup.removeClass "nocontext"
+      if !storedContexts[item.context].active then $contextgroup.hide()
 
     if blockdings > item.block
       blockdings--
 
-    specialise(item, $(".group"+item.block))
+    specialise(item, $contextgroup)
 
 
     if item.context isnt ""

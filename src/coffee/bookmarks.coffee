@@ -145,8 +145,8 @@ toggleActiveState = (context) ->
   $(toggleContext).toggleClass("contextactivestate")
   toggleBookmark = "." + context + " .bookmark"
   $(toggleBookmark).toggle("fast")
-  #contextClass = "#historycontent ." + context
-  contextClass = ".contextgroup."+context
+  contextClass = "#historycontent ." + context
+  #contextClass = ".contextgroup."+context
   $(contextClass).toggle("fast")
   null
 

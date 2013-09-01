@@ -379,7 +379,7 @@
     $(toggleContext).toggleClass("contextactivestate");
     toggleBookmark = "." + context + " .bookmark";
     $(toggleBookmark).toggle("fast");
-    contextClass = ".contextgroup." + context;
+    contextClass = "#historycontent ." + context;
     $(contextClass).toggle("fast");
     return null;
   };
@@ -505,7 +505,7 @@
   };
 
   renderItem = function(item, divToGo) {
-    var bid, content_div, context, favicon, head_div, info_div, inhalt, link, notabhead, panel_div, qtl, ref, relevance, sid, special, tabhead, title, ttl, type, url, utl, vid, videoframe;
+    var bid, content_div, favicon, head_div, info_div, inhalt, link, notabhead, panel_div, qtl, ref, relevance, sid, special, tabhead, title, ttl, type, url, utl, vid, videoframe;
 
     title = item.title;
     url = item.url;
@@ -571,16 +571,9 @@
     head_div.append($(favicon));
     createButtons(head_div, special, item);
     addClearDiv(head_div);
-    if (blockStyle[blocks[item.sid]] != null) {
-      context = blockStyle[blocks[item.sid]];
-      head_div.addClass(context);
-      panel_div.addClass(context);
-    } else {
-      panel_div.addClass("nocontext");
-    }
-    if (item.bookmark !== void 0) {
-      context += " bookmark";
-      info_div.addClass(context + " bookmark");
+    if (item.bid !== void 0) {
+      info_div.attr("bookmark", item.bid);
+      info_div.css("background", storedContexts[item.context].color);
     }
     link = $("<a>");
     inhalt = $("<p>");
@@ -715,7 +708,6 @@
       var context;
 
       context = $(this).context.className.split(" ")[0];
-      console.log(context);
       toggleActiveState(context);
       if (context !== "nocontext") {
         if (storedContexts[context].active) {
@@ -758,11 +750,14 @@
       if (item.context !== "" && !$contextgroup.hasClass(item.context)) {
         $contextgroup.addClass(item.context);
         $contextgroup.removeClass("nocontext");
+        if (!storedContexts[item.context].active) {
+          $contextgroup.hide();
+        }
       }
       if (blockdings > item.block) {
         blockdings--;
       }
-      specialise(item, $(".group" + item.block));
+      specialise(item, $contextgroup);
       if (item.context !== "") {
         _results.push($(".group" + item.block + " .panel .head").css("background", storedContexts[item.context].color));
       } else {

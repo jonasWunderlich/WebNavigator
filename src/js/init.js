@@ -44,7 +44,6 @@
       var context;
 
       context = $(this).context.className.split(" ")[0];
-      console.log(context);
       toggleActiveState(context);
       if (context !== "nocontext") {
         if (storedContexts[context].active) {
@@ -87,11 +86,14 @@
       if (item.context !== "" && !$contextgroup.hasClass(item.context)) {
         $contextgroup.addClass(item.context);
         $contextgroup.removeClass("nocontext");
+        if (!storedContexts[item.context].active) {
+          $contextgroup.hide();
+        }
       }
       if (blockdings > item.block) {
         blockdings--;
       }
-      specialise(item, $(".group" + item.block));
+      specialise(item, $contextgroup);
       if (item.context !== "") {
         _results.push($(".group" + item.block + " .panel .head").css("background", storedContexts[item.context].color));
       } else {
