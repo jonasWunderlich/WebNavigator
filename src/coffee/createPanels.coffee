@@ -4,16 +4,17 @@ specialise = (site, divToGo) ->
   title = site.title
   context = undefined
   special = undefined
-
+  console.log v_max
 
   if ((url.substr -4) is ".jpg") or ((url.substr -4) is ".png") or ((url.substr -5) is ".jpeg")
     special = "image"
     title = "@"
-  else if (/youtube/.test(url)) && (/watch/.test(url))
+  else if (/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url))
+    console.log url
     title = title.split("- YouTube")[0]
     if (v_max > 0)
       url = "https://www.youtube.com/embed/" + url.split("v=")[1].split('=')[0].split('&')[0]
-      special = "video"
+      special = "y_video"
       v_max--
   else if /Google-Suche/.test(title)
     special = "google"
@@ -132,7 +133,7 @@ renderItem = (item, divToGo) ->
 
 
   if special is "google" then title = title.split(" - Google-Suche")[0]; inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
-  else if special is "video"
+  else if special is "y_video"
     videoframe = $ "<iframe>"; videoframe.addClass "youtubevideo";
     videoframe.attr src:url;  info_div.append videoframe
   else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt

@@ -5,13 +5,13 @@
   v_max = 10;
 
   filter = {
-    results: 10,
+    results: 50,
     time: 0,
     query: "",
     mode: "none"
   };
 
-  min = 10;
+  min = 30;
 
   max = 500;
 
@@ -55,8 +55,7 @@
     });
     chrome.storage.local.get("hSlider", function(result) {
       if (result.hSlider != null) {
-        filter.results = parseInt((max - min) * result.hSlider + min);
-        return initSlider(result.hSlider);
+        return initSlider(0);
       } else {
         return initSlider(0);
       }

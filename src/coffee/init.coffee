@@ -1,6 +1,6 @@
 v_max = 10                                           # Maximum of Videos to show
-filter = results:10, time:0, query:"", mode:"none" # Default Filter-Settings
-min = 10; max = 500
+filter = results:50, time:0, query:"", mode:"none" # Default Filter-Settings
+min = 30; max = 500
 bmarks = 0
 phistory  = 0
 tabArray = {}
@@ -29,8 +29,9 @@ $(document).ready ->
 
   chrome.storage.local.get "hSlider", (result) ->
     if result.hSlider?
-      filter.results = parseInt (max-min)*result.hSlider+min
-      initSlider(result.hSlider)
+      #null
+      #filter.results = parseInt (max-min)*result.hSlider+min
+      initSlider(0) #result.hSlider)
       #reload()
     else
       initSlider(0)
@@ -59,6 +60,7 @@ createBlocks = ()->
   siteHistory.sort (a,b) -> return if a.vid <= b.vid then 1 else -1
 
   for key,item of siteHistory
+    #console.log item
     $contextgroup = $(".group"+item.block)
     if item.context != "" and !$contextgroup.hasClass(item.context)
       $contextgroup.addClass item.context

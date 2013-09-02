@@ -47,7 +47,6 @@
   processHistoryItems = function(callbackFn) {
     var date, daydate, endtime, microsecondsPerDay, starttime, time;
 
-    console.log(filter);
     time = filter.time;
     processed = 0;
     date = new Date();
@@ -61,7 +60,6 @@
       endTime: endtime,
       maxResults: filter.results
     }, function(historyItems) {
-      console.log(historyItems.length);
       return (historyItems.reverse()).forEach(function(site) {
         processed++;
         return chrome.history.getVisits({
@@ -477,14 +475,16 @@
     title = site.title;
     context = void 0;
     special = void 0;
+    console.log(v_max);
     if (((url.substr(-4)) === ".jpg") || ((url.substr(-4)) === ".png") || ((url.substr(-5)) === ".jpeg")) {
       special = "image";
       title = "@";
-    } else if ((/youtube/.test(url)) && (/watch/.test(url))) {
+    } else if ((/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url))) {
+      console.log(url);
       title = title.split("- YouTube")[0];
       if (v_max > 0) {
         url = "https://www.youtube.com/embed/" + url.split("v=")[1].split('=')[0].split('&')[0];
-        special = "video";
+        special = "y_video";
         v_max--;
       }
     } else if (/Google-Suche/.test(title)) {
@@ -608,7 +608,7 @@
         id: sid
       });
       link.append($(inhalt));
-    } else if (special === "video") {
+    } else if (special === "y_video") {
       videoframe = $("<iframe>");
       videoframe.addClass("youtubevideo");
       videoframe.attr({
@@ -676,13 +676,13 @@
   v_max = 10;
 
   filter = {
-    results: 10,
+    results: 50,
     time: 0,
     query: "",
     mode: "none"
   };
 
-  min = 10;
+  min = 30;
 
   max = 500;
 
@@ -726,8 +726,7 @@
     });
     chrome.storage.local.get("hSlider", function(result) {
       if (result.hSlider != null) {
-        filter.results = parseInt((max - min) * result.hSlider + min);
-        return initSlider(result.hSlider);
+        return initSlider(0);
       } else {
         return initSlider(0);
       }

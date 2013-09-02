@@ -9,14 +9,16 @@
     title = site.title;
     context = void 0;
     special = void 0;
+    console.log(v_max);
     if (((url.substr(-4)) === ".jpg") || ((url.substr(-4)) === ".png") || ((url.substr(-5)) === ".jpeg")) {
       special = "image";
       title = "@";
-    } else if ((/youtube/.test(url)) && (/watch/.test(url))) {
+    } else if ((/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url))) {
+      console.log(url);
       title = title.split("- YouTube")[0];
       if (v_max > 0) {
         url = "https://www.youtube.com/embed/" + url.split("v=")[1].split('=')[0].split('&')[0];
-        special = "video";
+        special = "y_video";
         v_max--;
       }
     } else if (/Google-Suche/.test(title)) {
@@ -140,7 +142,7 @@
         id: sid
       });
       link.append($(inhalt));
-    } else if (special === "video") {
+    } else if (special === "y_video") {
       videoframe = $("<iframe>");
       videoframe.addClass("youtubevideo");
       videoframe.attr({
