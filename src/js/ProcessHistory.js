@@ -94,7 +94,7 @@
       }
     }
     idToRef[id] = referrer;
-    if (type === "link" && (lastVid === ref || lastUrl === site.url.substr(0, 10))) {
+    if ((type === "link" || type === "form_submit") && (lastVid === ref || lastUrl === site.url.substr(0, 10))) {
       null;
     } else {
       block++;

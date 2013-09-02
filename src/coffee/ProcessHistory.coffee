@@ -75,7 +75,7 @@ processVisitItems = (site, visitItems, callbackFn) ->
   idToRef[id] = referrer #idToVid[id] = vids
 
   ## Grobe Blockbildung
-  if type is "link" and (lastVid is ref or lastUrl is site.url.substr(0,10)) then null
+  if (type is "link" or type is "form_submit") and (lastVid is ref or lastUrl is site.url.substr(0,10)) then null
   else block++
   lastVid = vid
   lastUrl = site.url.substr(0,10)
