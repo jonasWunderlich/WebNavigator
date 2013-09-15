@@ -2,7 +2,7 @@
   "name": "WebNavigator",
   "version": "0.5",
   "manifest_version": 2,
-  "description": "This Tool organises the Webhistory taskoriented - Shows , bookmarks and tabs",
+  "description": "Visualizes the Browsing-History in a taskbased way - and includes, bookmark- and tabdata",
   "background" : {
   	"page": "background.html"
   },

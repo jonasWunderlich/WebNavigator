@@ -53,6 +53,10 @@
     }
   });
 
+  chrome.history.onVisited.addListener(function(details) {
+    return console.log(details);
+  });
+
   /* Query for getting all Tabs at once
   chrome.tabs.query {}, (Tabs) ->
     console.log Tabs

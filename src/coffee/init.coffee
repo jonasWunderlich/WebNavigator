@@ -1,8 +1,8 @@
-v_max = 10                                           # Maximum of Videos to show
+v_max = 0                                         # Maximum of Videos to show
 filter = results:50, time:0, query:"", mode:"none" # Default Filter-Settings
 min = 30; max = 500
-bmarks = 0
-phistory  = 0
+#bmarks = 0
+#phistory  = 0
 tabArray = {}
 
 $(document).ready ->
@@ -21,10 +21,11 @@ $(document).ready ->
   $("#bookmarklist").on "click", "h2", ->
     context = $(this).context.className.split(" ")[0]
     toggleActiveState(context)
-    if context isnt "nocontext"
-      if storedContexts[context].active then storedContexts[context].active = false
-      else storedContexts[context].active = true
-      chrome.storage.local.set "storedContexts":storedContexts
+    if context is "nocontext" and !storedContexts[context]?
+      storedContexts[context] = active:true
+    if storedContexts[context].active then storedContexts[context].active = false
+    else storedContexts[context].active = true
+    chrome.storage.local.set "storedContexts":storedContexts
     null
 
   chrome.storage.local.get "hSlider", (result) ->
@@ -74,6 +75,25 @@ createBlocks = ()->
     if item.context isnt ""
       $(".group"+item.block+" .panel .head").css "background", storedContexts[item.context].color
 
+  if !storedContexts["nocontext"].active
+    $("#historycontent .nocontext").hide()
+
+  $(".head").hover ( ->
+    sInfo = {}
+    sInfo.url = $(this).attr "url"
+    sInfo.vid = $(this).attr "vid"
+    sInfo.title = $(this).attr "title"
+    sInfo.time = $(this).attr "time"
+    createButtons($(this), "", sInfo)
+    addClearDiv($(this))
+  ), ->
+    $(this).find("button").remove()
+    $(this).find(".clear").remove()
+
+  $("button").hover ->
+     console.log "sdfsdf"
+
+
 
 createHistory = () ->
   chrome.tabs.query {}, (tabs) ->
@@ -87,20 +107,7 @@ start = () ->
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 initSlider = (hSlider) ->
-
   query_slider = new Dragdealer 'simple-slider',
     x: hSlider, steps: max
     callback: (x) -> filter.results = parseInt (max-min)*query_slider.value.current[0]+min;  chrome.storage.local.set "hSlider":x; reload()
@@ -109,6 +116,9 @@ initSlider = (hSlider) ->
 reload = () ->
   $('#historycontent').empty()
   $('#bookmarklist').empty()
-  v_max = 5
+  $('.colorPicker-palette').remove()
+  #$('.contextgroup').remove()
+  v_max = 0
+  tabArray = {}
   start()
   null

@@ -1,32 +1,35 @@
 processed = 0
 tabconnections = []
-
-block = 0
 lastVid = 0
 lastUrl = ""
 siteHistory = []
 visitIdAufSID = []
-blockSum = 0;
-blocks = {}
-blockStyle = []
 idToRef = {}
+urltoblock = {}
 #idToVid = {}
 #blockId = 0
-
-
-
+block_counter = 0
+block_set = 0
+blockSum = 0
+blocks = {}
+#blockStyle = []
 
 
 loadHistory = (callbackFn) ->
-  block = 0
+
+  processed = 0
+  tabconnections = []
   lastVid = 0
   lastUrl = ""
   siteHistory = []
   visitIdAufSID = []
-  blockSum = 0;
   idToRef = {}
+  urltoblock = {}
+  block_counter = 0
+  block_set = 0
+  blockSum = 0
   blocks = {}
-  blockStyle = []
+  #blockStyle = []
 
   chrome.storage.local.get "tabConnections", (result) ->
     if result.tabConnections then tabconnections = result.tabConnections
@@ -74,27 +77,41 @@ processVisitItems = (site, visitItems, callbackFn) ->
 
   idToRef[id] = referrer #idToVid[id] = vids
 
-  ## Grobe Blockbildung
-  if (type is "link" or type is "form_submit") and (lastVid is ref or lastUrl is site.url.substr(0,10)) then null
-  else block++
+  # Grobe Blockbildung
+  # linkseite mit gefundenen Ref oder URL-Ahnlichkeit zum Vorgänger
+  if (type is "link" or type is "form_submit") and (lastVid is ref or lastUrl is site.url.substr(0,20))
+    urltoblock[site.url.substr(0,20)] = block_set
+    null
+  else
+    # existiert eine Url-Ähnlichkeit zu einem entfernteren Vorgänger
+    if (type isnt "typed" and type isnt "keyword" and type isnt "generated") and urltoblock[site.url.substr(0,20)]?
+      block_set = urltoblock[site.url.substr(0,20)]
+    else
+      block_counter++
+      block_set = block_counter
   lastVid = vid
-  lastUrl = site.url.substr(0,10)
+  lastUrl = site.url.substr(0,20)
 
-  context = ""
-  bookmark = undefined
+
+  # Lesezeicheninformationen
+  context = ""; bookmark = undefined
   if bookMarks[site.url]?
     context = bookMarks[site.url].context
     bookmark = bookMarks[site.url].bid
+    blocks[block_set] += context
 
+  # Tabinformationen
   tab = if tabArray[site.url]? then tabArray[site.url] else ""
 
-  siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block, context:context, tab:tab, bid:bookmark
+  # Array für die History anlegen
+  siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block_set, context:context, tab:tab, bid:bookmark
   siteHistory[id] = siteItem
-  #logInfo([site.title.substr(0,40), id, vid, ref, type, block, bookmark])
 
+  #logInfo([site.title.substr(0,40), id, vid, ref, type, block_set])
   processed--;
   if processed is 0
-    blockSum = block
+    console.log blocks
+    blockSum = block_counter
     callbackFn()
 
 
@@ -147,5 +164,4 @@ createBlocks = () ->
   if processed is 0
     for k,i of siteHistory
       logInfo([i.title.substr(0,40), i.sid, i.vid, i.ref, i.type, i.block])
-
 ###

@@ -10,7 +10,7 @@
 
 .contextgroup {
   margin: .2em .3em .0em .3em;
-  display:inline-block;
+  display:inline;
   /*border: 3px solid #000;*/
 }
 
@@ -123,17 +123,40 @@ div.keyword .infocontent a {
 /* Google Suche */
 div.google {
 	box-shadow:none;
-	width:120px;
+    width:129px;
+}
+div.google .head {
+    background: none;
+    opacity: 0;
 }
 div.google .content {
-	background: #DFDFDF;
-    opacity: .7;
+	/*background: #DFDFDF; */
+    background: url("img/searchbubble.png") no-repeat;
+    /*opacity: .7; */
+    padding-left: 6px;
 }
 
 div.google .infocontent .p {
 }
 
 
+div.mail {
+    box-shadow:none;
+    width:129px;
+
+
+}
+div.mail .head {
+
+}
+
+div.mail .content {
+
+}
+div.mail .infocontent {
+    background: none;
+    background:#FFF0B6 url("img/mail-05.png") 62 40 no-repeat
+}
 
 
 
@@ -162,8 +185,8 @@ div.bookmark a {
 
 
 /*Seitenaufrufe */
-div.panel.rel_big {		width:400px;}
-div.panel.rel_some { 	width:250px;}
+div.panel.rel_big {		width:300px;}
+div.panel.rel_some { 	width:200px;}
 div.panel.rel_twice {	width:150px;}
 
 /* Query-Importance */
@@ -202,3 +225,24 @@ div.forward_back {
   	background:#001FFF !important;
 } 
 */
+
+div.stacking.panel {
+    /*
+    margin-left: -71px;
+    margin-top: -9px;
+    opacity: .4;
+    */
+    margin-right: -85px;
+    width: 106px;
+    position: relative;
+    z-index: -2;
+}
+div.stacking.panel .head button {
+    display:none;
+
+}
+
+
+.hideme {
+    display:none
+}

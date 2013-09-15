@@ -1,4 +1,3 @@
-
 lastPage = ""
 #tabArray = []
 tabConnections = {}
@@ -44,11 +43,14 @@ chrome.webNavigation.onCommitted.addListener (details) ->
   #console.log details
   #if details.transitionType then console.log details.transitionType
   if details.transitionQualifiers
+    #console.log details.transitionQualifiers
     if details.transitionQualifiers is "forward_back"
        #connections.push url:details.url, refurl:lastPage, nav:"forward_back"
        lastPage = details.url
 
 
+chrome.history.onVisited.addListener (details) ->
+  console.log details
 
 
 

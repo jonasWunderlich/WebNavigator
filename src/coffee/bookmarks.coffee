@@ -2,6 +2,7 @@ storedBookmarks = {}
 storedContexts = {}
 bookMarks = {}
 #chrome.storage.local.remove("storedContexts")
+#chrome.storage.local.remove("storedBookmarks")
 
 loadBookmarks = (callbackFn) ->
   storedBookmarks = {}
@@ -148,13 +149,16 @@ hideInactiveTasks = () ->
 
 
 toggleActiveState = (context) ->
+  # toggle Taskmenu
   toggleContext = ".bcontext." + context
   $(toggleContext).toggleClass("contextactivestate")
-  toggleBookmark = "." + context + " .bookmark"
+  # toggle Bookmarks
+  toggleBookmark = ".bcontext." + context + " .bookmark"
   $(toggleBookmark).toggle("fast")
+  # toggle groups
   contextClass = "#historycontent ." + context
-  #contextClass = ".contextgroup."+context
   $(contextClass).toggle("fast")
+  $(contextClass).css "display", "inline"
   null
 
 

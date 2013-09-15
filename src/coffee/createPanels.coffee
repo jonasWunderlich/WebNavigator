@@ -2,42 +2,33 @@ specialise = (site, divToGo) ->
 
   url = site.url
   title = site.title
-  context = undefined
   special = undefined
-  console.log v_max
 
   if ((url.substr -4) is ".jpg") or ((url.substr -4) is ".png") or ((url.substr -5) is ".jpeg")
     special = "image"
     title = "@"
-  else if (/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url))
-    console.log url
+  else if (/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))
     title = title.split("- YouTube")[0]
     if (v_max > 0)
       url = "https://www.youtube.com/embed/" + url.split("v=")[1].split('=')[0].split('&')[0]
       special = "y_video"
       v_max--
-  else if /Google-Suche/.test(title)
-    special = "google"
-  else if /mail.google.com/.test(url)
-    special = "mail"
+  else if /Google-Suche/.test(title) then   special = "google"
+  else if /mail.google.com/.test(url) then  special = "mail"
 
-  title = title.split(" - ")[0]
-  title = title.split(" – ")[0]
-  shorten = 20
-  title = if (title.length > shorten) then (title.substr(0,shorten) + "...") else title
-  site.url = url
   site.title = title
+  site.url = url
   site.special = special
 
   if title is ""
     special = "empty"
-    site.title = url.substr(0,shorten) + "..."
-    renderItem(site, divToGo)
   else
     null
+
   renderItem(site, divToGo)
   null
 
+thelastOne = ""
 
 renderItem = (item, divToGo) ->
 
@@ -52,29 +43,34 @@ renderItem = (item, divToGo) ->
   relevance = item.relevance
 
   # Panel
-  # falls refid auf url des vorgängerszeigt ->verlinken
   panel_div = $ "<div>"
+
+  if (thelastOne.substr 0, thelastOne.length-3) is (url.substr  0, url.length-3)
+    panel_div.addClass "stacking"
+  thelastOne = url
+
   panel_div.addClass "panel"
   panel_div.addClass type
-  if item.nav?
-    panel_div.addClass item.nav
-  if ref is "0" then panel_div.addClass "refzero"
-
-  if relevance>20  then panel_div.addClass "rel_big"
-  else if relevance>5  then panel_div.addClass "rel_some"
-  else if relevance>=2  then panel_div.addClass "rel_twice"
   panel_div.addClass special
+  if item.nav? then  panel_div.addClass item.nav
+  if ref is "0" then panel_div.addClass "refzero"
+  if relevance>20       then panel_div.addClass "rel_big"
+  else if relevance>5   then panel_div.addClass "rel_some"
+  else if relevance>=2  then panel_div.addClass "rel_twice"
 
 
-  ## PANELHEADER
+
+  # Content besteht aus Header+Inhalt
   content_div = $ "<div>"
-  head_div = $ "<div>"
-  info_div = $ "<div>"
   content_div.addClass "content"
+  # PANELHEADER
+  head_div = $ "<div>"
+  head_div.addClass "head"
+  # INHALT
+  info_div = $ "<div>"
   info_div.addClass "infocontent"
 
-  head_div.addClass "head"
-
+  ## TABReiter
   if item.tab isnt ""
     tabhead = $ "<div>"
     tabhead.addClass "tabbutton"
@@ -95,15 +91,19 @@ renderItem = (item, divToGo) ->
     notabhead.addClass "notab"
     panel_div.append $ notabhead
 
+  # Favicon
   favicon = $ "<img>"
   favicon.attr src:"chrome://favicon/"+url
   favicon.addClass "favicon"
   head_div.append $ favicon
-
   # BOOKMARKBUTTONS
-  createButtons(head_div, special, item)
-  addClearDiv(head_div)
+  #createButtons(head_div, special, item)
+  #addClearDiv(head_div)
 
+  head_div.attr "vid", item.vid
+  head_div.attr "url", item.url
+  head_div.attr "title", item.title
+  head_div.attr "time", item.time
 
 
   ## Bookmarks und zugehörige Kontexte auszeichnen
@@ -136,11 +136,11 @@ renderItem = (item, divToGo) ->
   else if special is "y_video"
     videoframe = $ "<iframe>"; videoframe.addClass "youtubevideo";
     videoframe.attr src:url;  info_div.append videoframe
-  else inhalt.text title; inhalt.attr id:sid; link.append $ inhalt
+  else inhalt.text shortenTitle(title,url); inhalt.attr id:sid; link.append $ inhalt
 
   info_div.append $ link
   # Entwicklungsinformationen
-  #addDevInfo(info_div, ["Block "+item.block, sid+" > "+item.sidref, vid+" > "+ref])
+  addDevInfo(info_div, ["Block "+item.block, sid+" > "+item.sidref, vid+" > "+ref])
 
   content_div.append head_div
   content_div.append info_div
@@ -151,7 +151,14 @@ renderItem = (item, divToGo) ->
 
 
 
-
+shortenTitle = (title, url) ->
+  shorten = 20
+  title = title.split(" - ")[0]
+  title = title.split(" – ")[0]
+  title = if (title.length > shorten) then (title.substr(0,shorten) + "...") else title
+  if title is ""
+    title = url.substr(0,shorten) + "..."
+  return title
 
 
 addClearDiv = (div) ->
@@ -163,14 +170,16 @@ addClearDiv = (div) ->
 createButtons = (head_div, special,item) ->
   if special isnt "google" and special isnt "empty"
     for c,v of storedContexts
-      button = $ "<button>"
-      button.css "background", v.color
-      button.addClass c
-      button.text ""
-      button.on "click", -> bookmarkIt(item, $(this))
-      if !storedContexts[c].active
-        button.hide()
-      head_div.append $ button
+      if c isnt "nocontext"
+        button = $ "<button>"
+        button.css "background", v.color
+        button.addClass c
+        button.attr "title", c
+        button.text ""
+        button.on "click", -> bookmarkIt(item, $(this))
+        if !storedContexts[c].active
+          button.hide()
+        head_div.append $ button
 
 
 addDevInfo = (div, a) ->

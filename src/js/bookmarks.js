@@ -206,10 +206,11 @@
 
     toggleContext = ".bcontext." + context;
     $(toggleContext).toggleClass("contextactivestate");
-    toggleBookmark = "." + context + " .bookmark";
+    toggleBookmark = ".bcontext." + context + " .bookmark";
     $(toggleBookmark).toggle("fast");
     contextClass = "#historycontent ." + context;
     $(contextClass).toggle("fast");
+    $(contextClass).css("display", "inline");
     return null;
   };
 

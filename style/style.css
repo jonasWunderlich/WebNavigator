@@ -28,9 +28,11 @@ p {
     display: block;
 }
 p.devinfo {
-	font-size:.6em;
-	color:#FFA500;
-	display: block;
+    font-size: .6em;
+    color: #5C00A5;
+    display: block;
+    padding: 1px;
+    background: #F4FFA0;
 }
 
 a {
@@ -76,6 +78,7 @@ a {
 	width:80%;
 	height: 105%;
 	background: #C9C9C9;
+    z-index: 10;
 }
 #sidebar {
 	position:fixed;
