@@ -211,6 +211,11 @@
     contextClass = "#historycontent ." + context;
     $(contextClass).toggle("fast");
     $(contextClass).css("display", "inline");
+    if (!googlevisible) {
+      contextClass = "#historycontent ." + context + ".googleblock";
+      $(contextClass).toggle("fast");
+      $(contextClass).css("display", "inline");
+    }
     return null;
   };
 

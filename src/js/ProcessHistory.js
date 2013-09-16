@@ -24,7 +24,7 @@
 
   blockSum = 0;
 
-  blocks = {};
+  blocks = [];
 
   loadHistory = function(callbackFn) {
     processed = 0;
@@ -38,7 +38,7 @@
     block_counter = 0;
     block_set = 0;
     blockSum = 0;
-    blocks = {};
+    blocks = [];
     return chrome.storage.local.get("tabConnections", function(result) {
       if (result.tabConnections) {
         tabconnections = result.tabConnections;
@@ -108,9 +108,15 @@
       } else {
         block_counter++;
         blocks[block_counter] = {
+          "id": block_counter,
           "context": "",
-          "time": ""
+          "time": "",
+          "processed": false,
+          "google": false
         };
+        if (/www.google/.test(site.url)) {
+          blocks[block_counter].google = true;
+        }
         block_set = block_counter;
       }
     }
@@ -143,7 +149,6 @@
     processed--;
     if (processed === 0) {
       blockSum = block_counter;
-      console.log(blocks);
       return callbackFn();
     }
   };

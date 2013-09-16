@@ -1,8 +1,8 @@
 v_max = 0                                         # Maximum of Videos to show
 filter = results:50, time:0, query:"", mode:"none" # Default Filter-Settings
-min = 30; max = 500
-#bmarks = 0
-#phistory  = 0
+min = 30; max = 1000
+googlevisible = true
+
 tabArray = {}
 
 $(document).ready ->
@@ -28,6 +28,11 @@ $(document).ready ->
     chrome.storage.local.set "storedContexts":storedContexts
     null
 
+  $("#configbar").on "click", "#hidegoogle", ->
+    $(".googleblock").toggle("fast")
+    googlevisible = !googlevisible
+
+
   chrome.storage.local.get "hSlider", (result) ->
     if result.hSlider?
       #null
@@ -48,33 +53,41 @@ $(document).ready ->
 
 
 
-createBlocks = ()->
-  num = blockSum+1
-  while num -= 1
-    contextGroup = $ "<div>"
-    contextGroup.addClass "contextgroup"
-    contextGroup.addClass "nocontext"
-    contextGroup.addClass "group"+num
-    $("#historycontent").append $ contextGroup
+createBlocks = () ->
+  blocksToProcess = blocks.length
+  blocks.reverse()
 
-  blockdings = blockSum+1
-  siteHistory.sort (a,b) -> return if a.vid <= b.vid then 1 else -1
+  for block in blocks
+    blocksToProcess--
+    if block? and !block.processed
+      if block.context is ""
+        nocontextGroup = $ "<div>"
+        nocontextGroup.addClass "contextgroup"
+        nocontextGroup.addClass "group"+block.id
+        nocontextGroup.addClass "nocontext"
+        if block.google then nocontextGroup.addClass "googleblock"
+        $("#historycontent").append $ nocontextGroup
+      else
+        for cblock in blocks
+          if cblock? and cblock.context is block.context
+            contextGroup = $ "<div>"
+            contextGroup.addClass "contextgroup"
+            contextGroup.addClass "group"+cblock.id
+            contextGroup.addClass block.context
+            $("#historycontent").append $ contextGroup
+            cblock.processed = true
+            if !storedContexts[block.context].active then $(".group"+cblock.id).hide()
 
-  for key,item of siteHistory
-    #console.log item
-    $contextgroup = $(".group"+item.block)
-    if item.context != "" and !$contextgroup.hasClass(item.context)
-      $contextgroup.addClass item.context
-      $contextgroup.removeClass "nocontext"
-      if !storedContexts[item.context].active then $contextgroup.hide()
+    if blocksToProcess is 1
+      siteHistory.reverse()
+      for key,item of siteHistory
+        $contextgroup = $(".group"+item.block)
+        specialise(item, $contextgroup)
+        for fblock in blocks
+          if fblock? and item.block is fblock.id and fblock.context isnt ""
+            $(".group"+item.block+" .panel .head").css "background", storedContexts[fblock.context].color
 
-    if blockdings > item.block
-      blockdings--
-
-    specialise(item, $contextgroup)
-    if item.context isnt ""
-      $(".group"+item.block+" .panel .head").css "background", storedContexts[item.context].color
-
+  if !googlevisible then $(".googleblock").toggle("fast")
   if !storedContexts["nocontext"].active
     $("#historycontent .nocontext").hide()
 

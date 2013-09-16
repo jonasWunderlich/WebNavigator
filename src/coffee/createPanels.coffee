@@ -142,7 +142,7 @@ renderItem = (item, divToGo) ->
 
   info_div.append $ link
   # Entwicklungsinformationen
-  addDevInfo(info_div, ["Block "+item.block, sid+" > "+item.sidref, vid+" > "+ref])
+  #addDevInfo(info_div, ["Block "+item.block, sid+" > "+item.sidref, vid+" > "+ref])
 
   content_div.append head_div
   content_div.append info_div

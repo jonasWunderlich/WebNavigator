@@ -11,7 +11,7 @@ urltoblock = {}
 block_counter = 0
 block_set = 0
 blockSum = 0
-blocks = {}
+blocks = []
 #blockStyle = []
 
 
@@ -28,7 +28,7 @@ loadHistory = (callbackFn) ->
   block_counter = 0
   block_set = 0
   blockSum = 0
-  blocks = {}
+  blocks = []
   #blockStyle = []
 
   chrome.storage.local.get "tabConnections", (result) ->
@@ -88,7 +88,8 @@ processVisitItems = (site, visitItems, callbackFn) ->
       block_set = urltoblock[site.url.substr(0,20)]
     else
       block_counter++
-      blocks[block_counter] = {"context":"","time":""}
+      blocks[block_counter] = {"id":block_counter,"context":"","time":"","processed":false,"google":false}
+      if /www.google/.test(site.url) then blocks[block_counter].google = true
       block_set = block_counter
   lastVid = vid
   lastUrl = site.url.substr(0,20)
@@ -114,7 +115,7 @@ processVisitItems = (site, visitItems, callbackFn) ->
   processed--;
   if processed is 0
     blockSum = block_counter
-    console.log blocks
+    #console.log blocks
     callbackFn()
 
 

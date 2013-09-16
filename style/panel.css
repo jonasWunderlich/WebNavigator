@@ -25,21 +25,28 @@ div.panel  {
   width:100px;
   /*float:left;*/
   display:inline-table;
-  box-shadow: -3px 6px 14px -6px #868686;
+}
+div.panel .content {
+    box-shadow: -5px 8px 14px -6px #868686;
+}
+div.google .content {
+    box-shadow: none;
 }
 
 .notab,
 .tabbutton {
     width: 20px;
     height: 15px;
+    margin-top: 4px;
 }
 
 .tabbutton {
-    background: #BB4E4E;
-    width: 25px;
+    background: #087DB4;
+    width: 50%;
+    /*margin-left: 80%;*/
     border-radius: 5px 5px 0 0;
-    top: -15px;
-    left: 7px;
+    /*border: 1px solid #FFF;*/
+    border-bottom: 0;
 }
 
 .itsatab .head {
@@ -66,7 +73,7 @@ div.panel  {
 .head {
 	background: #E9E9E9;
 	padding:4px;
-	height:28px;
+	height:16px;
 }
 
 .infocontent {

@@ -159,7 +159,6 @@
       link.append($(inhalt));
     }
     info_div.append($(link));
-    addDevInfo(info_div, ["Block " + item.block, sid + " > " + item.sidref, vid + " > " + ref]);
     content_div.append(head_div);
     content_div.append(info_div);
     panel_div.append($(content_div));
