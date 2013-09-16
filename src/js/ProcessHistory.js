@@ -107,6 +107,10 @@
         block_set = urltoblock[site.url.substr(0, 20)];
       } else {
         block_counter++;
+        blocks[block_counter] = {
+          "context": "",
+          "time": ""
+        };
         block_set = block_counter;
       }
     }
@@ -117,8 +121,9 @@
     if (bookMarks[site.url] != null) {
       context = bookMarks[site.url].context;
       bookmark = bookMarks[site.url].bid;
-      blocks[block_set] += context;
+      blocks[block_set].context = context;
     }
+    blocks[block_set].time = time;
     tab = tabArray[site.url] != null ? tabArray[site.url] : "";
     siteItem = {
       sid: id,
@@ -137,8 +142,8 @@
     siteHistory[id] = siteItem;
     processed--;
     if (processed === 0) {
-      console.log(blocks);
       blockSum = block_counter;
+      console.log(blocks);
       return callbackFn();
     }
   };

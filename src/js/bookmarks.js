@@ -12,14 +12,14 @@
     storedBookmarks = {};
     storedContexts = {};
     bookMarks = {};
-    chrome.storage.local.get("storedBookmarks", function(result) {
-      if (result.storedBookmarks) {
-        return storedBookmarks = result.storedBookmarks;
-      }
-    });
     chrome.storage.local.get("storedContexts", function(result) {
       if (result.storedContexts) {
         return storedContexts = result.storedContexts;
+      }
+    });
+    chrome.storage.local.get("storedBookmarks", function(result) {
+      if (result.storedBookmarks) {
+        return storedBookmarks = result.storedBookmarks;
       }
     });
     return renderTaskMenu(callbackFn);

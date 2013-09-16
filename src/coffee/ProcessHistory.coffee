@@ -88,6 +88,7 @@ processVisitItems = (site, visitItems, callbackFn) ->
       block_set = urltoblock[site.url.substr(0,20)]
     else
       block_counter++
+      blocks[block_counter] = {"context":"","time":""}
       block_set = block_counter
   lastVid = vid
   lastUrl = site.url.substr(0,20)
@@ -98,7 +99,9 @@ processVisitItems = (site, visitItems, callbackFn) ->
   if bookMarks[site.url]?
     context = bookMarks[site.url].context
     bookmark = bookMarks[site.url].bid
-    blocks[block_set] += context
+    blocks[block_set].context = context
+
+  blocks[block_set].time = time
 
   # Tabinformationen
   tab = if tabArray[site.url]? then tabArray[site.url] else ""
@@ -110,8 +113,8 @@ processVisitItems = (site, visitItems, callbackFn) ->
   #logInfo([site.title.substr(0,40), id, vid, ref, type, block_set])
   processed--;
   if processed is 0
-    console.log blocks
     blockSum = block_counter
+    console.log blocks
     callbackFn()
 
 

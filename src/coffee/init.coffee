@@ -90,8 +90,6 @@ createBlocks = ()->
     $(this).find("button").remove()
     $(this).find(".clear").remove()
 
-  $("button").hover ->
-     console.log "sdfsdf"
 
 
 

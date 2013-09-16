@@ -28,7 +28,8 @@ specialise = (site, divToGo) ->
   renderItem(site, divToGo)
   null
 
-thelastOne = ""
+thelastURL = ""
+thelastTitle = ""
 
 renderItem = (item, divToGo) ->
 
@@ -45,9 +46,10 @@ renderItem = (item, divToGo) ->
   # Panel
   panel_div = $ "<div>"
 
-  if (thelastOne.substr 0, thelastOne.length-3) is (url.substr  0, url.length-3)
+  if (thelastURL.substr 0, thelastURL.length-3) is (url.substr  0, url.length-3) or thelastTitle is title
     panel_div.addClass "stacking"
-  thelastOne = url
+  thelastURL = url
+  thelastTitle = title
 
   panel_div.addClass "panel"
   panel_div.addClass type

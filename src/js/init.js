@@ -103,7 +103,7 @@
     if (!storedContexts["nocontext"].active) {
       $("#historycontent .nocontext").hide();
     }
-    $(".head").hover((function() {
+    return $(".head").hover((function() {
       var sInfo;
 
       sInfo = {};
@@ -116,9 +116,6 @@
     }), function() {
       $(this).find("button").remove();
       return $(this).find(".clear").remove();
-    });
-    return $("button").hover(function() {
-      return console.log("sdfsdf");
     });
   };
 
