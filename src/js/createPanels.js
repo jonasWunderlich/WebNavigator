@@ -8,9 +8,13 @@
     url = site.url;
     title = site.title;
     special = void 0;
-    if (((url.substr(-4)) === ".jpg") || ((url.substr(-4)) === ".png") || ((url.substr(-5)) === ".jpeg")) {
+    if ((((url.substr(-4)).toLowerCase() === ".gif") || (url.substr(-4)).toLowerCase() === ".jpg") || ((url.substr(-4)).toLowerCase() === ".png") || ((url.substr(-5)).toLowerCase() === ".jpeg")) {
       special = "image";
-      title = "@";
+      title = url.split(/[/]+/).pop().replace(/_/g, " ");
+    }
+    if ((((url.substr(-4)).toLowerCase() === ".pdf") || (url.substr(-4)).toLowerCase() === ".txt") || ((url.substr(-4)).toLowerCase() === ".doc") || ((url.substr(-5)).toLowerCase() === ".docx")) {
+      special = "document";
+      title = url.split(/[/]+/).pop().replace(/_/g, " ");
     } else if ((/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))) {
       title = title.split("- YouTube")[0];
       if (v_max > 0) {
@@ -168,7 +172,7 @@
   shortenTitle = function(title, url) {
     var shorten;
 
-    shorten = 20;
+    shorten = 40;
     title = title.split(" - ")[0];
     title = title.split(" – ")[0];
     title = title.length > shorten ? title.substr(0, shorten) + "..." : title;
@@ -187,8 +191,20 @@
   };
 
   createButtons = function(head_div, special, item) {
-    var button, c, v, _results;
+    var button, c, del, v, _results;
 
+    del = $("<button>");
+    del.addClass("delete");
+    del.attr("title", "delete");
+    del.text("X");
+    del.on("click", function() {
+      return chrome.history.deleteUrl({
+        url: item.url
+      }, function() {
+        return head_div.parent().parent().remove();
+      });
+    });
+    head_div.append($(del));
     if (special !== "google" && special !== "empty") {
       _results = [];
       for (c in storedContexts) {

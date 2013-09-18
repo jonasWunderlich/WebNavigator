@@ -7,25 +7,25 @@
     <file path="/config.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377699392955" ignored="false" />
     <file path="/front.html" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379362058257" ignored="false" />
     <file path="/render.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377701680040" ignored="false" />
-    <file path="/init.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379371534461" ignored="false" />
+    <file path="/init.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379546627346" ignored="false" />
     <file path="/procesData.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377708787316" ignored="false" />
     <file path="/test.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377875609870" ignored="false" />
     <file path="/js_processHistory.js" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377723426293" ignored="false" />
     <file path="/init.js" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377722369689" ignored="false" />
     <file path="/ProcessHistory.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377874716810" ignored="false" />
-    <file path="/style.css" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379374020342" ignored="false" />
-    <file path="/bookmarks.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379371041511" ignored="false" />
+    <file path="/style.css" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379539866069" ignored="false" />
+    <file path="/bookmarks.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379526158540" ignored="false" />
     <file path="/background.html" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379183023460" ignored="false" />
     <file path="/module.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377875636629" ignored="false" />
     <file path="/start.bat" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377881238413" ignored="false" />
     <file path="/visualisation.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1378086191057" ignored="false" />
-    <file path="/processHistory.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379361796416" ignored="false" />
+    <file path="/processHistory.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379545231066" ignored="false" />
     <file path="/test.html" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377897685878" ignored="false" />
     <file path="/test.css" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377897839026" ignored="false" />
-    <file path="/panel.css" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379372482136" ignored="false" />
+    <file path="/panel.css" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379542345761" ignored="false" />
     <file path="/compile.bat" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1377990396286" ignored="false" />
-    <file path="/createPanels.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379341586484" ignored="false" />
-    <file path="/background.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379183294459" ignored="false" />
+    <file path="/createPanels.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379542576495" ignored="false" />
+    <file path="/background.coffee" changelist="52d3b1c1-3da4-444d-80d5-2fa21653cd4d" time="1379544437465" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,37 +45,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="init.coffee" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="init.coffee" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/coffee/init.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="27" selection-start="1087" selection-end="1087" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="style.css" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/style/style.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="98" column="27" selection-start="1487" selection-end="1487" vertical-scroll-proportion="0.79950696">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="panel.css" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/style/panel.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="25" selection-start="557" selection-end="557" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="front.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/front.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="6" selection-start="1334" selection-end="1334" vertical-scroll-proportion="-22.23077">
+            <state line="9" column="53" selection-start="283" selection-end="283" vertical-scroll-proportion="0.12835571">
               <folding />
             </state>
           </provider>
@@ -84,7 +57,7 @@
       <file leaf-file-name="processHistory.coffee" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/coffee/processHistory.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="87" column="74" selection-start="2583" selection-end="2583" vertical-scroll-proportion="0.0">
+            <state line="53" column="127" selection-start="1213" selection-end="1213" vertical-scroll-proportion="6.12">
               <folding />
             </state>
           </provider>
@@ -93,7 +66,7 @@
       <file leaf-file-name="bookmarks.coffee" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/coffee/bookmarks.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="165" column="43" selection-start="5411" selection-end="5411" vertical-scroll-proportion="0.0">
+            <state line="150" column="45" selection-start="5040" selection-end="5040" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -102,7 +75,16 @@
       <file leaf-file-name="createPanels.coffee" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/coffee/createPanels.coffee">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="143" column="54" selection-start="4084" selection-end="4084" vertical-scroll-proportion="0.0">
+            <state line="8" column="49" selection-start="348" selection-end="348" vertical-scroll-proportion="-5.44">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="background.coffee" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/coffee/background.coffee">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="51" selection-start="685" selection-end="685" vertical-scroll-proportion="-15.64">
               <folding />
             </state>
           </provider>
@@ -126,20 +108,20 @@
         <option value="$PROJECT_DIR$/src/coffee/visualisation.coffee" />
         <option value="$PROJECT_DIR$/manifest.json" />
         <option value="$PROJECT_DIR$/background.html" />
-        <option value="$PROJECT_DIR$/src/coffee/background.coffee" />
-        <option value="$PROJECT_DIR$/src/coffee/createPanels.coffee" />
-        <option value="$PROJECT_DIR$/src/coffee/processHistory.coffee" />
         <option value="$PROJECT_DIR$/front.html" />
-        <option value="$PROJECT_DIR$/src/coffee/init.coffee" />
         <option value="$PROJECT_DIR$/src/coffee/bookmarks.coffee" />
-        <option value="$PROJECT_DIR$/style/panel.css" />
         <option value="$PROJECT_DIR$/style/style.css" />
+        <option value="$PROJECT_DIR$/style/panel.css" />
+        <option value="$PROJECT_DIR$/src/coffee/createPanels.coffee" />
+        <option value="$PROJECT_DIR$/src/coffee/background.coffee" />
+        <option value="$PROJECT_DIR$/src/coffee/processHistory.coffee" />
+        <option value="$PROJECT_DIR$/src/coffee/init.coffee" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1256" />
-    <option name="width" value="1304" />
+    <option name="x" value="1280" />
+    <option name="width" value="1280" />
     <option name="height" value="1400" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -357,13 +339,13 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1256" y="0" width="1304" height="1400" extended-state="0" />
+    <frame x="1280" y="0" width="1280" height="1400" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.10118577" sideWeight="0.87288815" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15713134" sideWeight="0.87288815" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32984716" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -451,11 +433,6 @@
         <state line="16" column="24" selection-start="306" selection-end="306" vertical-scroll-proportion="-6.5384617" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/js/code.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="449" column="25" selection-start="13391" selection-end="13391" vertical-scroll-proportion="0.7483389" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/js/ProcessHistory.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="71" column="6" selection-start="1846" selection-end="1846" vertical-scroll-proportion="0.014119601" />
@@ -483,20 +460,6 @@
         <state line="5" column="21" selection-start="84" selection-end="84" vertical-scroll-proportion="-3.2692308" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/coffee/background.coffee">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="24" selection-start="2021" selection-end="2021" vertical-scroll-proportion="0.717608">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/coffee/createPanels.coffee">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="143" column="54" selection-start="4084" selection-end="4084" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/front.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="34" column="6" selection-start="1334" selection-end="1334" vertical-scroll-proportion="-22.23077">
@@ -504,37 +467,58 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/coffee/init.coffee">
+    <entry file="file://$PROJECT_DIR$/style/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="27" selection-start="1087" selection-end="1087" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/coffee/bookmarks.coffee">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="165" column="43" selection-start="5411" selection-end="5411" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/coffee/processHistory.coffee">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="87" column="74" selection-start="2583" selection-end="2583" vertical-scroll-proportion="0.0">
+        <state line="183" column="14" selection-start="2785" selection-end="2785" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/style/panel.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="25" selection-start="557" selection-end="557" vertical-scroll-proportion="0.0">
+        <state line="65" column="27" selection-start="863" selection-end="863" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/style/style.css">
+    <entry file="file://$PROJECT_DIR$/src/coffee/createPanels.coffee">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="98" column="27" selection-start="1487" selection-end="1487" vertical-scroll-proportion="0.79950696">
+        <state line="8" column="49" selection-start="348" selection-end="348" vertical-scroll-proportion="-5.44">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/coffee/bookmarks.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="45" selection-start="5040" selection-end="5040" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/js/code.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="90" column="84" selection-start="2539" selection-end="2543" vertical-scroll-proportion="1.2184801">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/coffee/background.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="51" selection-start="685" selection-end="685" vertical-scroll-proportion="-15.64">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/coffee/processHistory.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="127" selection-start="1213" selection-end="1213" vertical-scroll-proportion="6.12">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/coffee/init.coffee">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="53" selection-start="283" selection-end="283" vertical-scroll-proportion="0.12835571">
           <folding />
         </state>
       </provider>

@@ -4,9 +4,12 @@ specialise = (site, divToGo) ->
   title = site.title
   special = undefined
 
-  if ((url.substr -4) is ".jpg") or ((url.substr -4) is ".png") or ((url.substr -5) is ".jpeg")
+  if (((url.substr -4).toLowerCase() is ".gif") or (url.substr -4).toLowerCase() is ".jpg") or ((url.substr -4).toLowerCase() is ".png") or ((url.substr -5).toLowerCase() is ".jpeg")
     special = "image"
-    title = "@"
+    title =  url.split(/[/]+/).pop().replace(/_/g," ") #"Abbildung"
+  if (((url.substr -4).toLowerCase() is ".pdf") or (url.substr -4).toLowerCase() is ".txt") or ((url.substr -4).toLowerCase() is ".doc") or ((url.substr -5).toLowerCase() is ".docx")
+    special = "document"
+    title = url.split(/[/]+/).pop().replace(/_/g," ") #"Dokument"
   else if (/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))
     title = title.split("- YouTube")[0]
     if (v_max > 0)
@@ -24,7 +27,6 @@ specialise = (site, divToGo) ->
     special = "empty"
   else
     null
-
   renderItem(site, divToGo)
   null
 
@@ -154,7 +156,7 @@ renderItem = (item, divToGo) ->
 
 
 shortenTitle = (title, url) ->
-  shorten = 20
+  shorten = 40
   title = title.split(" - ")[0]
   title = title.split(" – ")[0]
   title = if (title.length > shorten) then (title.substr(0,shorten) + "...") else title
@@ -170,6 +172,15 @@ addClearDiv = (div) ->
 
 
 createButtons = (head_div, special,item) ->
+  del = $ "<button>"
+  del.addClass "delete"
+  del.attr "title", "delete"
+  del.text "X"
+  del.on "click", ->
+    chrome.history.deleteUrl {url:item.url}, ->
+      head_div.parent().parent().remove()
+  head_div.append $ del
+
   if special isnt "google" and special isnt "empty"
     for c,v of storedContexts
       if c isnt "nocontext"
@@ -182,6 +193,7 @@ createButtons = (head_div, special,item) ->
         if !storedContexts[c].active
           button.hide()
         head_div.append $ button
+
 
 
 addDevInfo = (div, a) ->

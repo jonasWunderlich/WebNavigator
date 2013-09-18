@@ -13,6 +13,8 @@ block_set = 0
 blockSum = 0
 blocks = []
 #blockStyle = []
+lastTitle = ""
+filterArray = ["adf.ly"]
 
 
 loadHistory = (callbackFn) ->
@@ -61,57 +63,77 @@ processHistoryItems = (callbackFn) ->
 processVisitItems = (site, visitItems, callbackFn) ->
   referrer = vids = []
   id = site.id
-  vid = visitItems[visitItems.length-1].visitId
-  ref = visitItems[visitItems.length-1].referringVisitId
-  type = visitItems[visitItems.length-1].transition
-  time = visitItems[visitItems.length-1].visitTime
-  count = site.visitCount #visitItems.length
+  url = site.url
 
-  for i in visitItems
-    if i.visitId > vid-300  # Anzahl einschränken
-      # Fehlende Verlinkung bei Tabs ergänzen
-      if tabconnections[i.visitId]? then referrer.push tabconnections[+i.visitId]
-      if i.referringVisitId isnt "0" then referrer.push i.referringVisitId
-      #vids.push i.visitId
-      visitIdAufSID[i.visitId] = id
 
-  idToRef[id] = referrer #idToVid[id] = vids
-
-  # Grobe Blockbildung
-  # linkseite mit gefundenen Ref oder URL-Ahnlichkeit zum Vorgänger
-  if (type is "link" or type is "form_submit") and (lastVid is ref or lastUrl is site.url.substr(0,20))
-    urltoblock[site.url.substr(0,20)] = block_set
-    null
+  #Vorfiltern
+  if /data:/.test(url)
+    console.log site
   else
-    # existiert eine Url-Ähnlichkeit zu einem entfernteren Vorgänger
-    if (type isnt "typed" and type isnt "keyword" and type isnt "generated") and urltoblock[site.url.substr(0,20)]?
-      block_set = urltoblock[site.url.substr(0,20)]
+
+    vid = visitItems[visitItems.length-1].visitId
+    ref = visitItems[visitItems.length-1].referringVisitId
+    type = visitItems[visitItems.length-1].transition
+    time = visitItems[visitItems.length-1].visitTime
+    count = site.visitCount #visitItems.length
+
+    for i in visitItems
+      if i.visitId > vid-300  # Anzahl einschränken
+        # Fehlende Verlinkung bei Tabs ergänzen
+        if tabconnections[i.visitId]? then referrer.push tabconnections[+i.visitId]
+        if i.referringVisitId isnt "0" then referrer.push i.referringVisitId
+        #vids.push i.visitId
+        visitIdAufSID[i.visitId] = id
+
+    idToRef[id] = referrer #idToVid[id] = vids
+
+
+
+    testurl = url.split("//")[1]
+    #if testurl.substr(0,3) is "www" then testurl = testurl.split("www.")[1]
+    url = testurl.substr(0,10)
+
+
+    # Grobe Blockbildung
+    # linkseite mit gefundenen Ref oder URL-Ahnlichkeit zum Vorgänger
+    if (type is "link" or type is "form_submit") and (lastVid is ref or lastUrl is url)
+      urltoblock[url] = block_set
     else
-      block_counter++
-      blocks[block_counter] = {"id":block_counter,"context":"","time":"","processed":false,"google":false}
-      if /www.google/.test(site.url) then blocks[block_counter].google = true
-      block_set = block_counter
-  lastVid = vid
-  lastUrl = site.url.substr(0,20)
+      # existiert eine Url-Ähnlichkeit zu einem entfernteren Vorgänger
+      if urltoblock[url]? and url isnt "www.google" and url isnt "www.youtub" #and (type isnt "typed" and type isnt "keyword" and type isnt "generated")
+        block_set = urltoblock[url]
+      else
+        block_counter++
+        blocks[block_counter] = {"id":block_counter,"context":"","time":"","processed":false,"google":false}
+        if /google/.test(url) then blocks[block_counter].google = true
+        block_set = block_counter
+        urltoblock[url] = block_set
+
+    lastVid = vid
+    lastUrl = url
+
+    # Lesezeicheninformationen
+    context = ""; bookmark = undefined
+    if bookMarks[site.url]?
+      context = bookMarks[site.url].context
+      bookmark = bookMarks[site.url].bid
+      blocks[block_set].context = context
+
+    blocks[block_set].time = time
+
+    # Tabinformationen
+    tab = if tabArray[site.url]? then tabArray[site.url] else ""
+
+    # Array für die History anlegen
+    if lastTitle isnt site.title and !(jQuery.inArray( url.substr(0, 6), filterArray ) >= 0)
+      siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block_set, context:context, tab:tab, bid:bookmark
+      siteHistory[id] = siteItem
+    else null #console.log url.substr(0,6)
 
 
-  # Lesezeicheninformationen
-  context = ""; bookmark = undefined
-  if bookMarks[site.url]?
-    context = bookMarks[site.url].context
-    bookmark = bookMarks[site.url].bid
-    blocks[block_set].context = context
+    lastTitle = site.title
+    #logInfo([site.title.substr(0,40), id, vid, ref, type, block_set])
 
-  blocks[block_set].time = time
-
-  # Tabinformationen
-  tab = if tabArray[site.url]? then tabArray[site.url] else ""
-
-  # Array für die History anlegen
-  siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block_set, context:context, tab:tab, bid:bookmark
-  siteHistory[id] = siteItem
-
-  #logInfo([site.title.substr(0,40), id, vid, ref, type, block_set])
   processed--;
   if processed is 0
     blockSum = block_counter

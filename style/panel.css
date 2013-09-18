@@ -9,9 +9,13 @@
 
 
 .contextgroup {
-  margin: .2em .3em .0em .3em;
+  margin: .2em 1.3em .0em .3em;
   display:inline;
   /*border: 3px solid #000;*/
+}
+
+.contextgroup:hover {
+    border-top: 10px solid #E8FFCF;
 }
 
 
@@ -19,11 +23,8 @@
 
 
 div.panel  {
-  /*margin:6px 0 0 0;*/
-  /*padding: 0px;*/
   font-size:16px;
   width:100px;
-  /*float:left;*/
   display:inline-table;
 }
 div.panel .content {
@@ -66,9 +67,22 @@ div.google .content {
     background:none;
 }
 
+.panel.document,
+.panel.document .head,
+.panel.document .infocontent,
+.panel.document p{
+    background:none;
+}
+.panel.document .infocontent {
+    background: url("img/document.png") no-repeat;
+}
 
-
-
+.nocontext .panel.document .content {
+    background: url("img/document.png") no-repeat;
+}
+.nocontext .panel.document .infocontent {
+    background:none;
+}
 
 .head {
 	background: #E9E9E9;
@@ -103,33 +117,27 @@ div.typed .infocontent a {
 
 
 /* Extern aufgerufene Adresse */
-div.auto_toplevel  {  
-  	margin-right:8px;
+div.auto_toplevel,
+div.keyword {
   	width:160px;
+}
+div.auto_toplevel .infocontent a,
+div.keyword .infocontent a {
+    color:black;
 }
 div.auto_toplevel .infocontent {
   	background: #ABCBDA url("img/blockquote.png") no-repeat bottom right;
 }
-div.auto_toplevel .infocontent a {
-  	color:black;
-}
-
-/* Extern aufgerufene Adresse */
-div.keyword  {  
-  	margin-right:8px;
-  	width:160px;
-}
 div.keyword .infocontent {
   	background: #C0DAAB url("img/blockquote.png") no-repeat bottom right;
 }
-div.keyword .infocontent a {
-  	color:black;
-}
+
 
 
 /* Google Suche */
 div.google {
 	box-shadow:none;
+    margin: 0 1em 0 .4em;
     width:129px;
 }
 div.google .head {
@@ -162,7 +170,7 @@ div.mail .content {
 }
 div.mail .infocontent {
     background: none;
-    background:#FFF0B6 url("img/mail-04.png") 62 40 no-repeat
+    background: #C9B771 url("img/mail-04.png") 6 48 no-repeat;
 }
 
 
@@ -239,10 +247,11 @@ div.stacking.panel {
     margin-top: -9px;
     opacity: .4;
     */
+    /*
     margin-right: -85px;
     width: 106px;
     position: relative;
-    z-index: -2;
+    z-index: -2;*/
 }
 div.stacking.panel .head button {
     display:none;

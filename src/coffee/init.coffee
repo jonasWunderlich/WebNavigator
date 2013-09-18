@@ -1,6 +1,6 @@
-v_max = 0                                         # Maximum of Videos to show
+v_max = 10                                         # Maximum of Videos to show
 filter = results:50, time:0, query:"", mode:"none" # Default Filter-Settings
-min = 30; max = 1000
+min = 50; max = 2000
 googlevisible = true
 
 tabArray = {}
@@ -34,19 +34,30 @@ $(document).ready ->
 
 
   chrome.storage.local.get "hSlider", (result) ->
+    xpos = 0
     if result.hSlider?
-      #null
-      #filter.results = parseInt (max-min)*result.hSlider+min
-      initSlider(0) #result.hSlider)
-      #reload()
+      xpos = result.hSlider
     else
-      initSlider(0)
+      null
 
-  start()
+    query_slider = new Dragdealer 'simple-slider',
+      x: result.hSlider, steps: max
+      callback: (x) ->
+        filter.results = parseInt (max-min)*query_slider.value.current[0]+min
+        chrome.storage.local.set "hSlider":x
+        reload()
+      animationCallback: (x) -> $("#handle_amount").text parseInt((max-min)*x+min)
+
+    filter.results = parseInt((max-min)*xpos+min)
+    start()
   null
 
 
 
+chrome.tabs.onUpdated.addListener (tabId, changeInfo, tab) ->
+  if changeInfo.status is "complete"
+    null
+    #reload()
 
 
 
@@ -55,7 +66,7 @@ $(document).ready ->
 
 createBlocks = () ->
   blocksToProcess = blocks.length
-  blocks.reverse()
+  blocks.sort (a,b) -> return if a.time <= b.time then 1 else -1
 
   for block in blocks
     blocksToProcess--
@@ -79,7 +90,7 @@ createBlocks = () ->
             if !storedContexts[block.context].active then $(".group"+cblock.id).hide()
 
     if blocksToProcess is 1
-      siteHistory.reverse()
+      siteHistory.reverse()  #.sort (a,b) -> return if a.vid <= b.vid then 1 else -1
       for key,item of siteHistory
         $contextgroup = $(".group"+item.block)
         specialise(item, $contextgroup)
@@ -99,9 +110,11 @@ createBlocks = () ->
     sInfo.time = $(this).attr "time"
     createButtons($(this), "", sInfo)
     addClearDiv($(this))
+    #$(this).parent().addClass "morespace"
   ), ->
     $(this).find("button").remove()
     $(this).find(".clear").remove()
+    #$(this).parent().removeClass "morespace"
 
 
 
@@ -117,19 +130,21 @@ start = () ->
   loadBookmarks(createHistory)
 
 
-
+###
 initSlider = (hSlider) ->
   query_slider = new Dragdealer 'simple-slider',
     x: hSlider, steps: max
     callback: (x) -> filter.results = parseInt (max-min)*query_slider.value.current[0]+min;  chrome.storage.local.set "hSlider":x; reload()
     animationCallback: (x) -> $("#handle_amount").text parseInt((max-min)*x+min)
+###
+
 
 reload = () ->
   $('#historycontent').empty()
   $('#bookmarklist').empty()
   $('.colorPicker-palette').remove()
   #$('.contextgroup').remove()
-  v_max = 0
+  v_max = 10
   tabArray = {}
   start()
   null

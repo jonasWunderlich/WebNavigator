@@ -53,19 +53,8 @@
     }
   });
 
-  chrome.history.onVisited.addListener(function(details) {
-    return console.log(details);
-  });
-
-  /* Query for getting all Tabs at once
-  chrome.tabs.query {}, (Tabs) ->
-    console.log Tabs
-  
-  # synchronise Storage of Tabinfo
-  syncTabs = ->
-    chrome.storage.local.set "tabs":tabArray
-  
-  chrome.webNavigation.onBeforeNavigate.addListener (details) ->
+  /*
+  chrome.history.onVisited.addListener (details) ->
     console.log details
   */
 

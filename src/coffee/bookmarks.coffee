@@ -4,10 +4,13 @@ bookMarks = {}
 #chrome.storage.local.remove("storedContexts")
 #chrome.storage.local.remove("storedBookmarks")
 
+folders = []
+
 loadBookmarks = (callbackFn) ->
   storedBookmarks = {}
   storedContexts = {}
   bookMarks = {}
+  folders = []
   # get active Tasks from Storage
   chrome.storage.local.get "storedContexts", (result) ->
     if result.storedContexts
@@ -47,6 +50,7 @@ renderTaskMenu = (callbackFn) ->
           else
             contextColor = storedContexts[m.title].color
 
+          folders.push m.title
           context_div = $ "<div>"
           context_div.addClass "bcontext"
           context_div.addClass m.title
@@ -137,10 +141,16 @@ renderTaskMenu = (callbackFn) ->
 
 hideInactiveTasks = () ->
   for context,v of storedContexts
+    # delete not existend contexts
+    if jQuery.inArray( context, folders ) < 0 and context isnt "nocontext"
+      delete storedContexts[context]
+      chrome.storage.local.set "storedContexts":storedContexts
+    # change colors
     button = "button." + context
     content = "div.head." + context + ", div.content."+context+".bookmark"
     $(button).css "background", v.color
     $(content).css "background", v.color
+
     if(!v.active) then toggleActiveState(context)
 
 
