@@ -225,7 +225,6 @@
   folders = [];
 
   loadBookmarks = function(callbackFn) {
-    console.log("sdf");
     storedBookmarks = {};
     storedContexts = {};
     bookMarks = {};
@@ -235,12 +234,12 @@
         return storedBookmarks = bookmarks.storedBookmarks;
       }
     });
-    chrome.storage.local.get("storedContexts", function(contexts) {
+    return chrome.storage.local.get("storedContexts", function(contexts) {
       if (contexts.storedContexts) {
-        return storedContexts = contexts.storedContexts;
+        storedContexts = contexts.storedContexts;
       }
+      return renderTaskMenu(callbackFn);
     });
-    return renderTaskMenu(callbackFn);
   };
 
   renderTaskMenu = function(callbackFn) {
@@ -533,11 +532,10 @@
     if ((((url.substr(-4)).toLowerCase() === ".gif") || (url.substr(-4)).toLowerCase() === ".jpg") || ((url.substr(-4)).toLowerCase() === ".png") || ((url.substr(-5)).toLowerCase() === ".jpeg")) {
       special = "image";
       title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g, " ");
-    }
-    if ((((url.substr(-3)).toLowerCase() === "pdf") || (url.substr(-4)).toLowerCase() === ".txt") || ((url.substr(-4)).toLowerCase() === ".doc") || ((url.substr(-5)).toLowerCase() === ".docx") || ((url.substr(-3)).toLowerCase() === ".js")) {
+    } else if ((((url.substr(-3)).toLowerCase() === "pdf") || (url.substr(-4)).toLowerCase() === ".txt") || ((url.substr(-4)).toLowerCase() === ".doc") || ((url.substr(-5)).toLowerCase() === ".docx") || ((url.substr(-3)).toLowerCase() === ".js")) {
       special = "document";
       title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g, " ");
-    } else if ((/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))) {
+    } else if ((/youtube/.test(url)) && (/watch/.test(url)) && !(/channel/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))) {
       title = title.split("- YouTube")[0];
       if (v_max > 0) {
         url = "https://www.youtube.com/embed/" + url.split("v=")[1].split('=')[0].split('&')[0];
@@ -778,8 +776,6 @@
   max = 2000;
 
   googlevisible = true;
-
-  console.log("stsrat");
 
   tabArray = {};
 

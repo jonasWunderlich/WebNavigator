@@ -92,7 +92,6 @@ processVisitItems = (site, visitItems, callbackFn) ->
     #if testurl.substr(0,3) is "www" then testurl = testurl.split("www.")[1]
     url = testurl.substr(0,10)
 
-
     # Grobe Blockbildung
     # linkseite mit gefundenen Ref oder URL-Ahnlichkeit zum Vorgänger
     if (type is "link" or type is "form_submit") and (lastVid is ref or lastUrl is url)

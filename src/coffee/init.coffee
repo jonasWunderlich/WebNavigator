@@ -2,9 +2,6 @@ v_max = 0                                         # Maximum of Videos to show
 filter = results:50, time:0, query:"", mode:"none" # Default Filter-Settings
 min = 50; max = 2000
 googlevisible = true
-
-console.log "stsrat"
-
 tabArray = {}
 
 $(document).ready ->

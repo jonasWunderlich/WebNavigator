@@ -17,8 +17,6 @@
 
   googlevisible = true;
 
-  console.log("stsrat");
-
   tabArray = {};
 
   $(document).ready(function() {
