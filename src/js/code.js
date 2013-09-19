@@ -141,7 +141,7 @@
       }
       blocks[block_set].time = time;
       tab = tabArray[site.url] != null ? tabArray[site.url] : "";
-      if (lastTitle !== site.title && !(jQuery.inArray(url.substr(0, 6), filterArray) >= 0)) {
+      if (site.title === "" || (lastTitle !== site.title && !(jQuery.inArray(url.substr(0, 6), filterArray) >= 0))) {
         siteItem = {
           sid: id,
           vid: vid,
@@ -225,6 +225,7 @@
   folders = [];
 
   loadBookmarks = function(callbackFn) {
+    console.log("sdf");
     storedBookmarks = {};
     storedContexts = {};
     bookMarks = {};
@@ -234,12 +235,12 @@
         return storedBookmarks = bookmarks.storedBookmarks;
       }
     });
-    return chrome.storage.local.get("storedContexts", function(contexts) {
+    chrome.storage.local.get("storedContexts", function(contexts) {
       if (contexts.storedContexts) {
-        storedContexts = contexts.storedContexts;
-        return renderTaskMenu(callbackFn);
+        return storedContexts = contexts.storedContexts;
       }
     });
+    return renderTaskMenu(callbackFn);
   };
 
   renderTaskMenu = function(callbackFn) {
@@ -531,11 +532,11 @@
     special = void 0;
     if ((((url.substr(-4)).toLowerCase() === ".gif") || (url.substr(-4)).toLowerCase() === ".jpg") || ((url.substr(-4)).toLowerCase() === ".png") || ((url.substr(-5)).toLowerCase() === ".jpeg")) {
       special = "image";
-      title = url.split(/[/]+/).pop().replace(/_/g, " ");
+      title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g, " ");
     }
-    if ((((url.substr(-4)).toLowerCase() === ".pdf") || (url.substr(-4)).toLowerCase() === ".txt") || ((url.substr(-4)).toLowerCase() === ".doc") || ((url.substr(-5)).toLowerCase() === ".docx")) {
+    if ((((url.substr(-3)).toLowerCase() === "pdf") || (url.substr(-4)).toLowerCase() === ".txt") || ((url.substr(-4)).toLowerCase() === ".doc") || ((url.substr(-5)).toLowerCase() === ".docx") || ((url.substr(-3)).toLowerCase() === ".js")) {
       special = "document";
-      title = url.split(/[/]+/).pop().replace(/_/g, " ");
+      title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g, " ");
     } else if ((/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))) {
       title = title.split("- YouTube")[0];
       if (v_max > 0) {
@@ -554,9 +555,8 @@
     if (title === "") {
       special = "empty";
     } else {
-      null;
+      renderItem(site, divToGo);
     }
-    renderItem(site, divToGo);
     return null;
   };
 
@@ -764,7 +764,7 @@
     return null;
   };
 
-  v_max = 10;
+  v_max = 0;
 
   filter = {
     results: 50,
@@ -778,6 +778,8 @@
   max = 2000;
 
   googlevisible = true;
+
+  console.log("stsrat");
 
   tabArray = {};
 

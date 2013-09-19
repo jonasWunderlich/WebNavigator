@@ -2,7 +2,7 @@
 (function() {
   var createBlocks, createHistory, filter, googlevisible, max, min, reload, start, tabArray, v_max;
 
-  v_max = 10;
+  v_max = 0;
 
   filter = {
     results: 50,
@@ -16,6 +16,8 @@
   max = 2000;
 
   googlevisible = true;
+
+  console.log("stsrat");
 
   tabArray = {};
 

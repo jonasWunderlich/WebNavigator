@@ -18,9 +18,9 @@
     border-top: 10px solid #E8FFCF;
 }
 
-
-
-
+.contextgroup.googleblock {
+    margin: 0;
+}
 
 div.panel  {
   font-size:16px;
@@ -66,12 +66,17 @@ div.google .content {
 .panel.image p{
     background:none;
 }
+.panel.image p {
+    color: white;
+    opacity: .7;
+}
 
 .panel.document,
 .panel.document .head,
 .panel.document .infocontent,
 .panel.document p{
     background:none;
+    width: 105px !important;
 }
 .panel.document .infocontent {
     background: url("img/document.png") no-repeat;

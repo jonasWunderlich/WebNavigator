@@ -7,6 +7,7 @@ bookMarks = {}
 folders = []
 
 loadBookmarks = (callbackFn) ->
+  console.log "sdf"
   storedBookmarks = {}
   storedContexts = {}
   bookMarks = {}
@@ -19,7 +20,8 @@ loadBookmarks = (callbackFn) ->
   chrome.storage.local.get "storedContexts", (contexts) ->
     if contexts.storedContexts
       storedContexts = contexts.storedContexts
-      renderTaskMenu(callbackFn)
+  renderTaskMenu(callbackFn)
+
 
 
 renderTaskMenu = (callbackFn) ->

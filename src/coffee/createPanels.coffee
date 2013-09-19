@@ -6,10 +6,10 @@ specialise = (site, divToGo) ->
 
   if (((url.substr -4).toLowerCase() is ".gif") or (url.substr -4).toLowerCase() is ".jpg") or ((url.substr -4).toLowerCase() is ".png") or ((url.substr -5).toLowerCase() is ".jpeg")
     special = "image"
-    title =  url.split(/[/]+/).pop().replace(/_/g," ") #"Abbildung"
-  if (((url.substr -4).toLowerCase() is ".pdf") or (url.substr -4).toLowerCase() is ".txt") or ((url.substr -4).toLowerCase() is ".doc") or ((url.substr -5).toLowerCase() is ".docx")
+    title =  url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g," ")
+  if (((url.substr -3).toLowerCase() is "pdf") or (url.substr -4).toLowerCase() is ".txt") or ((url.substr -4).toLowerCase() is ".doc") or ((url.substr -5).toLowerCase() is ".docx") or ((url.substr -3).toLowerCase() is ".js")
     special = "document"
-    title = url.split(/[/]+/).pop().replace(/_/g," ") #"Dokument"
+    title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g," ")
   else if (/youtube/.test(url)) && (/watch/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))
     title = title.split("- YouTube")[0]
     if (v_max > 0)
@@ -26,8 +26,8 @@ specialise = (site, divToGo) ->
   if title is ""
     special = "empty"
   else
-    null
-  renderItem(site, divToGo)
+    #null
+    renderItem(site, divToGo)
   null
 
 thelastURL = ""

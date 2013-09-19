@@ -141,7 +141,7 @@
       }
       blocks[block_set].time = time;
       tab = tabArray[site.url] != null ? tabArray[site.url] : "";
-      if (lastTitle !== site.title && !(jQuery.inArray(url.substr(0, 6), filterArray) >= 0)) {
+      if (site.title === "" || (lastTitle !== site.title && !(jQuery.inArray(url.substr(0, 6), filterArray) >= 0))) {
         siteItem = {
           sid: id,
           vid: vid,

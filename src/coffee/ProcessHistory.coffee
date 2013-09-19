@@ -69,9 +69,7 @@ processVisitItems = (site, visitItems, callbackFn) ->
   #Vorfiltern
   if /data:/.test(url)
     null
-    #console.log site
   else
-
     vid = visitItems[visitItems.length-1].visitId
     ref = visitItems[visitItems.length-1].referringVisitId
     type = visitItems[visitItems.length-1].transition
@@ -126,7 +124,7 @@ processVisitItems = (site, visitItems, callbackFn) ->
     tab = if tabArray[site.url]? then tabArray[site.url] else ""
 
     # Array für die History anlegen
-    if lastTitle isnt site.title and !(jQuery.inArray( url.substr(0, 6), filterArray ) >= 0)
+    if site.title is "" or (lastTitle isnt site.title and !(jQuery.inArray( url.substr(0, 6), filterArray ) >= 0))
       siteItem = sid:id, vid:vid, url:site.url, title:site.title, type:type, ref:ref, relevance:count, time:time, block:block_set, context:context, tab:tab, bid:bookmark
       siteHistory[id] = siteItem
     else null #console.log url.substr(0,6)
