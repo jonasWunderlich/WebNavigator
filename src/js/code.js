@@ -535,6 +535,8 @@
     } else if ((((url.substr(-3)).toLowerCase() === "pdf") || (url.substr(-4)).toLowerCase() === ".txt") || ((url.substr(-4)).toLowerCase() === ".doc") || ((url.substr(-5)).toLowerCase() === ".docx") || ((url.substr(-3)).toLowerCase() === ".js")) {
       special = "document";
       title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g, " ");
+    } else if (/docs.google.com/.test(url)) {
+      special = "document";
     } else if ((/youtube/.test(url)) && (/watch/.test(url)) && !(/channel/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))) {
       title = title.split("- YouTube")[0];
       if (v_max > 0) {

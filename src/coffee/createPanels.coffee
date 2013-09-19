@@ -11,6 +11,8 @@ specialise = (site, divToGo) ->
   else if (((url.substr -3).toLowerCase() is "pdf") or (url.substr -4).toLowerCase() is ".txt") or ((url.substr -4).toLowerCase() is ".doc") or ((url.substr -5).toLowerCase() is ".docx") or ((url.substr -3).toLowerCase() is ".js")
     special = "document"
     title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g," ")
+  else if (/docs.google.com/.test(url))
+    special = "document"
   else if (/youtube/.test(url)) && (/watch/.test(url)) && !(/channel/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))
     title = title.split("- YouTube")[0]
     if (v_max > 0)
