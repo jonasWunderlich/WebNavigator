@@ -56,8 +56,7 @@ $(document).ready ->
 
 chrome.tabs.onUpdated.addListener (tabId, changeInfo, tab) ->
   if changeInfo.status is "complete"
-    null
-    #reload()
+    if tab.url isnt "chrome://newtab/" then reload()
 
 
 

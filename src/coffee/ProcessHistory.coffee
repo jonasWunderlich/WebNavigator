@@ -68,7 +68,8 @@ processVisitItems = (site, visitItems, callbackFn) ->
 
   #Vorfiltern
   if /data:/.test(url)
-    console.log site
+    null
+    #console.log site
   else
 
     vid = visitItems[visitItems.length-1].visitId

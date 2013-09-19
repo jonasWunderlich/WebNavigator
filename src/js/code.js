@@ -87,7 +87,7 @@
     id = site.id;
     url = site.url;
     if (/data:/.test(url)) {
-      console.log(site);
+      null;
     } else {
       vid = visitItems[visitItems.length - 1].visitId;
       ref = visitItems[visitItems.length - 1].referringVisitId;
@@ -229,17 +229,17 @@
     storedContexts = {};
     bookMarks = {};
     folders = [];
-    chrome.storage.local.get("storedContexts", function(result) {
-      if (result.storedContexts) {
-        return storedContexts = result.storedContexts;
+    chrome.storage.local.get("storedBookmarks", function(bookmarks) {
+      if (bookmarks.storedBookmarks) {
+        return storedBookmarks = bookmarks.storedBookmarks;
       }
     });
-    chrome.storage.local.get("storedBookmarks", function(result) {
-      if (result.storedBookmarks) {
-        return storedBookmarks = result.storedBookmarks;
+    return chrome.storage.local.get("storedContexts", function(contexts) {
+      if (contexts.storedContexts) {
+        storedContexts = contexts.storedContexts;
+        return renderTaskMenu(callbackFn);
       }
     });
-    return renderTaskMenu(callbackFn);
   };
 
   renderTaskMenu = function(callbackFn) {
@@ -851,7 +851,9 @@
 
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status === "complete") {
-      return null;
+      if (tab.url !== "chrome://newtab/") {
+        return reload();
+      }
     }
   });
 

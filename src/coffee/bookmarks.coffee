@@ -11,15 +11,16 @@ loadBookmarks = (callbackFn) ->
   storedContexts = {}
   bookMarks = {}
   folders = []
-  # get active Tasks from Storage
-  chrome.storage.local.get "storedContexts", (result) ->
-    if result.storedContexts
-      storedContexts = result.storedContexts
   # get stored Bookmarks
-  chrome.storage.local.get "storedBookmarks", (result) ->
-    if result.storedBookmarks
-      storedBookmarks = result.storedBookmarks
-  renderTaskMenu(callbackFn)
+  chrome.storage.local.get "storedBookmarks", (bookmarks) ->
+    if bookmarks.storedBookmarks
+      storedBookmarks = bookmarks.storedBookmarks
+  # get active Tasks from Storage
+  chrome.storage.local.get "storedContexts", (contexts) ->
+    if contexts.storedContexts
+      storedContexts = contexts.storedContexts
+      renderTaskMenu(callbackFn)
+
 
 renderTaskMenu = (callbackFn) ->
   # no context header

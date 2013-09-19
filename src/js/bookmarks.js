@@ -15,17 +15,17 @@
     storedContexts = {};
     bookMarks = {};
     folders = [];
-    chrome.storage.local.get("storedContexts", function(result) {
-      if (result.storedContexts) {
-        return storedContexts = result.storedContexts;
+    chrome.storage.local.get("storedBookmarks", function(bookmarks) {
+      if (bookmarks.storedBookmarks) {
+        return storedBookmarks = bookmarks.storedBookmarks;
       }
     });
-    chrome.storage.local.get("storedBookmarks", function(result) {
-      if (result.storedBookmarks) {
-        return storedBookmarks = result.storedBookmarks;
+    return chrome.storage.local.get("storedContexts", function(contexts) {
+      if (contexts.storedContexts) {
+        storedContexts = contexts.storedContexts;
+        return renderTaskMenu(callbackFn);
       }
     });
-    return renderTaskMenu(callbackFn);
   };
 
   renderTaskMenu = function(callbackFn) {

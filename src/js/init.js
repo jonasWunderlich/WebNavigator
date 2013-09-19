@@ -89,7 +89,9 @@
 
   chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status === "complete") {
-      return null;
+      if (tab.url !== "chrome://newtab/") {
+        return reload();
+      }
     }
   });
 

@@ -87,7 +87,7 @@
     id = site.id;
     url = site.url;
     if (/data:/.test(url)) {
-      console.log(site);
+      null;
     } else {
       vid = visitItems[visitItems.length - 1].visitId;
       ref = visitItems[visitItems.length - 1].referringVisitId;
