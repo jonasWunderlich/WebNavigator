@@ -94,6 +94,12 @@ createBlocks = () ->
         specialise(item, $contextgroup)
         for fblock in blocks
           if fblock? and item.block is fblock.id and fblock.context isnt ""
+            if item.tab
+              console.log item.tab
+              console.log fblock
+              console.log tabArray
+              console.log tabArray
+
             $(".group"+item.block+" .panel .head").css "background", storedContexts[fblock.context].color
 
   if !googlevisible then $(".googleblock").toggle("fast")

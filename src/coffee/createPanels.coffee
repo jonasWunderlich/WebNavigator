@@ -13,6 +13,9 @@ specialise = (site, divToGo) ->
     title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g," ")
   else if (/docs.google.com/.test(url))
     special = "document"
+  else if (/delivery.acm.org/.test(url))
+    title = url.split("?")[0].split("/").pop()
+    special = "document"
   else if (/youtube/.test(url)) && (/watch/.test(url)) && !(/channel/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))
     title = title.split("- YouTube")[0]
     if (v_max > 0)
@@ -29,7 +32,6 @@ specialise = (site, divToGo) ->
   if title is ""
     special = "empty"
   else
-    #null
     renderItem(site, divToGo)
   null
 
@@ -161,7 +163,8 @@ renderItem = (item, divToGo) ->
 shortenTitle = (title, url) ->
   shorten = 40
   title = title.split(" - ")[0]
-  title = title.split(" – ")[0]
+  title = title.split(" - ")[0]
+
   title = if (title.length > shorten) then (title.substr(0,shorten) + "...") else title
   if title is ""
     title = url.substr(0,shorten) + "..."

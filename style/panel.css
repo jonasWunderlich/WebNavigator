@@ -42,7 +42,8 @@ div.google .content {
 }
 
 .tabbutton {
-    background: #087DB4;
+    /*background: #087DB4;*/
+    background: #353535;
     width: 50%;
     /*margin-left: 80%;*/
     border-radius: 5px 5px 0 0;

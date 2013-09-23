@@ -11,6 +11,12 @@
   folders = [];
 
   loadBookmarks = function(callbackFn) {
+    chrome.storage.local.get(function(items) {
+      return console.log(items);
+    });
+    chrome.storage.local.getBytesInUse("tabConnections", function(bytesInUse) {
+      return console.log("Bytes: " + bytesInUse);
+    });
     storedBookmarks = {};
     storedContexts = {};
     bookMarks = {};
@@ -23,8 +29,8 @@
     return chrome.storage.local.get("storedContexts", function(contexts) {
       if (contexts.storedContexts) {
         storedContexts = contexts.storedContexts;
+        return renderTaskMenu(callbackFn);
       }
-      return renderTaskMenu(callbackFn);
     });
   };
 

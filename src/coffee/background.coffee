@@ -2,6 +2,9 @@ lastPage = ""
 
 tabConnections = {}
 
+
+#chrome.storage.local.remove("tabConnections")
+
 # bisherig gespeicherte Verbindungen laden  
 chrome.storage.local.get "tabConnections", (result) ->
   if result.tabConnections? 

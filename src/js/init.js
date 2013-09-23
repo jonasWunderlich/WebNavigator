@@ -145,6 +145,12 @@
           for (_k = 0, _len2 = blocks.length; _k < _len2; _k++) {
             fblock = blocks[_k];
             if ((fblock != null) && item.block === fblock.id && fblock.context !== "") {
+              if (item.tab) {
+                console.log(item.tab);
+                console.log(fblock);
+                console.log(tabArray);
+                console.log(tabArray);
+              }
               $(".group" + item.block + " .panel .head").css("background", storedContexts[fblock.context].color);
             }
           }

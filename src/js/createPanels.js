@@ -16,6 +16,9 @@
       title = url.split(/[/]+/).pop().replace(/[_,.,?,=,&]/g, " ");
     } else if (/docs.google.com/.test(url)) {
       special = "document";
+    } else if (/delivery.acm.org/.test(url)) {
+      title = url.split("?")[0].split("/").pop();
+      special = "document";
     } else if ((/youtube/.test(url)) && (/watch/.test(url)) && !(/channel/.test(url)) && !(/user/.test(url)) && !(/www.google/.test(url))) {
       title = title.split("- YouTube")[0];
       if (v_max > 0) {
@@ -174,7 +177,7 @@
 
     shorten = 40;
     title = title.split(" - ")[0];
-    title = title.split(" – ")[0];
+    title = title.split(" - ")[0];
     title = title.length > shorten ? title.substr(0, shorten) + "..." : title;
     if (title === "") {
       title = url.substr(0, shorten) + "...";
